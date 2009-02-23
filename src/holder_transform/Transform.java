@@ -93,7 +93,7 @@ public class Transform {
         System.out.println("");
     }
     
-    public double[] readCoefficientsFile(String filename) {
+    public void readCoefficientsFile(String filename) {
         double[] coeff = new double[32];
         try {
             BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -103,11 +103,11 @@ public class Transform {
                     coeff[i] = Double.parseDouble(line);
                 }
             }
-        } catch(Exception e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
         
-        return coeff;
+        this.setCoefficientsFromList(coeff);
     }
     
     public void setStagePoints(double[][] pts) {
@@ -122,18 +122,46 @@ public class Transform {
     
     public  void printStagePoints() {
         System.out.println("Stage Points:");
+        double[] pt = new double[3];
         for(int i = 0; i < StagePoints.size(); i++) {
-            System.out.println(StagePoints.get(i)[0] + ", " + StagePoints.get(i)[1]);
+            pt = TransformedPoints.get(i);
+            System.out.println(pt[0] + ", " + pt[1] + ", " + pt[2]);
         }
         System.out.println("");
     }
     
+    public void readStagePointsFile(String filename) {
+        
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(filename));
+            String line;
+            
+            while( ( line = br.readLine() ) != null) {
+                if(line.equals("STAGE_LIST") || line.equals("UNITS_UM") || line.equals("") ) {
+                    continue;
+                }
+                String[] stringpts = line.split(" ");
+                double[] pts = new double[3];
+                if(stringpts.length != 3) {
+                    continue;
+                }
+                for(int i =0; i< pts.length; i++) {
+                    pts[i] = Double.parseDouble(stringpts[i]);
+                }
+                StagePoints.add(pts);
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public double[] transformPoint(double[] stagept) {
-        double[] temppoint = new double[2];
+        double[] temppoint = new double[3];
         
         temppoint[0] = XCoefficients[0][0] + (XCoefficients[0][1] * stagept[0]) + (XCoefficients[1][0] * stagept[1]);
         temppoint[1] = YCoefficients[0][0] + (YCoefficients[0][1] * stagept[0]) + (YCoefficients[1][0] * stagept[1]);
-
+        temppoint[1] = 0;
+        
         return temppoint;
     }
 //Original, from Doug's code
@@ -163,7 +191,7 @@ rotate_nikon_to_mims(int spts,
     }
     
     public void setTransformedPoints() {
-        double[] temppoint = new double[2];
+        double[] temppoint = new double[3];
         
         clearTransformedPoints();
         for (int p = 0; p < StagePoints.size(); p++) {
@@ -174,8 +202,10 @@ rotate_nikon_to_mims(int spts,
     
     public void printTransformedPoints() {
         System.out.println("Transformed Points:");
+        double[] pt = new double[3];
         for (int i = 0; i < TransformedPoints.size(); i++) {
-            System.out.println(TransformedPoints.get(i)[0] + ", " + TransformedPoints.get(i)[1]);
+            pt = TransformedPoints.get(i);
+            System.out.println(pt[0] + ", " + pt[1] + ", " + pt[2]);
         }
         System.out.println("");
     }
@@ -191,7 +221,7 @@ rotate_nikon_to_mims(int spts,
         
          /*test example, works 
         double[] foo = {-11464, 0.00502499, 0, 0, -0.999791, 0, 0 ,0 ,0 ,0, 0, 0, 0, 0, 0, 0, -16620, 1.00084, 0, 0, 0.00527921, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        */
+        
         double[][] pts = {{0, 0, 0},
             {-22087.6, -475.2, 0},
             {5424.6, 6414.2, 0},
@@ -231,12 +261,11 @@ rotate_nikon_to_mims(int spts,
             {-7325.8, 22925.9, 0},
             {-19824, 22087.2, 0}
         };
+        */
         
+        test.readCoefficientsFile("./src/holder_transform/coeff.txt");
+        test.readStagePointsFile("./src/holder_transform/xy.points");
         
-        double[] coefflist = test.readCoefficientsFile("./src/holder_transform/coeff.txt");
-        test.setCoefficientsFromList(coefflist);
-
-        test.setStagePoints(pts);
         test.setTransformedPoints();
         
         test.printStagePoints();
