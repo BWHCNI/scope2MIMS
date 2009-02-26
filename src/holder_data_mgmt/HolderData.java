@@ -8,16 +8,20 @@ package holder_data_mgmt;
 /**
  *
  * @author bepstein
+ * The class serves as a container for the holder data (emulates the full file).
  */
 public class HolderData {
     /* constructor classes */
     public HolderData()
     {
+        setNumRefPoints(0);
+        point_list = null;
     }
    
     public HolderData( int nrp )
     {
         setNumRefPoints( nrp );
+        point_list = null;
     }
     
     /* public */
@@ -33,4 +37,5 @@ public class HolderData {
     
     /* private */
     private int num_ref_points;
+    private RefPointList point_list;
 }
