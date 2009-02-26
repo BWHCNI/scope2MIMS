@@ -1,13 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package holder_data_mgmt;
 
 /**
  *
  * @author bepstein
+ * The list of reference points. This class mimics the original representation fo the holder coordinates data file.
  */
 public class RefPointList {
     /* constructors */
