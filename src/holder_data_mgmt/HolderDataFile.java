@@ -23,6 +23,16 @@ public class HolderDataFile {
     public void setFilePath(String path){
         file_path = path;
     }
+
+
+    /* private constants
+     * describe file formating, mostly
+     */
+    private final int nRecordHeaderSizeLocation = 0;
+    private final int nRecordHeaderSize = 16012;
+    private final int nFileHeaderSizeLocation = 4;
+    private final int nFileHeaderSize = 240;
+
     /* private variables and methods */
     private String file_path;
 }
