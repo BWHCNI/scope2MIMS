@@ -1,6 +1,9 @@
 
 package holder_data_mgmt;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 /**
  *
  * @author bepstein
@@ -25,8 +28,8 @@ public class HolderDataFile {
     }
 
 
-    /* private constants
-     * describe file formating, mostly
+    /* private constants */
+     /* describe file formating, mostly
      */
     private final int nRecordHeaderSizeLocation = 0;
     private final int nRecordHeaderSize = 16012;
@@ -35,4 +38,8 @@ public class HolderDataFile {
 
     /* private variables and methods */
     private String file_path;
+    private FileInputStream file_in;
+    private FileOutputStream file_out;
+
+    
 }
