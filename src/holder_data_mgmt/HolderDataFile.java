@@ -108,7 +108,17 @@ public class HolderDataFile {
         return( rpl );
     }
 
+    /**
+     * Writes out ther file based upon the ref point list rfl
+     */
+    public void writeFileOut
+        (RefPointList r_p_l,
+        FileOutputStream fos
+        ){
+        RefPoint rf;
 
+
+    }
 
     /* private constants */
      /* describe file formating, mostly
@@ -142,4 +152,14 @@ public class HolderDataFile {
         out_file_path = null;
     }
 
+    private void writeOutFileHeader
+        (FileOutputStream fo
+        ){
+        try{
+            fo.write(nRecordHeaderSize);
+            fo.write(nFileHeaderSize);
+        } catch (IOException ie){
+
+        }
+    }
 }
