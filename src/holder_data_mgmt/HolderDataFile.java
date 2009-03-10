@@ -155,11 +155,24 @@ public class HolderDataFile {
     private void writeOutFileHeader
         (FileOutputStream fo
         ){
+
         try{
-            fo.write(nRecordHeaderSize);
-            fo.write(nFileHeaderSize);
+            fo.write( int32ToByte4(nRecordHeaderSize) );
+            fo.write( int32ToByte4(nFileHeaderSize) );
         } catch (IOException ie){
 
         }
+    }
+
+    private byte[] int32ToByte4(int i)
+    {
+        byte[] byte_arr = new byte[4];
+
+        byte_arr[0] = (byte)(i);
+        byte_arr[1] = (byte)(i >> 8);
+        byte_arr[2] = (byte)(i >> 16);
+        byte_arr[3] = (byte)(i >> 24);
+
+        return( byte_arr );
     }
 }
