@@ -1,5 +1,3 @@
-
-
 package holder_data_mgmt;
 
 /**
@@ -29,6 +27,23 @@ public class RefPointList {
 
         return( curr_entry.getRefPoint() );
             
+    }
+
+    public void addRefPoint(RefPoint rf)
+    {
+        RefPointListEntry curr_entry;
+        RefPointListEntry new_entry;
+
+        curr_entry = start_entry;
+        new_entry = new RefPointListEntry( rf );
+
+        while (curr_entry.getNextListEntry() != null)
+        {
+            curr_entry = curr_entry.getNextListEntry();
+        }
+
+        new_entry.setPrevListEntry(curr_entry);
+        curr_entry.setNextListEntry(new_entry);
     }
     
     /* private */
@@ -61,12 +76,22 @@ public class RefPointList {
         {
             return( prev_entry );
         }
-    
+
+        public void setPrevListEntry(RefPointListEntry entry)
+        {
+            prev_entry = entry;
+        }
+
         public RefPointListEntry getNextListEntry()
         {
             return( next_entry );
         }
-    
+
+        public void setNextListEntry(RefPointListEntry entry)
+        {
+            next_entry = entry;
+        }
+
         /* private */
         private RefPoint curr_rf;
         private RefPointListEntry prev_entry;
