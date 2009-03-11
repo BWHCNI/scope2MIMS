@@ -108,6 +108,12 @@ public class HolderDataFile {
         return( rpl );
     }
 
+    public void readFileIn(RefPointList r_p_l,
+            FileInputStream fis
+            ){
+
+    }
+
     /**
      * Writes out ther file based upon the ref point list rfl
      */
@@ -127,6 +133,7 @@ public class HolderDataFile {
     private final int nRecordHeaderSize = 16012;
     private final int nFileHeaderSizeLocation = 4;
     private final int nFileHeaderSize = 240;
+    private final int ibd_ref_size = 990;
 
     /* private variables and methods */
     private String in_file_path;
@@ -174,5 +181,12 @@ public class HolderDataFile {
         byte_arr[3] = (byte)(i >> 24);
 
         return( byte_arr );
+    }
+
+    private int byte4ToInt(byte[] byte_arr)
+    {
+        int ret_value = 0;
+
+        return( ret_value );
     }
 }

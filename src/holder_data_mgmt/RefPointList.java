@@ -48,6 +48,7 @@ public class RefPointList {
     
     /* private */
     private RefPointListEntry start_entry;
+    private final int SEQ_MAX_ENR = 2000; /* maximum number of points */
     
     private class RefPointListEntry{
         /* constructors */
@@ -96,6 +97,7 @@ public class RefPointList {
         private RefPoint curr_rf;
         private RefPointListEntry prev_entry;
         private RefPointListEntry next_entry;
+
     }
 }
 
