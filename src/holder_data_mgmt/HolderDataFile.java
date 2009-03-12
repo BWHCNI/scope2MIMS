@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
  *
  * @author bepstein
  * Specific class to handle the file I/O for the holder coordinates file
+ * The formatting assumes big-endian arrangement where applicable.
  */
 public class HolderDataFile {
     /* constructors */
