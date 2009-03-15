@@ -124,6 +124,8 @@ public class HolderDataFile {
         ){
         RefPoint rf;
 
+        /* writing the header */
+        writeOutFileHeader( fos );
 
     }
 
@@ -135,6 +137,8 @@ public class HolderDataFile {
     private final int nFileHeaderSizeLocation = 4;
     private final int nFileHeaderSize = 240;
     private final int ibd_ref_size = 990;
+    private final int int_size = 4;
+    private final int double_size = 8;
 
     /* private variables and methods */
     private String in_file_path;
@@ -163,31 +167,27 @@ public class HolderDataFile {
     private void writeOutFileHeader
         (FileOutputStream fo
         ){
+        int temp_i;
+        double temp_d;
+        byte[] temp_bytes;
 
         try{
-            fo.write( int32ToByte4(nRecordHeaderSize) );
-            fo.write( int32ToByte4(nFileHeaderSize) );
+           writeOutInt( fo, nRecordHeaderSize );
+           writeOutInt( fo, nFileHeaderSize );
+
         } catch (IOException ie){
 
         }
     }
 
-    private byte[] int32ToByte4(int i)
+    private void writeOutInt(FileOutputStream fo,
+            int i) throws IOException
     {
-        byte[] byte_arr = new byte[4];
-
-        byte_arr[0] = (byte)(i);
-        byte_arr[1] = (byte)(i >> 8);
-        byte_arr[2] = (byte)(i >> 16);
-        byte_arr[3] = (byte)(i >> 24);
-
-        return( byte_arr );
+        byte[] temp_bytes;
+        temp_bytes = DataUtilities.intToByteArr(i);
+        DataUtilities.reverseByteOrder(temp_bytes);
+        fo.write(temp_bytes);
     }
 
-    private int byte4ToInt(byte[] byte_arr)
-    {
-        int ret_value = 0;
-
-        return( ret_value );
-    }
+    
 }
