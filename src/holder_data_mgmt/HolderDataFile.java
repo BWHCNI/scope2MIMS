@@ -174,7 +174,7 @@ public class HolderDataFile {
     /* struct entete_enr_structure copied */
     private final int nb_max_enr = 0;
     private final int nb_enr = 1;
-    private final int taille_enr = 1;
+    private final int taille_enr = 187208;
     private int[] tab_enr = new int[2000]; /* Ref list tab location */
     private int[] tab_trou = new int[2000]; /* unused */
     /* struct entete_enr_structure end */
