@@ -12,6 +12,12 @@ public class RefPointList {
         start_entry = new RefPointListEntry( first_entry );
         num_of_ref_points = 1;
     }
+
+    public RefPointList()
+    {
+        start_entry = null;
+        num_of_ref_points = 0;
+    }
     
     /* public */
     
@@ -40,16 +46,22 @@ public class RefPointList {
         RefPointListEntry curr_entry;
         RefPointListEntry new_entry;
 
-        curr_entry = start_entry;
-        new_entry = new RefPointListEntry( rf );
-
-        while (curr_entry.getNextListEntry() != null)
+        if (start_entry != null)
         {
-            curr_entry = curr_entry.getNextListEntry();
+            curr_entry = start_entry;
+            new_entry = new RefPointListEntry( rf );
+
+            while (curr_entry.getNextListEntry() != null)
+            {
+                curr_entry = curr_entry.getNextListEntry();
+            }
+
+            new_entry.setPrevListEntry(curr_entry);
+            curr_entry.setNextListEntry(new_entry);
+        } else {
+            start_entry = new RefPointListEntry( rf );;
         }
 
-        new_entry.setPrevListEntry(curr_entry);
-        curr_entry.setNextListEntry(new_entry);
         num_of_ref_points++;
     }
     

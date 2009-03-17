@@ -11,6 +11,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import holder_data_mgmt.*;
+
 /**
  *
  * @author cpoczatek
@@ -189,7 +191,27 @@ rotate_nikon_to_mims(int spts,
     public void clearTransformedPoints() {
         TransformedPoints.clear();
     }
-    
+
+    public ArrayList getTransformedPoints()
+    {
+        return( TransformedPoints );
+    }
+
+    public RefPointList transformedPointsToRefPointList()
+    {
+        RefPointList ret_value = new RefPointList();
+        double[] point_coords;
+        int i;
+        
+        for (i = 0; i < TransformedPoints.size(); i++)
+        {
+            point_coords = TransformedPoints.get(i);
+            ret_value.addRefPoint( coordsToRefPoint(point_coords) );
+        }
+
+        return ( ret_value );
+    }
+
     public void setTransformedPoints() {
         double[] temppoint = new double[3];
         
@@ -272,5 +294,20 @@ rotate_nikon_to_mims(int spts,
         test.printCoefficients();
         test.printTransformedPoints();
         
+    }
+
+    /* private methods */
+    private RefPoint coordsToRefPoint(double[] coords)
+    {
+        RefPoint ret_value= new RefPoint();
+
+        if (coords.length == 3)
+        {
+            ret_value.setXCoord(coords[0]);
+            ret_value.setYCoord(coords[1]);
+            ret_value.setZCoord(coords[2]);
+        }
+
+        return( ret_value );
     }
 }
