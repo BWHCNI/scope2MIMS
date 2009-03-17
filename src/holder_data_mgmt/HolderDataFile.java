@@ -155,7 +155,16 @@ public class HolderDataFile {
 
         /**/
         } catch (IOException ioe){
+            ioe.printStackTrace();
+        }
+    }
 
+    public void close()
+    {
+        try {
+            setStreamsToNull();
+        } catch (IOException ioe ) {
+            ioe.printStackTrace();
         }
     }
 
@@ -233,7 +242,7 @@ public class HolderDataFile {
            curr_offset += 4 * tab_trou.length;
            return(curr_offset);
         } catch (IOException ioe){
-
+            ioe.printStackTrace();
         } finally {
             return(curr_offset);
         }
