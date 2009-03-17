@@ -118,6 +118,11 @@ public class HolderDataFile {
     /**
      * Writes out ther file based upon the ref point list rfl
      */
+    public void writeFileOut()
+    {
+        writeFileOut( getPointList(), file_out);
+    }
+
     public void writeFileOut
         (RefPointList r_p_l,
         FileOutputStream fos

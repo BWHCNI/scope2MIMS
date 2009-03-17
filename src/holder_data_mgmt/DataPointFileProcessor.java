@@ -95,7 +95,8 @@ public class DataPointFileProcessor {
                 dpfp.getRefPointList()
                 );
 
-        
+        hdf.writeFileOut();
+        hdf.close();
 
     }
 
