@@ -22,7 +22,7 @@ public class RefPoint {
             double ycoord,
             double zcoord,
             int num_of_link,
-            int ref_point_link[])
+            int ref_point_links[])
     {
         setComment( comment );
         setDateString( date_str );
@@ -30,7 +30,7 @@ public class RefPoint {
         setYCoord( ycoord );
         setZCoord( zcoord );
         setNumberOfLink( num_of_link );
-        setRefPointLink( ref_point_link );
+        setRefPointLinks( ref_point_links );
     }
     
     /* public methods */    
@@ -94,12 +94,12 @@ public class RefPoint {
         return( ibd_ref_lien_nb );
     }
     
-    public void setRefPointLink(int[] rfl)
+    public void setRefPointLinks(int[] rfl)
     {
         ibd_ref_lien = rfl;
     }
     
-    public int[] getRefPointLink()
+    public int[] getRefPointLinks()
     {
         return( ibd_ref_lien );
     }

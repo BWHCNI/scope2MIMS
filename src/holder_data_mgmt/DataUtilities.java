@@ -16,13 +16,19 @@ public class DataUtilities {
     public static void reverseByteOrder(byte[] bytes_in_out)
     {
         byte temp_b;
-        int i;
+        int i, j, k;
 
-        for (i = 0; i < bytes_in_out.length /2; i++)
+        for (i = 0; i < bytes_in_out.length; i = i + 2)
         {
-            temp_b = bytes_in_out[i];
-            bytes_in_out[i] = bytes_in_out[bytes_in_out.length - i];
-            bytes_in_out[bytes_in_out.length - i] = temp_b;
+            j = i / 2;
+            k = bytes_in_out.length - j - 1;
+
+            if ( j >= k )
+                break;
+
+            temp_b = bytes_in_out[j];
+            bytes_in_out[j] = bytes_in_out[k];
+            bytes_in_out[k] = temp_b;
         }
     }
 
@@ -106,12 +112,33 @@ public class DataUtilities {
     {
         byte ret_arr[] = new byte[4];
 
-        ret_arr[0] = (byte)(intvalue | 0xff);
-        ret_arr[1] = (byte)((intvalue | 0xff00) >> 8);
-        ret_arr[2] = (byte)((intvalue | 0xff0000) >> 16);
+        ret_arr[0] = (byte)(intvalue | 0x00000ff);
+        ret_arr[1] = (byte)((intvalue | 0x0000ff00) >> 8);
+        ret_arr[2] = (byte)((intvalue | 0x00ff0000) >> 16);
         ret_arr[3] = (byte)((intvalue | 0xff000000) >> 24);
         
         return( ret_arr );
+    }
+
+    public static byte[] longToByteArr(long longvalue)
+    {
+        byte ret_arr[] = new byte[8];
+
+        ret_arr[0] = (byte)(longvalue | 0x00000000000000ffL);
+        ret_arr[1] = (byte)((longvalue | 0x000000000000ff00L) >> 8);
+        ret_arr[2] = (byte)((longvalue | 0x0000000000ff0000L) >> 16);
+        ret_arr[3] = (byte)((longvalue | 0x00000000ff000000L) >> 24);
+        ret_arr[4] = (byte)((longvalue | 0x000000ff00000000L) >> 32);
+        ret_arr[5] = (byte)((longvalue | 0x0000ff0000000000L) >> 40);
+        ret_arr[6] = (byte)((longvalue | 0x00ff000000000000L) >> 48);
+        ret_arr[7] = (byte)((longvalue | 0xff00000000000000L) >> 56);
+
+        return( ret_arr );
+    }
+
+    public static byte[] doubleToByteArr(double dvalue)
+    {
+        return( longToByteArr( Double.doubleToLongBits(dvalue) ) );
     }
 
 }

@@ -10,6 +10,7 @@ public class RefPointList {
     public RefPointList(RefPoint first_entry)
     {
         start_entry = new RefPointListEntry( first_entry );
+        num_of_ref_points = 1;
     }
     
     /* public */
@@ -29,6 +30,11 @@ public class RefPointList {
             
     }
 
+    public int getNumRefPoints()
+    {
+        return( num_of_ref_points );
+    }
+
     public void addRefPoint(RefPoint rf)
     {
         RefPointListEntry curr_entry;
@@ -44,10 +50,13 @@ public class RefPointList {
 
         new_entry.setPrevListEntry(curr_entry);
         curr_entry.setNextListEntry(new_entry);
+        num_of_ref_points++;
     }
     
     /* private */
     private RefPointListEntry start_entry;
+    private int num_of_ref_points = 0; /* total ref points in list */
+
     private final int SEQ_MAX_ENR = 2000; /* maximum number of points */
     
     private class RefPointListEntry{
