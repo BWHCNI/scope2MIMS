@@ -37,6 +37,15 @@ public class RefPoint {
     public void setComment(String comment)
     {
         ibd_ref_com = comment;
+
+        /* Making sure the length of the comment is exactly comment_length */
+        if (ibd_ref_com.length() < comment_length )
+        {
+            ibd_ref_com = ibd_ref_com.concat(new String(new byte[comment_length - ibd_ref_com.length()]));
+        }   else if (ibd_ref_com.length() < comment_length )
+        {
+            ibd_ref_com = ibd_ref_com.substring(0, comment_length - 1);
+        }
     }
     
     public String getComment()
@@ -47,6 +56,14 @@ public class RefPoint {
     public void setDateString(String date_str)
     {
         ibd_ref_dat = date_str;
+
+        /* making sure the length of ibd_ref_dat is exactly date_str_length */
+        if (ibd_ref_dat.length() < date_str_length)
+        {
+            ibd_ref_dat = ibd_ref_dat.concat(new String(new byte[date_str_length - ibd_ref_dat.length()]));
+        } else if (ibd_ref_dat.length() > date_str_length){
+             ibd_ref_dat = ibd_ref_dat.substring(0, date_str_length - 1);
+        }
     }
     
     public String getDateString()
@@ -106,7 +123,9 @@ public class RefPoint {
     
     /* private methods and variables */
     private String ibd_ref_com; /* comment */
+    private final int comment_length = 80;
     private String ibd_ref_dat; /* date */
+    private final int date_str_length = 20;
     private double x; /* x coordinate */
     private double y; /* y coordinate */
     private double z; /* z coordinate */
