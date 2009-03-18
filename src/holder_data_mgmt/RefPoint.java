@@ -26,6 +26,7 @@ public class RefPoint {
     private double x; /* x coordinate */
     private double y; /* y coordinate */
     private double z; /* z coordinate */
+    private final int ibd_max_ref = 200; /* maximum number of points */
     private int ibd_ref_lien_nb; /* number of link */
     private int ibd_ref_lien[]; /* ref point link */
 
@@ -37,6 +38,8 @@ public class RefPoint {
         setXCoord( 0 );
         setYCoord( 0 );
         setZCoord( 0 );
+        setNumberOfLinks( ibd_max_ref );
+        setRefPointLinks( new int[ibd_max_ref] );
     }
     
     public RefPoint(
@@ -53,7 +56,7 @@ public class RefPoint {
         setXCoord( xcoord );
         setYCoord( ycoord );
         setZCoord( zcoord );
-        setNumberOfLink( num_of_link );
+        setNumberOfLinks( num_of_link );
         setRefPointLinks( ref_point_links );
     }
     
@@ -125,19 +128,35 @@ public class RefPoint {
         return( z );
     }
     
-    public void setNumberOfLink(int nlink)
+    public void setNumberOfLinks(int nlink)
     {
         ibd_ref_lien_nb = nlink;
     }
     
-    public int getNumberOfLink()
+    public int getNumberOfLinks()
     {
         return( ibd_ref_lien_nb );
     }
     
     public void setRefPointLinks(int[] rfl)
     {
-        ibd_ref_lien = rfl;
+        int i;
+        int temp_arr[] = rfl;
+        ibd_ref_lien = new int[ ibd_max_ref ];
+
+        if ( rfl.length > ibd_max_ref )
+        {
+            for (i = 0; i < ibd_max_ref; i++)
+                ibd_ref_lien[i] = rfl[i];
+        } else if ( rfl.length < ibd_max_ref )
+        {
+            for (i = 0; i < rfl.length; i++)
+                ibd_ref_lien[i] = rfl[i];
+
+            for (i = rfl.length; i < ibd_max_ref; i++)
+                ibd_ref_lien[i] = 0;
+        }
+        
     }
     
     public int[] getRefPointLinks()
