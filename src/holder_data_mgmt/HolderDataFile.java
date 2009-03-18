@@ -25,7 +25,7 @@ public class HolderDataFile {
     private final int point_arr_num = 0; /* numero de pe */
 
     /* struct entete_enr_structure copied */
-    private final int nb_max_enr = 0;
+    private final int nb_max_enr = 1;
     private final int nb_enr = 1;
     private final int taille_enr = 187208;
     private int[] tab_enr = new int[2000]; /* Ref list tab location */
