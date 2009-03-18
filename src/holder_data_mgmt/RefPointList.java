@@ -28,7 +28,7 @@ public class RefPointList {
 
         curr_entry = start_entry;
 
-        for (i = 0; i <= index; i++){
+        for (i = 0; i < index; i++){
             curr_entry = curr_entry.getNextListEntry();
         }
 
