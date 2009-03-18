@@ -12,7 +12,12 @@ package holder_data_mgmt;
 public class RefPoint {
     /* constructor methods */
     public void RefPoint()
-    {    
+    {
+        setComment( default_comment );
+        setDateString( default_date_str );
+        setXCoord( 0 );
+        setYCoord( 0 );
+        setZCoord( 0 );
     }
     
     public void RefPoint(
@@ -124,8 +129,16 @@ public class RefPoint {
     /* private methods and variables */
     private String ibd_ref_com; /* comment */
     private final int comment_length = 80;
+
+    private final String default_comment = "Holder reference point" +
+            "                                                          "; /* total 80 chars */
+
+
     private String ibd_ref_dat; /* date */
     private final int date_str_length = 20;
+
+    private final String default_date_str = "1950/01/01 13:14:15 "; /* total 20 chars */
+
     private double x; /* x coordinate */
     private double y; /* y coordinate */
     private double z; /* z coordinate */
