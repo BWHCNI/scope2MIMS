@@ -47,7 +47,7 @@ public class RefPoint {
         if (ibd_ref_com.length() < comment_length )
         {
             ibd_ref_com = ibd_ref_com.concat(new String(new byte[comment_length - ibd_ref_com.length()]));
-        }   else if (ibd_ref_com.length() < comment_length )
+        }   else if (ibd_ref_com.length() > comment_length )
         {
             ibd_ref_com = ibd_ref_com.substring(0, comment_length - 1);
         }
