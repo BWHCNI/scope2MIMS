@@ -6,6 +6,62 @@ package holder_data_mgmt;
  * The list of reference points. This class mimics the original representation fo the holder coordinates data file.
  */
 public class RefPointList {
+        /* private */
+    private RefPointListEntry start_entry;
+    private int num_of_ref_points = 0; /* total ref points in list */
+
+    private final int SEQ_MAX_ENR = 2000; /* maximum number of points */
+
+    private class RefPointListEntry{
+        /* constructors */
+        public RefPointListEntry(RefPoint rf){
+            curr_rf = rf;
+            prev_entry = null;
+            next_entry = null;
+        }
+
+        public RefPointListEntry(RefPoint rf,
+            RefPointListEntry prev,
+            RefPointListEntry next)
+        {
+            curr_rf = rf;
+            prev_entry = prev;
+            next_entry = next;
+        }
+
+        /* public */
+        public RefPoint getRefPoint()
+        {
+            return( curr_rf );
+        }
+
+        public RefPointListEntry getPrevListEntry()
+        {
+            return( prev_entry );
+        }
+
+        public void setPrevListEntry(RefPointListEntry entry)
+        {
+            prev_entry = entry;
+        }
+
+        public RefPointListEntry getNextListEntry()
+        {
+            return( next_entry );
+        }
+
+        public void setNextListEntry(RefPointListEntry entry)
+        {
+            next_entry = entry;
+        }
+
+        /* private */
+        private RefPoint curr_rf;
+        private RefPointListEntry prev_entry;
+        private RefPointListEntry next_entry;
+
+    }
+
     /* constructors */
     public RefPointList(RefPoint first_entry)
     {
@@ -65,60 +121,6 @@ public class RefPointList {
         num_of_ref_points++;
     }
     
-    /* private */
-    private RefPointListEntry start_entry;
-    private int num_of_ref_points = 0; /* total ref points in list */
 
-    private final int SEQ_MAX_ENR = 2000; /* maximum number of points */
-    
-    private class RefPointListEntry{
-        /* constructors */
-        public RefPointListEntry(RefPoint rf){
-            curr_rf = rf;
-            prev_entry = null;
-            next_entry = null;
-        }
-    
-        public RefPointListEntry(RefPoint rf,
-            RefPointListEntry prev,
-            RefPointListEntry next)
-        {
-            curr_rf = rf;
-            prev_entry = prev;
-            next_entry = next;
-        }
-    
-        /* public */
-        public RefPoint getRefPoint()
-        {
-            return( curr_rf );
-        }
-    
-        public RefPointListEntry getPrevListEntry()
-        {
-            return( prev_entry );
-        }
-
-        public void setPrevListEntry(RefPointListEntry entry)
-        {
-            prev_entry = entry;
-        }
-
-        public RefPointListEntry getNextListEntry()
-        {
-            return( next_entry );
-        }
-
-        public void setNextListEntry(RefPointListEntry entry)
-        {
-            next_entry = entry;
-        }
-
-        /* private */
-        private RefPoint curr_rf;
-        private RefPointListEntry prev_entry;
-        private RefPointListEntry next_entry;
-
-    }
 }
 

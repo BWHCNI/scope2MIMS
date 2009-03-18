@@ -11,6 +11,10 @@ package holder_data_mgmt;
  * The class serves as a container for the holder data (emulates the full file).
  */
 public class HolderData {
+    /* private */
+    private int num_ref_points;
+    private RefPointList point_list;
+
     /* constructor classes */
     public HolderData()
     {
@@ -35,7 +39,5 @@ public class HolderData {
         return( num_ref_points );
     }
     
-    /* private */
-    private int num_ref_points;
-    private RefPointList point_list;
+
 }
