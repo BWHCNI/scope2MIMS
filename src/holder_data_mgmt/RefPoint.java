@@ -30,7 +30,7 @@ public class RefPoint {
     private int ibd_ref_lien[]; /* ref point link */
 
     /* constructor methods */
-    public void RefPoint()
+    public RefPoint()
     {
         setComment( default_comment );
         setDateString( default_date_str );
@@ -39,7 +39,7 @@ public class RefPoint {
         setZCoord( 0 );
     }
     
-    public void RefPoint(
+    public RefPoint(
             String comment,
             String date_str,
             double xcoord,
