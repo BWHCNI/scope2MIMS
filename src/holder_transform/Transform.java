@@ -18,12 +18,28 @@ import holder_data_mgmt.*;
  * @author cpoczatek
  */
 public class Transform {
-    
+
+    /* private variables */
     private double[][] XCoefficients;
     private double[][] YCoefficients;
     private ArrayList<double[]> StagePoints;
     private ArrayList<double[]> TransformedPoints;
-    
+    /* private methods */
+    private RefPoint coordsToRefPoint(double[] coords)
+    {
+        RefPoint ret_value= new RefPoint();
+
+        if (coords.length == 3)
+        {
+            ret_value.setXCoord(coords[0]);
+            ret_value.setYCoord(coords[1]);
+            ret_value.setZCoord(coords[2]);
+        }
+
+        return( ret_value );
+    }
+
+    /* constructors */
     public Transform() {
         //initialize coefficient matrix to 0
         XCoefficients = new double[4][4];
@@ -296,18 +312,5 @@ rotate_nikon_to_mims(int spts,
         
     }
 
-    /* private methods */
-    private RefPoint coordsToRefPoint(double[] coords)
-    {
-        RefPoint ret_value= new RefPoint();
 
-        if (coords.length == 3)
-        {
-            ret_value.setXCoord(coords[0]);
-            ret_value.setYCoord(coords[1]);
-            ret_value.setZCoord(coords[2]);
-        }
-
-        return( ret_value );
-    }
 }
