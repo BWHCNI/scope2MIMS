@@ -112,10 +112,10 @@ public class DataUtilities {
     {
         byte ret_arr[] = new byte[4];
 
-        ret_arr[0] = (byte)(intvalue | 0x00000ff);
-        ret_arr[1] = (byte)((intvalue | 0x0000ff00) >> 8);
-        ret_arr[2] = (byte)((intvalue | 0x00ff0000) >> 16);
-        ret_arr[3] = (byte)((intvalue | 0xff000000) >> 24);
+        ret_arr[0] = (byte)(intvalue & 0x00000ff);
+        ret_arr[1] = (byte)((intvalue & 0x0000ff00) >> 8);
+        ret_arr[2] = (byte)((intvalue & 0x00ff0000) >> 16);
+        ret_arr[3] = (byte)((intvalue & 0xff000000) >> 24);
         
         return( ret_arr );
     }
@@ -124,14 +124,14 @@ public class DataUtilities {
     {
         byte ret_arr[] = new byte[8];
 
-        ret_arr[0] = (byte)(longvalue | 0x00000000000000ffL);
-        ret_arr[1] = (byte)((longvalue | 0x000000000000ff00L) >> 8);
-        ret_arr[2] = (byte)((longvalue | 0x0000000000ff0000L) >> 16);
-        ret_arr[3] = (byte)((longvalue | 0x00000000ff000000L) >> 24);
-        ret_arr[4] = (byte)((longvalue | 0x000000ff00000000L) >> 32);
-        ret_arr[5] = (byte)((longvalue | 0x0000ff0000000000L) >> 40);
-        ret_arr[6] = (byte)((longvalue | 0x00ff000000000000L) >> 48);
-        ret_arr[7] = (byte)((longvalue | 0xff00000000000000L) >> 56);
+        ret_arr[0] = (byte)(longvalue & 0x00000000000000ffL);
+        ret_arr[1] = (byte)((longvalue & 0x000000000000ff00L) >> 8);
+        ret_arr[2] = (byte)((longvalue & 0x0000000000ff0000L) >> 16);
+        ret_arr[3] = (byte)((longvalue & 0x00000000ff000000L) >> 24);
+        ret_arr[4] = (byte)((longvalue & 0x000000ff00000000L) >> 32);
+        ret_arr[5] = (byte)((longvalue & 0x0000ff0000000000L) >> 40);
+        ret_arr[6] = (byte)((longvalue & 0x00ff000000000000L) >> 48);
+        ret_arr[7] = (byte)((longvalue & 0xff00000000000000L) >> 56);
 
         return( ret_arr );
     }
