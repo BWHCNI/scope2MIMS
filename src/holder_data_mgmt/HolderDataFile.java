@@ -120,7 +120,7 @@ public class HolderDataFile {
             fo.write(dummy_bytes);
             offset += dummy_bytes.length;
 
-            writeOutInt( fo, rf.getNumberOfLink() );
+            writeOutInt( fo, rf.getNumberOfLinks() );
             offset += 4;
 
             ref_point_links_arr = rf.getRefPointLinks();
