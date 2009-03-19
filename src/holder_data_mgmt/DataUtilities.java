@@ -13,6 +13,38 @@ package holder_data_mgmt;
 
 public class DataUtilities {
 
+    public static byte[] adjustAndNullTerminateByteArray(
+            byte[] in_arr,
+            int length
+            )
+    {
+        int i;
+        int copy_limit;
+        byte[] ret_value = null;
+        final byte null_byte = 0;
+
+        if ( length <= 0 )
+            return( ret_value );
+
+        ret_value = new byte[length];
+        ret_value[ length - 1 ] = null_byte;
+
+        if (in_arr.length >= length - 1)
+        {
+            copy_limit = length - 1;
+        } else {
+            copy_limit = in_arr.length;
+
+            for (i = copy_limit; i < length - 1; i++)
+                ret_value[i] = null_byte;
+        }
+
+        for (i = 0; i < copy_limit; i++)
+            ret_value[i] = in_arr[i];
+
+        return( ret_value );
+    }
+
     public static void reverseByteOrder(byte[] bytes_in_out)
     {
         byte temp_b;
