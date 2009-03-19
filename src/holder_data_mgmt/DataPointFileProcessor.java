@@ -88,6 +88,7 @@ public class DataPointFileProcessor {
                 );
 
         dpfp.processTransform();
+        dpfp.point_trans.printTransformedPoints();
 
         HolderDataFile hdf = new HolderDataFile(
                 dpfp.getHolderPointFilePath(),

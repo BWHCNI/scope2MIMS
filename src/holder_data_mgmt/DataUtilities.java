@@ -170,7 +170,7 @@ public class DataUtilities {
 
     public static byte[] doubleToByteArr(double dvalue)
     {
-        return( longToByteArr( Double.doubleToLongBits(dvalue) ) );
+        return( longToByteArr( Double.doubleToRawLongBits(dvalue) ) );
     }
 
 }

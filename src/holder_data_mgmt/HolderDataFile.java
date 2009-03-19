@@ -24,6 +24,8 @@ public class HolderDataFile {
     private final int double_size = 8;
     private final int ibd_max_ref = 200; /* maximum number of ref points in a list */
     private final int point_arr_num = 0; /* numero de pe */
+    private final int idb_taille_com = 80; /* comment length */
+    private final int ibd_taille_dat = 20; /* date string length */
 
     /* struct entete_enr_structure copied */
     private final int nb_max_enr = 1;
@@ -99,15 +101,32 @@ public class HolderDataFile {
     {
         int offset = 0;
         int i;
-        byte[] dummy_bytes = new byte[2];
+        final byte[] dummy_bytes = new byte[4];
+        byte[] temp_bytes;
         int[] ref_point_links_arr;
 
         try{
-            fo.write(rf.getComment().getBytes());
-            offset += rf.getComment().getBytes().length;
+            /* Write a dummy integer at the start; seems necessary */
+            i = 0;
+            writeOutInt( fo, i);
+            offset += 4;
 
-            fo.write(rf.getDateString().getBytes());
-            offset += rf.getDateString().getBytes().length;
+            temp_bytes = DataUtilities.adjustAndNullTerminateByteArray(
+                    rf.getComment().getBytes(),
+                    idb_taille_com
+                    );
+
+            fo.write( temp_bytes );
+            offset += temp_bytes.length;
+
+
+            temp_bytes = DataUtilities.adjustAndNullTerminateByteArray(
+                    rf.getDateString().getBytes(),
+                    ibd_taille_dat
+                    );
+
+            fo.write( temp_bytes );
+            offset += temp_bytes.length;
 
             writeOutDouble( fo, rf.getXCoord());
             offset += 8;
@@ -154,9 +173,27 @@ public class HolderDataFile {
            throws IOException
     {
         byte[] temp_bytes;
+        byte[] temp_bytes1 = new byte[4];
+        byte[] temp_bytes2 = new byte[4];
+        int i;
+
+        /* Obtaining 8-byte array for double */
         temp_bytes = DataUtilities.doubleToByteArr(d);
-        DataUtilities.reverseByteOrder(temp_bytes);
-        fo.write(temp_bytes);
+
+        /* Breaking the double into 2 4-32-bit words */
+        for (i = 0; i < 4; i++)
+            temp_bytes1[i] = temp_bytes[i];
+
+        for (i = 4; i < 8; i++)
+            temp_bytes2[i - 4] = temp_bytes[i];
+
+        /* Reversing bytes in each 4-byte word for the endian conversion */
+        DataUtilities.reverseByteOrder(temp_bytes1);
+        DataUtilities.reverseByteOrder(temp_bytes2);
+
+        /* Writing the two 4-byte words out */
+        fo.write(temp_bytes1);
+        fo.write(temp_bytes2);
     }
 
     private void writeOutIntArr(
