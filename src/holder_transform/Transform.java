@@ -178,7 +178,7 @@ public class Transform {
         
         temppoint[0] = XCoefficients[0][0] + (XCoefficients[0][1] * stagept[0]) + (XCoefficients[1][0] * stagept[1]);
         temppoint[1] = YCoefficients[0][0] + (YCoefficients[0][1] * stagept[0]) + (YCoefficients[1][0] * stagept[1]);
-        temppoint[1] = 0;
+        temppoint[2] = 0;
         
         return temppoint;
     }
