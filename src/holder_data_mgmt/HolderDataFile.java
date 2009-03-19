@@ -22,6 +22,7 @@ public class HolderDataFile {
     private final int ibd_ref_size = 990;
     private final int int_size = 4;
     private final int double_size = 8;
+    private final int ibd_max_ref = 200; /* maximum number of ref points in a list */
     private final int point_arr_num = 0; /* numero de pe */
 
     /* struct entete_enr_structure copied */
@@ -317,6 +318,13 @@ public class HolderDataFile {
             
             for (i = 0; i < r_p_l.getNumRefPoints(); i++)
                 offset += writeOutRefPoint(fos, r_p_l.getRefPoint(i));
+
+            /* filling the points arr with blank points up to ibd_max_ref */
+            for (i = r_p_l.getNumRefPoints(); i < ibd_max_ref; i++)
+            {
+                rf = new RefPoint();
+                offset += writeOutRefPoint(fos, rf);
+            }
 
         /**/
         } catch (IOException ioe){
