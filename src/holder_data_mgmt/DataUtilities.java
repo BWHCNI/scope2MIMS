@@ -64,6 +64,55 @@ public class DataUtilities {
         }
     }
 
+    public static int byteToInt(byte b)
+    {
+        int ret_value = 0;
+
+        byte bit1_mask = (byte)0x01;
+        byte bit2_mask = (byte)0x02;
+        byte bit3_mask = (byte)0x04;
+        byte bit4_mask = (byte)0x08;
+        byte bit5_mask = (byte)0x10;
+        byte bit6_mask = (byte)0x20;
+        byte bit7_mask = (byte)0x40;
+        byte bit8_mask = (byte)0x80;
+
+        int bit1_mask_int = 0x00000001;
+        int bit2_mask_int = 0x00000002;
+        int bit3_mask_int = 0x00000004;
+        int bit4_mask_int = 0x00000008;
+        int bit5_mask_int = 0x00000010;
+        int bit6_mask_int = 0x00000020;
+        int bit7_mask_int = 0x00000040;
+        int bit8_mask_int = 0x00000080;
+
+        if ( (b & bit1_mask)  != 0 )
+            ret_value = ret_value | bit1_mask_int;
+
+        if ( (b & bit2_mask)  != 0 )
+            ret_value = ret_value | bit2_mask_int;
+
+        if ( (b & bit3_mask) != 0 )
+            ret_value = ret_value | bit3_mask_int;
+
+        if ( (b & bit4_mask)  != 0 )
+            ret_value = ret_value | bit4_mask_int;
+
+        if ( (b & bit5_mask)  != 0 )
+            ret_value = ret_value | bit5_mask_int;
+
+        if ( (b & bit6_mask)  != 0 )
+            ret_value = ret_value | bit6_mask_int;
+
+        if ( (b & bit7_mask)  != 0 )
+            ret_value = ret_value | bit7_mask_int;
+
+        if ( (b & bit8_mask)  != 0 )
+            ret_value = ret_value | bit8_mask_int;
+
+        return( ret_value );
+    }
+
     public static long byteToLong(byte b)
     {
         long ret_value = 0;
@@ -113,9 +162,9 @@ public class DataUtilities {
         return( ret_value );
     }
 
-    public static long byte8ToLong(byte [] bytes_in){
+    public static long byte8ToLong(byte[] bytes_in){
         long ret_value = 0;
-        int i, j, k;
+        int i, j;
         long curr_byte;
 
         if (bytes_in.length != 8)
@@ -129,6 +178,27 @@ public class DataUtilities {
                 curr_byte = curr_byte << 8;
 
             ret_value = ret_value | curr_byte;
+        }
+
+        return( ret_value );
+    }
+
+    public static int byte4ToInt(byte[] bytes_in)
+    {
+        int ret_value = 0;
+        int curr_byte_int, i, j;
+
+        if (bytes_in.length != 4)
+            return( ret_value);
+
+        for (i = 0; i < 4; i++)
+        {
+            curr_byte_int = byteToInt( bytes_in[i] );
+
+            for (j = 0; j < i; j++)
+                curr_byte_int = curr_byte_int << 8;
+
+            ret_value = ret_value | curr_byte_int;
         }
 
         return( ret_value );

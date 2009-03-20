@@ -59,6 +59,26 @@ public class HolderDataFile {
         out_file_path = null;
     }
 
+    private int readInFileHeader(FileInputStream fi)
+    {
+        int curr_offset = 0;
+        int temp_int;
+        
+        /* stub code 
+         * no reading done, just moving through to the first points array
+         */
+        byte[] temp_bytes = new byte[referenceListOffset(point_arr_num)];
+
+        try {
+            curr_offset += fi.read( temp_bytes);
+            
+        } catch (IOException ioe) {
+
+        } finally {
+            return( curr_offset );
+        }
+    }
+
     private int writeOutFileHeader
         (FileOutputStream fo
         ){
@@ -158,6 +178,15 @@ public class HolderDataFile {
         }
     }
 
+    private int readInInt(FileInputStream fi)
+            throws IOException
+    {
+        byte[] temp_bytes = new byte[4];
+        fi.read( temp_bytes );
+        DataUtilities.reverseByteOrder( temp_bytes );
+        return( DataUtilities.byte4ToInt( temp_bytes ) );
+    }
+
     private void writeOutInt(FileOutputStream fo,
             int i) throws IOException
     {
@@ -165,6 +194,29 @@ public class HolderDataFile {
         temp_bytes = DataUtilities.intToByteArr(i);
         DataUtilities.reverseByteOrder(temp_bytes);
         fo.write(temp_bytes);
+    }
+
+    private double readInDouble(FileInputStream fi)
+            throws IOException
+    {
+        byte[] byte_arr1 = new byte[4];
+        byte[] byte_arr2 = new byte[4];
+        byte[] byte_total = new byte[8];
+        int i;
+
+        fi.read( byte_arr1 );
+        fi.read( byte_arr2 );
+
+        DataUtilities.reverseByteOrder( byte_arr1 );
+        DataUtilities.reverseByteOrder( byte_arr2 );
+
+        for (i = 0; i < 4; i++)
+            byte_total[i] = byte_arr1[i];
+
+        for (i = 4; i < 8; i++)
+            byte_total[i] = byte_arr2[i - 4];
+
+        return( DataUtilities.byte8ToDouble( byte_total ) );
     }
 
     private void writeOutDouble(
