@@ -415,6 +415,10 @@ public class HolderDataFile {
                 offset += writeOutRefPoint(fos, rf);
             }
 
+            /* Writing out an 4-byte blank word at the end.*/
+            i = 0;
+            writeOutInt( fos, i );
+
         /**/
         } catch (IOException ioe){
             ioe.printStackTrace();

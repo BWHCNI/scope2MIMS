@@ -88,6 +88,8 @@ public class DataPointFileProcessor {
                 );
 
         dpfp.processTransform();
+
+        /* Printing the point content (X,Y,Z) out for reference. */
         dpfp.point_trans.printTransformedPoints();
 
         HolderDataFile hdf = new HolderDataFile(

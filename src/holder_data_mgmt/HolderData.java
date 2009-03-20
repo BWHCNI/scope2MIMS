@@ -27,6 +27,11 @@ public class HolderData {
         setNumRefPoints( nrp );
         point_list = null;
     }
+
+    public HolderData(RefPointList rpl)
+    {
+        setRefPointList( rpl );
+    }
     
     /* public */
     public void setNumRefPoints(int nrp)
@@ -39,5 +44,13 @@ public class HolderData {
         return( num_ref_points );
     }
     
+    public void setRefPointList(RefPointList rpl)
+    {
+        point_list = rpl;
+    }
 
+    public RefPointList getRefPointList()
+    {
+        return( point_list );
+    }
 }
