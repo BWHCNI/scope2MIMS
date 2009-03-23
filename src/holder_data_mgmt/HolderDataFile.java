@@ -115,6 +115,65 @@ public class HolderDataFile {
         }
     }
 
+    private RefPoint readInRefPoint(FileInputStream fi)
+            throws IOException
+    {
+        RefPoint ret_value = new RefPoint();
+        byte[] temp_bytes;
+        int[] temp_links;
+        int i;
+
+        /* Skipping the first 4 bytes */
+        temp_bytes = new byte[4];
+        fi.read( temp_bytes );
+
+        /* Reading in the comment */
+        temp_bytes = new byte[ idb_taille_com ];
+        fi.read( temp_bytes );
+
+        temp_bytes = DataUtilities.adjustAndNullTerminateByteArray(
+            temp_bytes,
+            idb_taille_com
+            );
+
+        ret_value.setComment( new String( temp_bytes ) );
+
+        /* Reading in the date string */
+        temp_bytes = new byte[ ibd_taille_dat ];
+        fi.read( temp_bytes );
+
+        temp_bytes = DataUtilities.adjustAndNullTerminateByteArray(
+            temp_bytes,
+            idb_taille_com
+            );
+
+        ret_value.setDateString( new String(temp_bytes) );
+
+        /* Reading in the coordinates */
+        ret_value.setXCoord( readInDouble(fi) );
+        ret_value.setYCoord( readInDouble(fi) );
+        ret_value.setZCoord( readInDouble(fi) );
+
+        /* Skipping the 4 bytes */
+        temp_bytes = new byte[4];
+        fi.read( temp_bytes );
+
+        /* Reading in and setting the number of links */
+        ret_value.setNumberOfLinks( readInInt(fi) );
+
+        /* Reading in the links arr*/
+        temp_links = ret_value.getRefPointLinks();
+
+        for (i = 0; i < temp_links.length; i++)
+        {
+            temp_links[i] = readInInt( fi );
+        }
+
+        ret_value.setRefPointLinks( temp_links );
+        
+        return( ret_value );
+    }
+
     private int writeOutRefPoint(
             FileOutputStream fo,
             RefPoint rf)
@@ -361,8 +420,26 @@ public class HolderDataFile {
 
     public void readFileIn(RefPointList r_p_l,
             FileInputStream fis
-            ){
+            )
+    {
+        int num_points, i;
 
+        /* Clearning the list */
+        r_p_l.removeAllRefPoints();
+
+        try {
+            /* Reading in the file header */
+            readInFileHeader( fis);
+
+            /* Reading in the number of ref points */
+            num_points = readInInt( fis );
+
+            for (i = 0; i < num_points; i++)
+                r_p_l.addRefPoint( readInRefPoint( fis ) );
+            
+        } catch ( IOException ioe ){
+
+        }
     }
 
     /**

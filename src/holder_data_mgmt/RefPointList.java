@@ -82,6 +82,10 @@ public class RefPointList {
         int i;
         RefPointListEntry curr_entry;
 
+        /* Returning null if index out of range */
+        if ( (index < 0 ) && (index >= num_of_ref_points) )
+            return( null );
+
         curr_entry = start_entry;
 
         for (i = 0; i < index; i++){
@@ -120,7 +124,64 @@ public class RefPointList {
 
         num_of_ref_points++;
     }
+
+    public void removeRefPoint(int index)
+    {
+        RefPointListEntry point_entry, prev_point, next_point;
+        int i;
+
+        /* Checking to see the point is in range */
+        if ( (index < 0 ) && (index >= num_of_ref_points) )
+            return;
+
+        /* Handling the single entry removal*/
+        if ( num_of_ref_points == 1 )
+        {
+            start_entry = null;
+            num_of_ref_points = 0;
+            return;
+        }
+
+        /* Handling removal of the first entry */
+        if (index == 0)
+        {
+            start_entry = start_entry.getNextListEntry();
+            start_entry.setPrevListEntry( null );
+            num_of_ref_points--;
+            return;
+        }
+
+        /* Handling removal of the last entry */
+        if ( index == num_of_ref_points - 1 )
+        {
+            point_entry = start_entry;
+
+            for (i = 0; i < num_of_ref_points - 1; i++)
+                point_entry = point_entry.getNextListEntry();
+
+            point_entry.setNextListEntry(null);
+            num_of_ref_points--;
+            return;
+        }
+
+        /* Handling removal of one of the points in the middle */
+        point_entry = start_entry;
+
+        for (i = 0; i < index; i++)
+            point_entry = point_entry.getNextListEntry();
+
+        prev_point = point_entry.getPrevListEntry();
+        next_point = point_entry.getNextListEntry();
+        prev_point.setNextListEntry( next_point );
+        next_point.setPrevListEntry( prev_point );
+        num_of_ref_points--;
+    }
     
+    public void removeAllRefPoints()
+    {
+        num_of_ref_points = 0;
+        start_entry = null;
+    }
 
 }
 
