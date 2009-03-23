@@ -454,7 +454,6 @@ public class HolderDataFile {
         (RefPointList r_p_l,
         FileOutputStream fos
         ){
-        RefPoint rf;
         int offset;
         int point_ref_offset;
         int i;
@@ -487,10 +486,7 @@ public class HolderDataFile {
 
             /* filling the points arr with blank points up to ibd_max_ref */
             for (i = r_p_l.getNumRefPoints(); i < ibd_max_ref; i++)
-            {
-                rf = new RefPoint();
-                offset += writeOutRefPoint(fos, rf);
-            }
+                offset += writeOutRefPoint(fos, new RefPoint());
 
             /* Writing out an 4-byte blank word at the end.*/
             i = 0;
