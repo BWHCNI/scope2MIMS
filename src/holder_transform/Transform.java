@@ -63,25 +63,32 @@ public class Transform {
         }
     }
     
-    public void setCoefficientsFromList(double[] list) {
+    public void setCoefficientsFromList(double[] list)
+    {
         if( list.length != (16*2) )
             return;
+
         int pos = 0;
         
         //note flipped indices/for loops
         //might be due to Cameca's flipped coordinate system
-        for (int j=0; j<4 ; j++) {
-		for (int i=0; i<4; i++) {
-			XCoefficients[i][j] = list[pos];
-                        pos = pos +1;
-		}
-	}
-	for (int j=0; j<4; j++) {
-		for (int i=0; i<4; i++) {
-			YCoefficients[i][j] = list[pos];
-                        pos = pos +1;
-		}
-	}
+        for (int j=0; j<4 ; j++)
+        {
+            for (int i=0; i<4; i++)
+            {
+                XCoefficients[i][j] = list[pos];
+                pos = pos +1;
+            }
+        }
+
+        for (int j=0; j<4; j++)
+        {
+            for (int i=0; i<4; i++)
+            {
+                YCoefficients[i][j] = list[pos];
+                pos = pos +1;
+            }
+        }
     }
     
     public double[][] getXCoefficients() {
