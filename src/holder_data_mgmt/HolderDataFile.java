@@ -357,6 +357,7 @@ public class HolderDataFile {
     public HolderDataFile() throws IOException{
         setStreamsToNull();
         setFilePathsToNull();
+        setRefPointList( new RefPointList() );
     }
 
     public HolderDataFile(
@@ -377,6 +378,8 @@ public class HolderDataFile {
         } catch (Exception e){
             
         }
+
+        setRefPointList( new RefPointList() );
     }
 
     public HolderDataFile(
