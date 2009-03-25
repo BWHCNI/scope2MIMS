@@ -468,7 +468,7 @@ public class HolderDataFile {
         rpl = r_p_l;
     }
 
-    public RefPointList getPointList(){
+    public RefPointList getRefPointList(){
         return( rpl );
     }
 
@@ -477,6 +477,10 @@ public class HolderDataFile {
             )
     {
         int num_points, i;
+
+        /* Exiting if r_p_l is null */
+        if ( r_p_l == null )
+            return;
 
         /* Clearning the list */
         r_p_l.removeAllRefPoints();
@@ -496,12 +500,17 @@ public class HolderDataFile {
         }
     }
 
+    public void readFileIn()
+    {
+        readFileIn( getRefPointList(), file_in );
+    }
+
     /**
      * Writes out ther file based upon the ref point list rfl
      */
     public void writeFileOut()
     {
-        writeFileOut( getPointList(), file_out);
+        writeFileOut( getRefPointList(), file_out);
     }
 
     public void writeFileOut
@@ -560,6 +569,5 @@ public class HolderDataFile {
             ioe.printStackTrace();
         }
     }
-
 
 }
