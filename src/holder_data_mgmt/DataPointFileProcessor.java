@@ -108,7 +108,7 @@ public class DataPointFileProcessor {
         for (i = 0; i < list_size; i++)
         {
             System.out.println("");
-            System.out.println("Point #" + i);
+            System.out.println("Point #" + ( i+1));
             printRefPoint( r_p_l.getRefPoint(i) );
             System.out.println("");
         }

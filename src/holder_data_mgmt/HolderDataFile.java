@@ -61,7 +61,7 @@ public class HolderDataFile {
     private final int ibd_max_ref = 200; /* maximum number of ref points in a list */
     private final int point_arr_num = 0; /* numero de pe */
     private final int idb_taille_com = 80; /* comment length */
-    private final int ibd_taille_dat = 20; /* date string length */
+    private final int idb_taille_dat = 20; /* date string length */
 
     /* struct entete_enr_structure copied */
     private final int nb_max_enr = 1;
@@ -193,12 +193,12 @@ public class HolderDataFile {
         ret_value.setComment( new String( temp_bytes ) );
 
         /* Reading in the date string */
-        temp_bytes = new byte[ ibd_taille_dat ];
+        temp_bytes = new byte[ idb_taille_dat ];
         fi.read( temp_bytes );
 
         temp_bytes = DataUtilities.adjustAndNullTerminateByteArray(
             temp_bytes,
-            idb_taille_com
+            idb_taille_dat
             );
 
         ret_value.setDateString( new String(temp_bytes) );
@@ -255,7 +255,7 @@ public class HolderDataFile {
 
             temp_bytes = DataUtilities.adjustAndNullTerminateByteArray(
                     rf.getDateString().getBytes(),
-                    ibd_taille_dat
+                    idb_taille_dat
                     );
 
             fo.write( temp_bytes );
