@@ -139,8 +139,7 @@ public class HolderDataFile {
            writeOutIntArr( fo, tab_enr);
            curr_offset += 4 * tab_enr.length;
 
-           writeOutIntArr( fo, tab_trou );
-           curr_offset += 4 * tab_trou.length;
+           curr_offset += writeOutIntArr( fo, tab_trou );
            return(curr_offset);
         } catch (IOException ioe){
             ioe.printStackTrace();
@@ -197,7 +196,7 @@ public class HolderDataFile {
 
         /* Reading in the links arr*/
         temp_links = ret_value.getRefPointLinks();
-
+        
         for (i = 0; i < temp_links.length; i++)
         {
             temp_links[i] = readInInt( fi );
@@ -256,14 +255,7 @@ public class HolderDataFile {
             writeOutInt( fo, rf.getNumberOfLinks() );
             offset += 4;
 
-            ref_point_links_arr = rf.getRefPointLinks();
-
-            for (i = 0; i < ref_point_links_arr.length; i++)
-            {
-                writeOutInt(fo, ref_point_links_arr[i]);
-                offset += 4;
-            }
-
+            offset += writeOutIntArr(  fo, rf.getRefPointLinks() );
         } catch (IOException ioe) {
 
         } finally {
@@ -341,14 +333,20 @@ public class HolderDataFile {
         fo.write(temp_bytes2);
     }
 
-    private void writeOutIntArr(
+    private int writeOutIntArr(
             FileOutputStream fo,
             int[] i_arr) throws IOException
     {
         int i;
+        int offset = 0;
 
         for (i = 0; i < i_arr.length; i++)
+        {
             writeOutInt(fo, i_arr[i]);
+            offset += 4;
+        }
+
+        return( offset );
     }
 
     private int referenceListOffset(int num_point){
