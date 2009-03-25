@@ -12,7 +12,28 @@ import holder_transform.*;
  * @author bepstein
  */
 public class DataPointFileProcessor {
+    /* private variables and methods */
+    private String coeff_file_path;
+    private String stage_point_file_path;
+    private String holder_point_file_path;
+    private Transform point_trans;
+    private RefPointList rpl;
+
+    private void printRefPoint(RefPoint rp)
+    {
+        System.out.println("X: " + rp.getXCoord());
+        System.out.println("Y: " + rp.getYCoord());
+        System.out.println("Z: " + rp.getZCoord());
+        System.out.println("Comment: " + rp.getComment());
+        System.out.println("Date: " + rp.getDateString());
+    }
+
     /* constructors */
+    public DataPointFileProcessor()
+    {
+
+    }
+    
     public DataPointFileProcessor(
             String coeff_file,
             String stage_point_file,
@@ -25,6 +46,7 @@ public class DataPointFileProcessor {
         rpl = null;
     }
 
+    /* public methods */
     public void setCoeffFilePath(String path)
     {
         coeff_file_path = path;
@@ -68,45 +90,112 @@ public class DataPointFileProcessor {
         return( rpl );
     }
 
-    /* test method */
-    public static void main(String[ ] args)
+    public void setRefPointList(RefPointList r_p_l)
     {
-        if (args.length != 3)
-        {
-            System.out.println("Error: sysntax: DataPointFileProcessor <coeff_file> <points_file> <output_file>");
+        rpl = r_p_l;
+    }
+
+    public void printRefPointList(RefPointList r_p_l)
+    {
+        int i, list_size;
+
+        if (r_p_l == null)
             return;
+
+        list_size = r_p_l.getNumRefPoints();
+        System.out.println("Total points: " + list_size );
+
+        for (i = 0; i < list_size; i++)
+        {
+            System.out.println("");
+            System.out.println("Point #" + i);
+            printRefPoint( r_p_l.getRefPoint(i) );
+            System.out.println("");
         }
-
-        String coeff_file_path = args[0];
-        String points_file_path = args[1];
-        String ref_output_file = args[2];
-
-        DataPointFileProcessor dpfp = new DataPointFileProcessor(
-                coeff_file_path,
-                points_file_path,
-                ref_output_file
-                );
-
-        dpfp.processTransform();
-
-        /* Printing the point content (X,Y,Z) out for reference. */
-        dpfp.point_trans.printTransformedPoints();
-
-        HolderDataFile hdf = new HolderDataFile(
-                dpfp.getHolderPointFilePath(),
-                true,
-                dpfp.getRefPointList()
-                );
-
-        hdf.writeFileOut();
-        hdf.close();
 
     }
 
-    /* private variables and methods */
-    private String coeff_file_path;
-    private String stage_point_file_path;
-    private String holder_point_file_path;
-    private Transform point_trans;
-    private RefPointList rpl;
+    public void printRefPointList()
+    {
+        printRefPointList( getRefPointList() );
+    }
+
+    /* test method */
+    public static void main(String[ ] args)
+    {
+        final String write_action = "write";
+        final String read_action = "read";
+
+        String action = null;
+        String coeff_file_path = null;
+        String points_file_path = null;
+        String ref_output_file = null;
+        String ref_input_file = null;
+        HolderDataFile hdf = null;
+        DataPointFileProcessor dpfp = null;
+
+        int i;
+
+        
+        if ( (args.length == 2) && args[0].equals(read_action) )
+        {
+            ref_input_file = args[1];
+        } else if ((args.length == 4) && args[0].equals(write_action) )
+        {
+            coeff_file_path = args[1];
+            points_file_path = args[2];
+            ref_output_file = args[3];
+        } else {
+            System.out.println("Error: sysntax: DataPointFileProcessor write <coeff_file> <points_file> <output_file>");
+            System.out.println("OR: DataPointFileProcessor read <ref_input_file>");
+            return;
+        }
+
+        action = args[0];
+
+        if ( action.equals( write_action ) )
+        {
+            dpfp = new DataPointFileProcessor(
+                    coeff_file_path,
+                    points_file_path,
+                    ref_output_file
+                    );
+
+            dpfp.processTransform();
+
+            /* Printing the point content (X,Y,Z) out for reference. */
+            dpfp.point_trans.printTransformedPoints();
+
+            hdf = new HolderDataFile(
+                    dpfp.getHolderPointFilePath(),
+                    true,
+                    dpfp.getRefPointList()
+                    );
+
+            hdf.writeFileOut();
+            hdf.close();
+            return;
+        }
+
+        if ( action.equals( read_action)  )
+        {
+            dpfp = new DataPointFileProcessor();
+
+            hdf = new HolderDataFile(
+                    ref_input_file,
+                    false
+                    );
+
+            hdf.readFileIn();
+
+            dpfp.setRefPointList( hdf.getRefPointList() );
+            dpfp.printRefPointList();
+
+            hdf.close();
+            return;
+        }
+    }
+    
 }
+
+
