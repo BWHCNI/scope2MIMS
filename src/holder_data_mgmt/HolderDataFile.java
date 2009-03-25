@@ -95,6 +95,27 @@ public class HolderDataFile {
         out_file_path = null;
     }
 
+    /* sets arrays to zero value where appropriate,
+     * initializes the RefPointList container,
+     * closes I/O streams,
+     * etc.
+     */
+    private void initClassData()
+            throws IOException
+    {
+        int i;
+
+        setStreamsToNull();
+        setFilePathsToNull();
+        setRefPointList( new RefPointList() );
+
+        for (i = 0; i < tab_enr.length; i++)
+            tab_enr[ i ] = 0;
+
+        for (i = 0; i < tab_trou.length; i++)
+            tab_trou[ i ] = 0;
+    }
+
     private int readInFileHeader(FileInputStream fi)
     {
         int curr_offset = 0;
@@ -354,10 +375,13 @@ public class HolderDataFile {
     }
 
     /* constructors */
-    public HolderDataFile() throws IOException{
-        setStreamsToNull();
-        setFilePathsToNull();
-        setRefPointList( new RefPointList() );
+    public HolderDataFile()
+    {
+        try {
+            initClassData();
+        } catch (IOException ioe){
+
+        }
     }
 
     public HolderDataFile(
@@ -365,8 +389,7 @@ public class HolderDataFile {
             Boolean open_for_write
         ){
         try{
-            setStreamsToNull();
-            setFilePathsToNull();
+            initClassData();
 
             if (open_for_write){
                 setOutFilePath(fpath);
@@ -378,8 +401,6 @@ public class HolderDataFile {
         } catch (Exception e){
             
         }
-
-        setRefPointList( new RefPointList() );
     }
 
     public HolderDataFile(
@@ -388,8 +409,7 @@ public class HolderDataFile {
             RefPointList r_p_l
         ){
         try{
-            setStreamsToNull();
-            setFilePathsToNull();
+            initClassData();
 
             if (open_for_write){
                 setOutFilePath(fpath);
@@ -411,8 +431,7 @@ public class HolderDataFile {
             RefPointList r_p_l
         ){
         try{
-            setStreamsToNull();
-            setFilePathsToNull();
+            initClassData();
 
             setOutFilePath(out_fpath);
             file_out = new FileOutputStream( getOutFilePath() );
