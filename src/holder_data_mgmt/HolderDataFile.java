@@ -19,6 +19,9 @@ public class HolderDataFile {
     private final int nRecordHeaderSize = 16012;
     private final int nFileHeaderSizeLocation = 4;
     private final int nFileHeaderSize = 240;
+    
+    /* conversion factor from micrometers to milimeters */
+    private final double coord_conv_factor = 0.001;
 
     /* This 240-byte array contains the buffer */
     private final byte[] holder_file_buffer_arr =
@@ -237,6 +240,7 @@ public class HolderDataFile {
         final byte[] dummy_bytes = new byte[4];
         byte[] temp_bytes;
         int[] ref_point_links_arr;
+        double temp_coord;
 
         try{
             /* Write a dummy integer at the start; seems necessary */
@@ -261,13 +265,16 @@ public class HolderDataFile {
             fo.write( temp_bytes );
             offset += temp_bytes.length;
 
-            writeOutDouble( fo, rf.getXCoord());
+            temp_coord = coord_conv_factor * rf.getXCoord();
+            writeOutDouble( fo, temp_coord );
             offset += 8;
 
-            writeOutDouble( fo, rf.getYCoord() );
+            temp_coord = coord_conv_factor * rf.getYCoord();
+            writeOutDouble( fo, temp_coord);
             offset += 8;
 
-            writeOutDouble( fo, rf.getZCoord() );
+            temp_coord = coord_conv_factor * rf.getZCoord();
+            writeOutDouble( fo, temp_coord );
             offset += 8;
 
             fo.write(dummy_bytes);
