@@ -30,16 +30,47 @@ public class RefPoint {
     private int ibd_ref_lien_nb; /* number of link */
     private int ibd_ref_lien[]; /* ref point link */
 
-    /* constructor methods */
-    public RefPoint()
+    /* fields for dummy/extraneous bytes */
+    private byte[] buffer_arr1;
+    private final int byte_arr1_length = 4;
+    private byte[] buffer_arr2;
+    private final int byte_arr2_length = 4;
+
+    /* total length of RefPoint inside the file */
+    private final int ref_point_record_total_length = 936;
+    
+    private void initData()
     {
+        int[] dummy_int_arr = new int[ibd_max_ref];
+
+        int i;
+
+        for (i = 0; i<dummy_int_arr.length; i++)
+            dummy_int_arr[ i ] = 0;
+
+        buffer_arr1 = new byte[byte_arr1_length];
+
+        for (i = 0; i<buffer_arr1.length; i++)
+            buffer_arr1[ i ] = 0;
+
+        buffer_arr2 = new byte[byte_arr2_length];
+
+        for (i = 0; i<buffer_arr2.length; i++)
+            buffer_arr2[ i ] = 0;
+
         setComment( default_comment );
         setDateString( default_date_str );
         setXCoord( 0 );
         setYCoord( 0 );
         setZCoord( 0 );
         setNumberOfLinks( ibd_max_ref );
-        setRefPointLinks( new int[ibd_max_ref] );
+        setRefPointLinks( dummy_int_arr );
+    }
+
+    /* constructor methods */
+    public RefPoint()
+    {
+        initData();
     }
     
     public RefPoint(
@@ -51,6 +82,8 @@ public class RefPoint {
             int num_of_link,
             int ref_point_links[])
     {
+        initData();
+        
         setComment( comment );
         setDateString( date_str );
         setXCoord( xcoord );
@@ -163,5 +196,64 @@ public class RefPoint {
     {
         return( ibd_ref_lien );
     }
-    
+
+    public void setBufferArr1(byte [] bytes_in)
+    {
+        int i, size;
+
+        if ( bytes_in == null )
+            return;
+
+        size = buffer_arr1.length;
+
+        if ( bytes_in.length < size )
+            size = bytes_in.length;
+
+        for (i = 0; i < size; i++)
+            buffer_arr1[ i ] = bytes_in[ i ];
+    }
+
+    public byte[] getBufferArr1()
+    {
+        return( buffer_arr1 );
+    }
+
+    public void setBufferArr2(byte [] bytes_in)
+    {
+        int i, size;
+
+        if ( bytes_in == null )
+            return;
+
+        size = buffer_arr2.length;
+
+        if ( bytes_in.length < size )
+            size = bytes_in.length;
+
+        for (i = 0; i < size; i++)
+            buffer_arr2[ i ] = bytes_in[ i ];
+    }
+
+    public byte[] getBufferArr2()
+    {
+        return( buffer_arr2 );
+    }
+
+    /* Presents the RefPoint as a byte array for the file */
+    public byte[] toByteArray()
+    {
+        byte[] ret_value = new byte[ ref_point_record_total_length ];
+        int i;
+        int offset = 0;
+
+        /* copy buffer_arr1 */
+        for (i = 0; i < buffer_arr1.length; i++)
+            ret_value[offset + i] = buffer_arr1[i];
+
+        offset += buffer_arr1.length;
+
+        /* copy comment */
+
+        return( ret_value );
+    }
 }

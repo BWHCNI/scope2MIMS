@@ -180,9 +180,10 @@ public class HolderDataFile {
         int[] temp_links;
         int i;
 
-        /* Skipping the first 4 bytes */
+        /* Skipping the first 4 bytes. Recording them. */
         temp_bytes = new byte[4];
         fi.read( temp_bytes );
+        ret_value.setBufferArr1( temp_bytes );
 
         /* Reading in the comment */
         temp_bytes = new byte[ idb_taille_com ];
@@ -206,14 +207,18 @@ public class HolderDataFile {
 
         ret_value.setDateString( new String(temp_bytes) );
 
-        /* Reading in the coordinates */
-        ret_value.setXCoord( readInDouble(fi) );
-        ret_value.setYCoord( readInDouble(fi) );
-        ret_value.setZCoord( readInDouble(fi) );
+        /* Reading in the coordinates.
+         * Converting them from milimeters to microns for further storage
+         * and processing.
+         */
+        ret_value.setXCoord( readInDouble(fi) / coord_conv_factor );
+        ret_value.setYCoord( readInDouble(fi) / coord_conv_factor );
+        ret_value.setZCoord( readInDouble(fi) / coord_conv_factor );
 
-        /* Skipping the 4 bytes */
+        /* Skipping the 4 bytes. Recording them. */
         temp_bytes = new byte[4];
         fi.read( temp_bytes );
+        ret_value.setBufferArr2( temp_bytes );
 
         /* Reading in and setting the number of links */
         ret_value.setNumberOfLinks( readInInt(fi) );
@@ -236,17 +241,14 @@ public class HolderDataFile {
             RefPoint rf)
     {
         int offset = 0;
-        int i;
-        final byte[] dummy_bytes = new byte[4];
         byte[] temp_bytes;
         int[] ref_point_links_arr;
         double temp_coord;
 
         try{
-            /* Write a dummy integer at the start; seems necessary */
-            i = 0;
-            writeOutInt( fo, i);
-            offset += 4;
+            /* Write a 4-byte buffer at the start; seems necessary */
+            fo.write( rf.getBufferArr1() );
+            offset += rf.getBufferArr1().length;
 
             temp_bytes = DataUtilities.adjustAndNullTerminateByteArray(
                     rf.getComment().getBytes(),
@@ -277,8 +279,8 @@ public class HolderDataFile {
             writeOutDouble( fo, temp_coord );
             offset += 8;
 
-            fo.write(dummy_bytes);
-            offset += dummy_bytes.length;
+            fo.write( rf.getBufferArr2() );
+            offset += rf.getBufferArr2().length;
 
             writeOutInt( fo, rf.getNumberOfLinks() );
             offset += 4;
