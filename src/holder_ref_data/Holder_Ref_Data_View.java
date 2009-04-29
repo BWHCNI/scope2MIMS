@@ -11,10 +11,8 @@ import org.jdesktop.application.FrameView;
 import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Timer;
-import javax.swing.Icon;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
+import javax.swing.*;
+
 
 /**
  * The application's main frame.
@@ -101,6 +99,9 @@ public class Holder_Ref_Data_View extends FrameView {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
+        coeff_file_label = new javax.swing.JLabel();
+        coeff_file_text = new javax.swing.JTextField();
+        coeff_file_browse_button = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -114,24 +115,47 @@ public class Holder_Ref_Data_View extends FrameView {
 
         mainPanel.setName("mainPanel"); // NOI18N
 
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(holder_ref_data.Holder_Ref_Data_App.class).getContext().getResourceMap(Holder_Ref_Data_View.class);
+        coeff_file_label.setText(resourceMap.getString("coeff_file_label.text")); // NOI18N
+        coeff_file_label.setName("coeff_file_label"); // NOI18N
+
+        coeff_file_text.setText(resourceMap.getString("coeff_file_text.text")); // NOI18N
+        coeff_file_text.setName("coeff_file_text"); // NOI18N
+
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(holder_ref_data.Holder_Ref_Data_App.class).getContext().getActionMap(Holder_Ref_Data_View.class, this);
+        coeff_file_browse_button.setAction(actionMap.get("coeffFileBrowse")); // NOI18N
+        coeff_file_browse_button.setText(resourceMap.getString("coeff_file_browse_button.text")); // NOI18N
+        coeff_file_browse_button.setName("coeff_file_browse_button"); // NOI18N
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(coeff_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(coeff_file_text, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(coeff_file_browse_button)
+                .addContainerGap(132, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 252, Short.MAX_VALUE)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(coeff_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(coeff_file_text, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(coeff_file_browse_button))
+                .addContainerGap(326, Short.MAX_VALUE))
         );
 
         menuBar.setName("menuBar"); // NOI18N
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(holder_ref_data.Holder_Ref_Data_App.class).getContext().getResourceMap(Holder_Ref_Data_View.class);
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
 
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(holder_ref_data.Holder_Ref_Data_App.class).getContext().getActionMap(Holder_Ref_Data_View.class, this);
         exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
         exitMenuItem.setName("exitMenuItem"); // NOI18N
         fileMenu.add(exitMenuItem);
@@ -162,11 +186,11 @@ public class Holder_Ref_Data_View extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 679, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 226, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 495, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -189,7 +213,18 @@ public class Holder_Ref_Data_View extends FrameView {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
+    @Action
+    public void coeffFileBrowse() {
+        JFileChooser fc = new JFileChooser();
+
+        fc.showOpenDialog( getFrame() );
+        coeff_file_text.setText( fc.getSelectedFile().getPath() );
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton coeff_file_browse_button;
+    private javax.swing.JLabel coeff_file_label;
+    private javax.swing.JTextField coeff_file_text;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JProgressBar progressBar;
