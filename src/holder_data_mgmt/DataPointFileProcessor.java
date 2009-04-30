@@ -120,6 +120,35 @@ public class DataPointFileProcessor {
         printRefPointList( getRefPointList() );
     }
 
+    /*
+     * This routine generates the holder ref file based upon the 
+     * coefficients and point corrdintates file.
+     */
+    public void generateRefPointFile()
+    {
+        HolderDataFile hdf;
+
+        if ( getCoeffFilePath() == null )
+            return;
+
+        if ( getPointFilePath() == null )
+            return;
+
+        if ( getHolderPointFilePath() == null )
+            return;
+
+        processTransform();
+
+        hdf = new HolderDataFile(
+                    getHolderPointFilePath(),
+                    true,
+                    getRefPointList()
+                    );
+
+        hdf.writeFileOut();
+        hdf.close();
+    }
+
     /* test method */
     public static void main(String[ ] args)
     {
