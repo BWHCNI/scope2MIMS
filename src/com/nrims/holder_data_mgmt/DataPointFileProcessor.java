@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 
-package holder_data_mgmt;
+package com.nrims.holder_data_mgmt;
 
-import holder_transform.*;
+import com.nrims.holder_transform.*;
 
 /**
  * The class intended to run a transformation of the data points file into the .ref format.

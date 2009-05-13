@@ -2,7 +2,7 @@
  * Holder_Ref_Data_View.java
  */
 
-package holder_ref_data;
+package com.nrims.holder_ref_data;
 
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-import holder_data_mgmt.*;
+import com.nrims.holder_data_mgmt.*;
 
 
 /**
@@ -124,14 +124,14 @@ public class Holder_Ref_Data_View extends FrameView {
 
         mainPanel.setName("mainPanel"); // NOI18N
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(holder_ref_data.Holder_Ref_Data_App.class).getContext().getResourceMap(Holder_Ref_Data_View.class);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.nrims.holder_ref_data.Holder_Ref_Data_App.class).getContext().getResourceMap(Holder_Ref_Data_View.class);
         coeff_file_label.setText(resourceMap.getString("coeff_file_label.text")); // NOI18N
         coeff_file_label.setName("coeff_file_label"); // NOI18N
 
         coeff_file_text.setText(resourceMap.getString("coeff_file_text.text")); // NOI18N
         coeff_file_text.setName("coeff_file_text"); // NOI18N
 
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(holder_ref_data.Holder_Ref_Data_App.class).getContext().getActionMap(Holder_Ref_Data_View.class, this);
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.nrims.holder_ref_data.Holder_Ref_Data_App.class).getContext().getActionMap(Holder_Ref_Data_View.class, this);
         coeff_file_browse_button.setAction(actionMap.get("coeffFileBrowse")); // NOI18N
         coeff_file_browse_button.setText(resourceMap.getString("coeff_file_browse_button.text")); // NOI18N
         coeff_file_browse_button.setName("coeff_file_browse_button"); // NOI18N

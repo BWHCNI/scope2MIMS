@@ -82,7 +82,7 @@
         <Component class="javax.swing.JButton" name="coeff_file_browse_button">
           <Properties>
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-              <action class="holder_ref_data.Holder_Ref_Data_View" id="coeffFileBrowse" methodName="coeffFileBrowse"/>
+              <action class="com.nrims.holder_ref_data.Holder_Ref_Data_View" id="coeffFileBrowse" methodName="coeffFileBrowse"/>
             </Property>
             <Property name="text" type="java.lang.String" resourceKey="coeff_file_browse_button.text"/>
             <Property name="name" type="java.lang.String" value="coeff_file_browse_button" noResource="true"/>
@@ -103,7 +103,7 @@
         <Component class="javax.swing.JButton" name="coord_file_browse_button">
           <Properties>
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-              <action class="holder_ref_data.Holder_Ref_Data_View" id="coordFileBrowse" methodName="coordFileBrowse"/>
+              <action class="com.nrims.holder_ref_data.Holder_Ref_Data_View" id="coordFileBrowse" methodName="coordFileBrowse"/>
             </Property>
             <Property name="text" type="java.lang.String" resourceKey="coord_file_browse_button.text"/>
             <Property name="name" type="java.lang.String" value="coord_file_browse_button" noResource="true"/>
@@ -124,7 +124,7 @@
         <Component class="javax.swing.JButton" name="ref_file_browse_button">
           <Properties>
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-              <action class="holder_ref_data.Holder_Ref_Data_View" id="refFileBrowse" methodName="refFileBrowse"/>
+              <action class="com.nrims.holder_ref_data.Holder_Ref_Data_View" id="refFileBrowse" methodName="refFileBrowse"/>
             </Property>
             <Property name="text" type="java.lang.String" resourceKey="ref_file_browse_button.text"/>
             <Property name="name" type="java.lang.String" value="ref_file_browse_button" noResource="true"/>
@@ -133,7 +133,7 @@
         <Component class="javax.swing.JButton" name="holder_reg_gen_button">
           <Properties>
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-              <action class="holder_ref_data.Holder_Ref_Data_View" id="holderRefGenerateFile" methodName="holderRefGenerateFile"/>
+              <action class="com.nrims.holder_ref_data.Holder_Ref_Data_View" id="holderRefGenerateFile" methodName="holderRefGenerateFile"/>
             </Property>
             <Property name="text" type="java.lang.String" resourceKey="holder_reg_gen_button.text"/>
             <Property name="name" type="java.lang.String" value="holder_reg_gen_button" noResource="true"/>
@@ -187,7 +187,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="aboutMenuItem">
               <Properties>
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-                  <action class="holder_ref_data.Holder_Ref_Data_View" id="showAboutBox" methodName="showAboutBox"/>
+                  <action class="com.nrims.holder_ref_data.Holder_Ref_Data_View" id="showAboutBox" methodName="showAboutBox"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="aboutMenuItem" noResource="true"/>
               </Properties>

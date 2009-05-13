@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package holder_data_mgmt;
+package com.nrims.holder_data_mgmt;
 
 /**
  *

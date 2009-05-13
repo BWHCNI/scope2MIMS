@@ -13,7 +13,7 @@
             </test-roots>
         </data>
         <swingapp xmlns="http://www.netbeans.org/ns/form-swingapp/1">
-            <application-class name="holder_ref_data.Holder_Ref_Data_App"/>
+            <application-class name="com.nrims.holder_ref_data.Holder_Ref_Data_App"/>
         </swingapp>
     </configuration>
 </project>

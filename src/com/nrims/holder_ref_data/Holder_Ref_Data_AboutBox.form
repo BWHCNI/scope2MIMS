@@ -84,7 +84,7 @@
     <Component class="javax.swing.JButton" name="closeButton">
       <Properties>
         <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
-          <action class="holder_ref_data.Holder_Ref_Data_AboutBox" id="closeAboutBox" methodName="closeAboutBox"/>
+          <action class="com.nrims.holder_ref_data.Holder_Ref_Data_AboutBox" id="closeAboutBox" methodName="closeAboutBox"/>
         </Property>
         <Property name="name" type="java.lang.String" value="closeButton" noResource="true"/>
       </Properties>

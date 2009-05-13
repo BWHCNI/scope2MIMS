@@ -2,7 +2,7 @@
  * Holder_Ref_Data_AboutBox.java
  */
 
-package holder_ref_data;
+package com.nrims.holder_ref_data;
 
 import org.jdesktop.application.Action;
 
@@ -38,13 +38,13 @@ public class Holder_Ref_Data_AboutBox extends javax.swing.JDialog {
         javax.swing.JLabel imageLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(holder_ref_data.Holder_Ref_Data_App.class).getContext().getResourceMap(Holder_Ref_Data_AboutBox.class);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.nrims.holder_ref_data.Holder_Ref_Data_App.class).getContext().getResourceMap(Holder_Ref_Data_AboutBox.class);
         setTitle(resourceMap.getString("title")); // NOI18N
         setModal(true);
         setName("aboutBox"); // NOI18N
         setResizable(false);
 
-        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(holder_ref_data.Holder_Ref_Data_App.class).getContext().getActionMap(Holder_Ref_Data_AboutBox.class, this);
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.nrims.holder_ref_data.Holder_Ref_Data_App.class).getContext().getActionMap(Holder_Ref_Data_AboutBox.class, this);
         closeButton.setAction(actionMap.get("closeAboutBox")); // NOI18N
         closeButton.setName("closeButton"); // NOI18N
 
