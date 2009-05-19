@@ -8,7 +8,6 @@ package com.nrims.holder_transform;
 import java.util.ArrayList;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import com.nrims.holder_data_mgmt.*;
@@ -41,6 +40,22 @@ public class Transform {
         }
 
         return( ret_value );
+    }
+
+    private void setCoordsInRefPoint(
+        RefPoint rf,
+        double[] coords
+        )
+    {
+        if ( (rf != null) &&
+             (coords != null) &&
+             (coords.length == 3) )
+        {
+            rf.setXCoord(coords[0]);
+            rf.setYCoord(coords[1]);
+            rf.setZCoord(coords[2]);
+        }
+
     }
 
     /* constructors */
