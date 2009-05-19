@@ -18,6 +18,10 @@ import com.nrims.holder_data_mgmt.*;
  * @author cpoczatek
  */
 public class Transform {
+    /* class private constants */
+    
+    /* Z setting in microns, prior to algorithmic calculation */
+    private final double Z_Const_Coord = 4500;
 
     /* private variables */
     private double[][] XCoefficients;
@@ -185,7 +189,7 @@ public class Transform {
         
         temppoint[0] = XCoefficients[0][0] + (XCoefficients[0][1] * stagept[0]) + (XCoefficients[1][0] * stagept[1]);
         temppoint[1] = YCoefficients[0][0] + (YCoefficients[0][1] * stagept[0]) + (YCoefficients[1][0] * stagept[1]);
-        temppoint[2] = 0;
+        temppoint[2] = Z_Const_Coord;
         
         return temppoint;
     }
