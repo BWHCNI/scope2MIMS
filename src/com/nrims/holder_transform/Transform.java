@@ -5,11 +5,8 @@
 
 package com.nrims.holder_transform;
 
-import java.util.ArrayList;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.*;
+import java.io.*;
 import com.nrims.holder_data_mgmt.*;
 
 /**
@@ -27,6 +24,8 @@ public class Transform {
     private double[][] YCoefficients;
     private ArrayList<double[]> StagePoints;
     private ArrayList<double[]> TransformedPoints;
+    private MicroInstrReferencePoints mirp;
+
     /* private methods */
     private RefPoint coordsToRefPoint(double[] coords)
     {
@@ -58,15 +57,30 @@ public class Transform {
 
     }
 
-    /* constructors */
-    public Transform() {
+    private void init_private_vars()
+    {
         //initialize coefficient matrix to 0
         XCoefficients = new double[4][4];
         YCoefficients = new double[4][4];
         StagePoints = new ArrayList<double[]>();
         TransformedPoints = new ArrayList<double[]>();
+
+        /* Setting stage/instr point storage to nothing */
+        mirp = null;
     }
-    
+
+    /* constructors */
+    public Transform() {
+        init_private_vars();
+    }
+
+    public Transform(MicroInstrReferencePoints mi)
+    {
+        mirp = mi;
+    }
+
+    /* public methods */
+
     public void setCoeffiecents(double[][] xcoeff, double[][] ycoeff) {
         if(xcoeff==null || ycoeff==null)
             return;
@@ -273,7 +287,30 @@ rotate_nikon_to_mims(int spts,
         }
         System.out.println("");
     }
-    
+
+    public void setMicroInstrPoints(MicroInstrReferencePoints mp)
+    {
+        mirp = mp;
+    }
+
+    public MicroInstrReferencePoints getMicroInstrPoints()
+    {
+        return( mirp );
+    }
+
+    public void setTransformCoefficients()
+    {
+        setTransformCoefficients( getMicroInstrPoints() );
+    }
+
+    public void setTransformCoefficients(MicroInstrReferencePoints mp)
+    {
+
+    }
+
+    /* Test method.
+     * There to run a quick verification test.
+     */
     public static void main(String[ ] args) {
         Transform test = new Transform();
         
