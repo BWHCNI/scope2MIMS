@@ -74,6 +74,15 @@ public class RDRTableModel extends AbstractTableModel{
 
     /* Public methods */
     @Override
+    public boolean isCellEditable(int row, int column)
+    {
+        if ( column == 0 )
+            return( false );
+
+        return( true );
+    }
+
+    @Override
     public String getColumnName(int column)
     {
         if ( column_count <= column )

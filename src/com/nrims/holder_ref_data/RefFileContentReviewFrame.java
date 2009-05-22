@@ -64,7 +64,7 @@ public class RefFileContentReviewFrame extends javax.swing.JFrame {
                 java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, true, true, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -75,6 +75,7 @@ public class RefFileContentReviewFrame extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        ref_data_review_table.setCellSelectionEnabled(true);
         ref_data_review_table.setName("ref_data_review_table"); // NOI18N
         jScrollPane1.setViewportView(ref_data_review_table);
         ref_data_review_table.getColumnModel().getColumn(0).setHeaderValue(resourceMap.getString("ref_data_review_table.columnModel.title0")); // NOI18N
