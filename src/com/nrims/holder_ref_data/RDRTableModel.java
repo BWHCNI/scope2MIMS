@@ -29,6 +29,13 @@ public class RDRTableModel extends AbstractTableModel{
         "Z"
     };
 
+    private static final int POINT_NUM_COL_NUM = 0;
+    private static final int COMMENT_COL_NUM = 1;
+    private static final int DATE_COL_NUM = 2;
+    private static final int X_COORD_COL_NUM = 3;
+    private static final int Y_COORD_COL_NUM = 4;
+    private static final int Z_COORD_COL_NUM = 5;
+
     private final int column_count = column_names.length;
 
     private Object[][] table_content;
@@ -108,6 +115,29 @@ public class RDRTableModel extends AbstractTableModel{
     {
         table_content[row][column] = obj;
         fireTableCellUpdated(row, column);
+        RefPointList rpl = dpfp.getRefPointList();
+
+        /* Updating the corresponding point in dpfp */
+        switch ( column )
+        {
+            case COMMENT_COL_NUM:
+                rpl.getRefPoint(row).setComment( obj.toString() );
+                break;
+            case DATE_COL_NUM:
+                rpl.getRefPoint(row).setDateString( obj.toString() );
+                break;
+            case X_COORD_COL_NUM:
+                rpl.getRefPoint(row).setXCoord(new Double( obj.toString() ));
+                break;
+            case Y_COORD_COL_NUM:
+                rpl.getRefPoint(row).setYCoord(new Double( obj.toString() ));
+                break;
+            case Z_COORD_COL_NUM:
+                rpl.getRefPoint(row).setZCoord(new Double( obj.toString() ));
+                break;
+        }
+
+        dpfp.setRefPointList(rpl);
     }
 
     @Override
@@ -140,12 +170,12 @@ public class RDRTableModel extends AbstractTableModel{
         for (i = 0; i < row_count; i++)
         {
             rf = rpl.getRefPoint(i);
-            setValueAt(new Integer(i), i, 0);
-            setValueAt(rf.getComment(), i, 1 );
-            setValueAt(rf.getDateString(), i, 2);
-            setValueAt(new Double( rf.getXCoord() ), i, 3);
-            setValueAt(new Double( rf.getYCoord() ), i, 4);
-            setValueAt(new Double( rf.getZCoord() ), i, 5);
+            table_content[i][POINT_NUM_COL_NUM] = new Integer(i + 1);
+            table_content[i][COMMENT_COL_NUM] = rf.getComment();
+            table_content[i][DATE_COL_NUM] = rf.getDateString();
+            table_content[i][X_COORD_COL_NUM] = new Double( rf.getXCoord() );
+            table_content[i][Y_COORD_COL_NUM] = new Double( rf.getYCoord() );
+            table_content[i][Z_COORD_COL_NUM] = new Double( rf.getZCoord() );
         }
     }
 
