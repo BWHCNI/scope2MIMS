@@ -425,7 +425,7 @@ public class HolderDataFile {
                 file_out = new FileOutputStream( getOutFilePath() );
             } else {
                 setInFilePath( fpath );
-                 file_in = new FileInputStream( getInFilePath() );
+                file_in = new FileInputStream( getInFilePath() );
             }
         } catch (Exception e){
 

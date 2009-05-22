@@ -166,7 +166,7 @@ public class RDRTableModel extends AbstractTableModel{
 
         table_content = new Object[row_count][column_count];
 
-
+        /* Filling up the content */
         for (i = 0; i < row_count; i++)
         {
             rf = rpl.getRefPoint(i);
