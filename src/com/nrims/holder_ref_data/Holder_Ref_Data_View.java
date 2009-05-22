@@ -26,6 +26,9 @@ public class Holder_Ref_Data_View extends FrameView {
 
         initComponents();
 
+        // Custom initialization.
+        initInternalData();
+
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
@@ -184,20 +187,23 @@ public class Holder_Ref_Data_View extends FrameView {
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(ref_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ref_file_text, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
+                        .addComponent(ref_file_text, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(holder_reg_review_button)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(holder_reg_review_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
+                            .addComponent(ref_file_browse_button, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(holder_reg_gen_button)
                         .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                            .addComponent(ref_file_browse_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGap(18, 18, 18)
-                            .addComponent(holder_reg_gen_button)
-                            .addContainerGap())
-                        .addComponent(coord_file_browse_button)
-                        .addComponent(coeff_file_browse_button))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, mainPanelLayout.createSequentialGroup()
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(coord_file_browse_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, mainPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(coeff_file_browse_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -260,11 +266,11 @@ public class Holder_Ref_Data_View extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 692, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 508, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 528, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -311,18 +317,27 @@ public class Holder_Ref_Data_View extends FrameView {
 
     @Action
     public void holderRefGenerateFile() {
-        DataPointFileProcessor dpfp = new DataPointFileProcessor(
-                coeff_file_text.getText(),
-                coord_file_text.getText(),
-                ref_file_text.getText()
-                );
+        if ( dpfp == null )
+            dpfp = new DataPointFileProcessor(
+                    coeff_file_text.getText(),
+                    coord_file_text.getText(),
+                    ref_file_text.getText()
+                    );
+        else {
+            dpfp.setCoeffFilePath( coeff_file_text.getText() );
+            dpfp.setStagePointFilePath( coord_file_text.getText() );
+            dpfp.setHolderPointFilePath( ref_file_text.getText() );
+        }
 
         dpfp.generateRefPointFile();
+        
+        /* Enabling review */
+        holder_reg_review_button.setEnabled( true );
     }
 
     @Action
     public void holderRefReviewFile() {
-        RefFileContentReviewFrame rfcrf = new RefFileContentReviewFrame();
+        RefFileContentReviewFrame rfcrf = new RefFileContentReviewFrame( dpfp );
         rfcrf.setVisible( true );
     }
 
@@ -353,4 +368,14 @@ public class Holder_Ref_Data_View extends FrameView {
     private int busyIconIndex = 0;
 
     private JDialog aboutBox;
+
+    /* custom private variables */
+    private DataPointFileProcessor dpfp;
+
+    /* Private methods */
+    private void initInternalData()
+    {
+        dpfp = null;
+        holder_reg_review_button.setEnabled( false );
+    }
 }

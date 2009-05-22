@@ -11,6 +11,8 @@
 
 package com.nrims.holder_ref_data;
 
+import com.nrims.holder_data_mgmt.*;
+
 /**
  *
  * @author bepstein
@@ -20,6 +22,15 @@ public class RefFileContentReviewFrame extends javax.swing.JFrame {
     /** Creates new form RefFileContentReviewFrame */
     public RefFileContentReviewFrame() {
         initComponents();
+        initLocalData();
+    }
+
+    public RefFileContentReviewFrame(DataPointFileProcessor dp)
+    {
+        initComponents();
+        initLocalData();
+        dpfp = dp;
+        rdr_tm.setDataPointFileProcessor(dp);
     }
 
     /** This method is called from within the constructor to
@@ -31,18 +42,63 @@ public class RefFileContentReviewFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ref_data_review_table = new javax.swing.JTable();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.nrims.holder_ref_data.Holder_Ref_Data_App.class).getContext().getResourceMap(RefFileContentReviewFrame.class);
+        setTitle(resourceMap.getString("Form.title")); // NOI18N
         setName("Form"); // NOI18N
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        ref_data_review_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Point Number", "Comment", "Date", "X", "Y", "Z"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        ref_data_review_table.setName("ref_data_review_table"); // NOI18N
+        jScrollPane1.setViewportView(ref_data_review_table);
+        ref_data_review_table.getColumnModel().getColumn(0).setHeaderValue(resourceMap.getString("ref_data_review_table.columnModel.title0")); // NOI18N
+        ref_data_review_table.getColumnModel().getColumn(1).setHeaderValue(resourceMap.getString("ref_data_review_table.columnModel.title1")); // NOI18N
+        ref_data_review_table.getColumnModel().getColumn(2).setHeaderValue(resourceMap.getString("ref_data_review_table.columnModel.title2")); // NOI18N
+        ref_data_review_table.getColumnModel().getColumn(3).setHeaderValue(resourceMap.getString("ref_data_review_table.columnModel.title3")); // NOI18N
+        ref_data_review_table.getColumnModel().getColumn(4).setHeaderValue(resourceMap.getString("ref_data_review_table.columnModel.title4")); // NOI18N
+        ref_data_review_table.getColumnModel().getColumn(5).setHeaderValue(resourceMap.getString("ref_data_review_table.columnModel.title5")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -60,6 +116,17 @@ public class RefFileContentReviewFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable ref_data_review_table;
     // End of variables declaration//GEN-END:variables
 
+    private DataPointFileProcessor dpfp;
+    private RDRTableModel rdr_tm;
+
+    private void initLocalData()
+    {       
+        dpfp = null;
+        rdr_tm = new RDRTableModel( ref_data_review_table.getModel() );
+        ref_data_review_table.setModel(rdr_tm);
+    }
 }
