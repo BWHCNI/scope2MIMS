@@ -12,7 +12,7 @@ import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-
+import java.io.*;
 import com.nrims.holder_data_mgmt.*;
 
 
@@ -310,9 +310,32 @@ public class Holder_Ref_Data_View extends FrameView {
 
     @Action
     public void refFileBrowse() {
+        HolderDataFile hdf;
+        RefPointList rpl;
         JFileChooser fc = new JFileChooser();
         fc.showSaveDialog( getFrame() );
         ref_file_text.setText( fc.getSelectedFile().getPath() );
+
+        /* Allowing ref file review if it exists. */
+        if ( (new File( ref_file_text.getText() )).exists() )
+        {
+            if ( dpfp == null )
+                dpfp = new DataPointFileProcessor();
+
+            dpfp.setHolderPointFilePath( ref_file_text.getText() );
+            rpl = new RefPointList();
+
+            hdf = new HolderDataFile( ref_file_text.getText(),
+                false,
+                rpl);
+
+            hdf.readFileIn();
+            hdf.close();
+            dpfp.setRefPointList( hdf.getRefPointList() );
+
+            holder_reg_review_button.setEnabled( true );
+        }
+         
     }
 
     @Action
