@@ -239,7 +239,7 @@ public class RefPoint {
         return( buffer_arr2 );
     }
 
-    /* Presents the RefPoint as a byte array for the file */
+    /* Presents the RefPoint as a byte array for file I/O. */
     public byte[] toByteArray()
     {
         byte[] ret_value = new byte[ ref_point_record_total_length ];
@@ -255,5 +255,10 @@ public class RefPoint {
         /* copy comment */
 
         return( ret_value );
+    }
+
+    public String getDefaultComment()
+    {
+        return( default_comment );
     }
 }

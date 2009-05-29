@@ -115,6 +115,12 @@ public class Holder_Ref_Data_View extends FrameView {
         ref_file_browse_button = new javax.swing.JButton();
         holder_reg_gen_button = new javax.swing.JButton();
         holder_reg_review_button = new javax.swing.JButton();
+        data_point_comment_text = new javax.swing.JTextField();
+        data_point_comment_label = new javax.swing.JLabel();
+        data_point_num_check = new javax.swing.JCheckBox();
+        data_point_num_check_label = new javax.swing.JLabel();
+        date_text_label = new javax.swing.JLabel();
+        date_text = new javax.swing.JTextField();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -168,42 +174,65 @@ public class Holder_Ref_Data_View extends FrameView {
         holder_reg_review_button.setText(resourceMap.getString("holder_reg_review_button.text")); // NOI18N
         holder_reg_review_button.setName("holder_reg_review_button"); // NOI18N
 
+        data_point_comment_text.setText(resourceMap.getString("data_point_comment_text.text")); // NOI18N
+        data_point_comment_text.setName("data_point_comment_text"); // NOI18N
+
+        data_point_comment_label.setText(resourceMap.getString("data_point_comment_label.text")); // NOI18N
+        data_point_comment_label.setName("data_point_comment_label"); // NOI18N
+
+        data_point_num_check.setText(resourceMap.getString("data_point_num_check.text")); // NOI18N
+        data_point_num_check.setName("data_point_num_check"); // NOI18N
+
+        data_point_num_check_label.setText(resourceMap.getString("data_point_num_check_label.text")); // NOI18N
+        data_point_num_check_label.setName("data_point_num_check_label"); // NOI18N
+
+        date_text_label.setText(resourceMap.getString("date_text_label.text")); // NOI18N
+        date_text_label.setName("date_text_label"); // NOI18N
+
+        date_text.setText(resourceMap.getString("date_text.text")); // NOI18N
+        date_text.setName("date_text"); // NOI18N
+
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+            .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(coeff_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(points_text_file_label))
-                        .addGap(39, 39, 39)
                         .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(coord_file_text)
-                            .addComponent(coeff_file_text, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
-                        .addGap(33, 33, 33))
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(ref_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(ref_file_text, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(holder_reg_review_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
-                            .addComponent(ref_file_browse_button, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(coeff_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(points_text_file_label)
+                                    .addComponent(data_point_comment_label))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(coord_file_text)
+                                    .addComponent(data_point_comment_text)
+                                    .addComponent(coeff_file_text, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                                    .addGroup(mainPanelLayout.createSequentialGroup()
+                                        .addComponent(data_point_num_check_label)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(data_point_num_check))
+                                    .addComponent(date_text, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addComponent(ref_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(ref_file_text)))
                         .addGap(18, 18, 18)
-                        .addComponent(holder_reg_gen_button)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(coord_file_browse_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, mainPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(coeff_file_browse_button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(holder_reg_review_button)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(coeff_file_browse_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(coord_file_browse_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(ref_file_browse_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addComponent(holder_reg_gen_button))))
+                    .addComponent(date_text_label))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,17 +247,27 @@ public class Holder_Ref_Data_View extends FrameView {
                     .addComponent(points_text_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(coord_file_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(coord_file_browse_button))
-                .addGap(78, 78, 78)
+                .addGap(18, 18, 18)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(data_point_comment_label)
+                    .addComponent(data_point_comment_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(ref_file_label)
-                        .addComponent(ref_file_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(holder_reg_gen_button)
-                        .addComponent(ref_file_browse_button)))
+                    .addComponent(data_point_num_check_label)
+                    .addComponent(data_point_num_check))
+                .addGap(17, 17, 17)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(date_text_label)
+                    .addComponent(date_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(77, 77, 77)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ref_file_label)
+                    .addComponent(ref_file_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ref_file_browse_button)
+                    .addComponent(holder_reg_gen_button))
                 .addGap(18, 18, 18)
                 .addComponent(holder_reg_review_button)
-                .addContainerGap(126, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -266,11 +305,11 @@ public class Holder_Ref_Data_View extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 712, Short.MAX_VALUE)
+            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 812, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 528, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 628, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -370,6 +409,12 @@ public class Holder_Ref_Data_View extends FrameView {
     private javax.swing.JTextField coeff_file_text;
     private javax.swing.JButton coord_file_browse_button;
     private javax.swing.JTextField coord_file_text;
+    private javax.swing.JLabel data_point_comment_label;
+    private javax.swing.JTextField data_point_comment_text;
+    private javax.swing.JCheckBox data_point_num_check;
+    private javax.swing.JLabel data_point_num_check_label;
+    private javax.swing.JTextField date_text;
+    private javax.swing.JLabel date_text_label;
     private javax.swing.JButton holder_reg_gen_button;
     private javax.swing.JButton holder_reg_review_button;
     private javax.swing.JPanel mainPanel;
@@ -398,7 +443,8 @@ public class Holder_Ref_Data_View extends FrameView {
     /* Private methods */
     private void initInternalData()
     {
-        dpfp = null;
+        dpfp = new DataPointFileProcessor();
         holder_reg_review_button.setEnabled( false );
+        data_point_comment_text.setText( new RefPoint().getDefaultComment() );
     }
 }

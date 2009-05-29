@@ -13,11 +13,11 @@ import com.nrims.holder_transform.*;
  */
 public class DataPointFileProcessor {
     /* private variables and methods */
-    private String coeff_file_path;
-    private String stage_point_file_path;
-    private String holder_point_file_path;
-    private Transform point_trans;
-    private RefPointList rpl;
+    private String coeff_file_path = null;
+    private String stage_point_file_path = null;
+    private String holder_point_file_path = null;
+    private Transform point_trans = null;
+    private RefPointList rpl = null;
 
     private void printRefPoint(RefPoint rp)
     {
@@ -31,7 +31,8 @@ public class DataPointFileProcessor {
     /* constructors */
     public DataPointFileProcessor()
     {
-
+        point_trans = new Transform();
+        rpl = new RefPointList();
     }
     
     public DataPointFileProcessor(
@@ -40,10 +41,10 @@ public class DataPointFileProcessor {
             String holder_output_file)
     {
         point_trans = new Transform();
+        rpl = new RefPointList();
         setCoeffFilePath( coeff_file );
         setStagePointFilePath( stage_point_file );
         setHolderPointFilePath( holder_output_file );
-        rpl = null;
     }
 
     /* public methods */
