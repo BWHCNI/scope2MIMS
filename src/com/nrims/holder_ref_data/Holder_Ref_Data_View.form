@@ -189,6 +189,9 @@
         <Component class="javax.swing.JTextField" name="data_point_comment_text">
           <Properties>
             <Property name="text" type="java.lang.String" resourceKey="data_point_comment_text.text"/>
+            <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
+              <action class="com.nrims.holder_ref_data.Holder_Ref_Data_View" id="processDataPointComment" methodName="processDataPointComment"/>
+            </Property>
             <Property name="name" type="java.lang.String" value="data_point_comment_text" noResource="true"/>
           </Properties>
         </Component>

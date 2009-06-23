@@ -175,6 +175,7 @@ public class Holder_Ref_Data_View extends FrameView {
         holder_reg_review_button.setName("holder_reg_review_button"); // NOI18N
 
         data_point_comment_text.setText(resourceMap.getString("data_point_comment_text.text")); // NOI18N
+        data_point_comment_text.setAction(actionMap.get("processDataPointComment")); // NOI18N
         data_point_comment_text.setName("data_point_comment_text"); // NOI18N
 
         data_point_comment_label.setText(resourceMap.getString("data_point_comment_label.text")); // NOI18N
@@ -215,8 +216,7 @@ public class Holder_Ref_Data_View extends FrameView {
                                         .addComponent(data_point_num_check_label)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(data_point_num_check))
-                                    .addComponent(date_text, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                    .addComponent(date_text, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)))
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addComponent(ref_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -445,6 +445,18 @@ public class Holder_Ref_Data_View extends FrameView {
     {
         dpfp = new DataPointFileProcessor();
         holder_reg_review_button.setEnabled( false );
-        data_point_comment_text.setText( new RefPoint().getDefaultComment() );
+        data_point_comment_text.setText( 
+                dpfp.getRefPointList().getDefaultRefPointComment()
+                );
+    }
+
+    @Action
+    public void processDataPointComment()
+    {
+
+        dpfp.getRefPointList().setDefaultRefPointComment(
+                data_point_comment_text.getText()
+                );
+        
     }
 }

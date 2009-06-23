@@ -83,6 +83,10 @@ public class DataPointFileProcessor {
         point_trans.readCoefficientsFile( getCoeffFilePath() );
         point_trans.readStagePointsFile( getPointFilePath() );
         point_trans.setTransformedPoints();
+
+        if ( rpl != null)
+            point_trans.setRefPointList(rpl);
+
         rpl = point_trans.transformedPointsToRefPointList();
     }
 

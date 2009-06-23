@@ -25,6 +25,7 @@ public class Transform {
     private ArrayList<double[]> StagePoints;
     private ArrayList<double[]> TransformedPoints;
     private MicroInstrReferencePoints mirp;
+    private RefPointList rpl = null;
 
     /* private methods */
     private RefPoint coordsToRefPoint(double[] coords)
@@ -74,8 +75,15 @@ public class Transform {
         init_private_vars();
     }
 
+    public Transform(RefPointList rpl_in)
+    {
+        init_private_vars();
+        setRefPointList( rpl_in );
+    }
+
     public Transform(MicroInstrReferencePoints mi)
     {
+        init_private_vars();
         mirp = mi;
     }
 
@@ -255,17 +263,36 @@ rotate_nikon_to_mims(int spts,
 
     public RefPointList transformedPointsToRefPointList()
     {
-        RefPointList ret_value = new RefPointList();
+        RefPointList ret_value;
+        RefPoint rp;
+
+        if ( rpl == null )
+            ret_value = new RefPointList();
+        else
+            ret_value = rpl;
+
         double[] point_coords;
         int i;
         
         for (i = 0; i < TransformedPoints.size(); i++)
         {
             point_coords = TransformedPoints.get(i);
-            ret_value.addRefPoint( coordsToRefPoint(point_coords) );
+            rp = coordsToRefPoint(point_coords);
+            rp.setComment( ret_value.getDefaultRefPointComment() );
+            ret_value.addRefPoint( rp );
         }
 
         return ( ret_value );
+    }
+
+    public void setRefPointList(RefPointList rpl_in)
+    {
+        rpl = rpl_in;
+    }
+
+    public RefPointList getRefPointList()
+    {
+        return( rpl );
     }
 
     public void setTransformedPoints() {

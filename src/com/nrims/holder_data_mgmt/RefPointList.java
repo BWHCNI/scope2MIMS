@@ -12,6 +12,9 @@ public class RefPointList {
 
     private final int SEQ_MAX_ENR = 2000; /* maximum number of points */
 
+    private String default_ref_point_comment =
+            new RefPoint().getDefaultComment();
+
     private class RefPointListEntry{
         /* constructors */
         public RefPointListEntry(RefPoint rf){
@@ -183,5 +186,22 @@ public class RefPointList {
         start_entry = null;
     }
 
+    public void setDefaultRefPointComment(String comm)
+    {
+        default_ref_point_comment = comm;
+    }
+
+    public String getDefaultRefPointComment()
+    {
+        return( default_ref_point_comment );
+    }
+
+    public void setAllPointCommentsToDefault()
+    {
+        int i;
+
+        for (i = 0; i < getNumRefPoints(); i++)
+            getRefPoint(i).setComment( getDefaultRefPointComment() );
+    }
 }
 
