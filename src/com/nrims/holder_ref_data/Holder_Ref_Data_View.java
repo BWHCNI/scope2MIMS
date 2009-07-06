@@ -4,6 +4,7 @@
 
 package com.nrims.holder_ref_data;
 
+import javax.swing.text.BadLocationException;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -232,7 +233,7 @@ public class Holder_Ref_Data_View extends FrameView {
                                 .addGap(18, 18, 18)
                                 .addComponent(holder_reg_gen_button))))
                     .addComponent(date_text_label))
-                .addContainerGap(146, Short.MAX_VALUE))
+                .addContainerGap(117, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,7 +268,7 @@ public class Holder_Ref_Data_View extends FrameView {
                     .addComponent(holder_reg_gen_button))
                 .addGap(18, 18, 18)
                 .addComponent(holder_reg_review_button)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -391,7 +392,16 @@ public class Holder_Ref_Data_View extends FrameView {
             dpfp.setHolderPointFilePath( ref_file_text.getText() );
         }
 
-        dpfp.generateRefPointFile();
+        // Create the reference point list
+        dpfp.processTransform(); 
+        RefPointList rpl = dpfp.getRefPointList();
+        // Set the comment for each point
+        for (int i=0; i<rpl.getNumRefPoints(); i++)
+            rpl.getRefPoint(i).setComment(getCommentFor(i));
+        // Write the file
+        HolderDataFile hdf = new HolderDataFile(dpfp.getHolderPointFilePath(), true, dpfp.getRefPointList());
+        hdf.writeFileOut();
+        hdf.close();
         
         /* Enabling review */
         holder_reg_review_button.setEnabled( true );
@@ -401,6 +411,33 @@ public class Holder_Ref_Data_View extends FrameView {
     public void holderRefReviewFile() {
         RefFileContentReviewFrame rfcrf = new RefFileContentReviewFrame( dpfp );
         rfcrf.setVisible( true );
+    }
+
+    /**
+     * Get the comment string currently in the text field.
+     * @return the comment string
+     */
+    public String getCurrentComment() {
+        return getCommentFor(-1);
+    }
+
+    /**
+     * Create the comment for a given reference point.
+     *
+     * Takes the comment text from the text field (including the index for the
+     * point, if the check box is checked), and creates a comment string.
+     * 
+     * @param i the index of the reference point
+     * @return the comment string for the given index
+     */
+    public String getCommentFor(int i) {
+        String comment = "";
+        int len = data_point_comment_text.getDocument().getLength();
+        try { comment = data_point_comment_text.getDocument().getText(0, len); }
+        catch (BadLocationException ex) {}
+        if (data_point_num_check.isSelected() && i >= 0)
+            comment = (i + 1) + " " + comment;
+        return comment;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -454,9 +491,7 @@ public class Holder_Ref_Data_View extends FrameView {
     public void processDataPointComment()
     {
 
-        dpfp.getRefPointList().setDefaultRefPointComment(
-                data_point_comment_text.getText()
-                );
+        dpfp.getRefPointList().setDefaultRefPointComment(getCurrentComment());
         
     }
 }
