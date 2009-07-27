@@ -9,6 +9,7 @@ public class RefPointList {
         /* private */
     private RefPointListEntry start_entry;
     private int num_of_ref_points = 0; /* total ref points in list */
+    private final int max_ref_points = 200;
 
     private final int SEQ_MAX_ENR = 2000; /* maximum number of points */
 
@@ -108,6 +109,12 @@ public class RefPointList {
     {
         RefPointListEntry curr_entry;
         RefPointListEntry new_entry;
+
+        /* Exiting if the maximum number
+         * of points is about to be exceeded.
+         */
+        if ( num_of_ref_points == max_ref_points )
+            return;
 
         if (start_entry != null)
         {
