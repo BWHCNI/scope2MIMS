@@ -29,12 +29,22 @@ public class DataPointFileProcessor {
     }
 
     /* constructors */
+
+    /**
+     * Basic constructor.
+     */
     public DataPointFileProcessor()
     {
         point_trans = new Transform();
         rpl = new RefPointList();
     }
-    
+
+    /**
+     * 
+     * @param coeff_file
+     * @param stage_point_file
+     * @param holder_output_file
+     */
     public DataPointFileProcessor(
             String coeff_file,
             String stage_point_file,
@@ -48,26 +58,48 @@ public class DataPointFileProcessor {
     }
 
     /* public methods */
+
+    /**
+     * Sets the filesystem path to coefficients file.
+     * @param path Path to the coefficients file
+     */
     public void setCoeffFilePath(String path)
     {
         coeff_file_path = path;
     }
 
+    /**
+     * The path to the coefficients file.
+     * @return the filesystem path to coefficients file
+     */
     public String getCoeffFilePath()
     {
         return( coeff_file_path );
     }
 
+    /**
+     * Sets the filesystem path to the stage points file.
+     *
+     * @param path Filesystem path to stage points file
+     */
     public void setStagePointFilePath(String path)
     {
         stage_point_file_path = path;
     }
 
+    /**
+     * Returns filesystem path to stage points file.
+     * @return filesystem path to stage points file
+     */
     public String getPointFilePath()
     {
         return( stage_point_file_path );
     }
 
+    /**
+     * 
+     * @param path
+     */
     public void setHolderPointFilePath(String path)
     {
         holder_point_file_path = path;
