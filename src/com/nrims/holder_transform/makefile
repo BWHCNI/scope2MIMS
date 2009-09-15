@@ -4,7 +4,7 @@
 
 CFLAGS=-g
 
-all : n2mc n2n2 n3mc n3m3
+all : n2mc n3mc n3m3
 
 libmims.so : mims.o mims.h
 	ld -G -o libmims.so mims.o 
