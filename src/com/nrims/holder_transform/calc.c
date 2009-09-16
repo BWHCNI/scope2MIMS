@@ -150,6 +150,8 @@ back_substitute_array(
 	return;
 }
 
+//actual computation of coefficients
+
 int
 calcgc(
 		tie_point_2_list * pts_list,
