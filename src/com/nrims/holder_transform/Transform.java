@@ -511,6 +511,10 @@ rotate_nikon_to_mims(int spts,
         return ( ret_value );
     }
 
+    /**
+     * Sets the RefPointList for the object.
+     * @param rpl_in RefPointList to set
+     */
     public void setRefPointList(RefPointList rpl_in)
     {
         rpl = rpl_in;
