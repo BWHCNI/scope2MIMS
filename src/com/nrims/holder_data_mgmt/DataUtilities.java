@@ -6,11 +6,9 @@
 package com.nrims.holder_data_mgmt;
 
 /**
- *
- * @author bepstein
  * Container class for utility functions.
+ * @author bepstein
  */
-
 public class DataUtilities {
 
     public static byte[] adjustAndNullTerminateByteArray(

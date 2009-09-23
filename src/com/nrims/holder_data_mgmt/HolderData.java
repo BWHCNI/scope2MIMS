@@ -7,8 +7,9 @@ package com.nrims.holder_data_mgmt;
 
 /**
  *
- * @author bepstein
+ * 
  * The class serves as a container for the holder data (emulates the full file).
+ * @author bepstein
  */
 public class HolderData {
     /* private */

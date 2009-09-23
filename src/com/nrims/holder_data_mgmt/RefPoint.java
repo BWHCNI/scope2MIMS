@@ -6,7 +6,8 @@
 package com.nrims.holder_data_mgmt;
 
 /**
- *
+ * Class emulating an individual reference point
+ * and data associated therewith.
  * @author bepstein
  */
 public class RefPoint {

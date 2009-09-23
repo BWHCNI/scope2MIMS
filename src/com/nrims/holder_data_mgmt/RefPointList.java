@@ -1,9 +1,8 @@
 package com.nrims.holder_data_mgmt;
 
 /**
- *
- * @author bepstein
  * The list of reference points. This class mimics the original representation fo the holder coordinates data file.
+ * @author bepstein
  */
 public class RefPointList {
         /* private */
