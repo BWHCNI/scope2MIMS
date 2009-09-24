@@ -9,6 +9,7 @@ import org.jdesktop.application.SingleFrameApplication;
 
 /**
  * The main class of the application.
+ * @author bepstein
  */
 public class Holder_Ref_Data_App extends SingleFrameApplication {
 

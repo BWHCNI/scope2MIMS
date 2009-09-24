@@ -6,6 +6,10 @@ package com.nrims.holder_ref_data;
 
 import org.jdesktop.application.Action;
 
+/**
+ * The graphical window providing basic information about the application,
+ * @author bepstein
+ */
 public class Holder_Ref_Data_AboutBox extends javax.swing.JDialog {
 
     public Holder_Ref_Data_AboutBox(java.awt.Frame parent) {

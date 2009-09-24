@@ -1,14 +1,11 @@
 package com.nrims.holder_transform;
 
 /**
- *
+ * Class representing microscope and
+ * machine stage reference points.
  * @author bepstein
  */
 
-
-/* Class representing microscope and
- * machine stage reference points.
- */
 public class MicroInstrReferencePoints
 {
     /* Class constants */

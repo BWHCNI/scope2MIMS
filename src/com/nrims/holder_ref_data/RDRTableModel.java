@@ -9,7 +9,7 @@ import javax.swing.table.*;
 import com.nrims.holder_data_mgmt.*;
 
 /**
- *
+ * Provides table model for the graphical table in RefFileContentReviewFrame
  * @author bepstein
  */
 public class RDRTableModel extends AbstractTableModel{

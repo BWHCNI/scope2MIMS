@@ -15,7 +15,8 @@ import com.nrims.holder_data_mgmt.*;
 import org.jdesktop.application.Action;
 
 /**
- *
+ * This class provides a frame for reviewing and modifying the conent of
+ * the reference file.
  * @author bepstein
  */
 public class RefFileContentReviewFrame extends javax.swing.JFrame {

@@ -10,7 +10,8 @@ import java.io.*;
 import com.nrims.holder_data_mgmt.*;
 
 /**
- *
+ * Coordinate point transformation calculation class.
+ * Each instance incorporates the necessary set of incoming and resulting data.
  * @author cpoczatek
  */
 public class Transform {
@@ -71,10 +72,18 @@ public class Transform {
     }
 
     /* constructors */
+
+    /**
+     * Basic constructor
+     */
     public Transform() {
         init_private_vars();
     }
 
+    /**
+     * Sets the internal RefPointList to rpl_in
+     * @param rpl_in
+     */
     public Transform(RefPointList rpl_in)
     {
         init_private_vars();

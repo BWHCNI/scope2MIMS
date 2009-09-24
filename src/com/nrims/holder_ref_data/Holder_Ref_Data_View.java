@@ -19,6 +19,7 @@ import com.nrims.holder_data_mgmt.*;
 
 /**
  * The application's main frame.
+ * @author bepstein
  */
 public class Holder_Ref_Data_View extends FrameView {
 
