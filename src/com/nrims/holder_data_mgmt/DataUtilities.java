@@ -11,6 +11,12 @@ package com.nrims.holder_data_mgmt;
  */
 public class DataUtilities {
 
+    /**
+     * 
+     * @param in_arr
+     * @param length
+     * @return 
+     */
     public static byte[] adjustAndNullTerminateByteArray(
             byte[] in_arr,
             int length
