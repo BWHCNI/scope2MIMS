@@ -1,6 +1,7 @@
 package com.nrims.holder_data_mgmt;
 
 import java.io.*;
+import com.nrims.common.*;
 /**
  * Specific class to handle the file I/O for the holder coordinates file
  * The formatting assumes big-endian arrangement where applicable.
