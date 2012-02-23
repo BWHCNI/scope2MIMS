@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.io.*;
+import java.text.DecimalFormat;
 import com.nrims.holder_data_mgmt.*;
 
 
@@ -126,6 +127,7 @@ public class Holder_Ref_Data_View extends FrameView {
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
+        saveAsPRSMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -147,6 +149,11 @@ public class Holder_Ref_Data_View extends FrameView {
         coeff_file_browse_button.setAction(actionMap.get("coeffFileBrowse")); // NOI18N
         coeff_file_browse_button.setText(resourceMap.getString("coeff_file_browse_button.text")); // NOI18N
         coeff_file_browse_button.setName("coeff_file_browse_button"); // NOI18N
+        coeff_file_browse_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                coeff_file_browse_buttonActionPerformed(evt);
+            }
+        });
 
         points_text_file_label.setText(resourceMap.getString("points_text_file_label.text")); // NOI18N
         points_text_file_label.setName("points_text_file_label"); // NOI18N
@@ -171,6 +178,11 @@ public class Holder_Ref_Data_View extends FrameView {
         holder_reg_gen_button.setAction(actionMap.get("holderRefGenerateFile")); // NOI18N
         holder_reg_gen_button.setText(resourceMap.getString("holder_reg_gen_button.text")); // NOI18N
         holder_reg_gen_button.setName("holder_reg_gen_button"); // NOI18N
+        holder_reg_gen_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                holder_reg_gen_buttonActionPerformed(evt);
+            }
+        });
 
         holder_reg_review_button.setAction(actionMap.get("holderRefReviewFile")); // NOI18N
         holder_reg_review_button.setText(resourceMap.getString("holder_reg_review_button.text")); // NOI18N
@@ -234,7 +246,7 @@ public class Holder_Ref_Data_View extends FrameView {
                                 .addGap(18, 18, 18)
                                 .addComponent(holder_reg_gen_button))))
                     .addComponent(date_text_label))
-                .addContainerGap(117, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,7 +281,7 @@ public class Holder_Ref_Data_View extends FrameView {
                     .addComponent(holder_reg_gen_button))
                 .addGap(18, 18, 18)
                 .addComponent(holder_reg_review_button)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -280,6 +292,15 @@ public class Holder_Ref_Data_View extends FrameView {
         exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
         exitMenuItem.setName("exitMenuItem"); // NOI18N
         fileMenu.add(exitMenuItem);
+
+        saveAsPRSMenuItem.setText(resourceMap.getString("saveAsPRSMenuItem.text")); // NOI18N
+        saveAsPRSMenuItem.setName("saveAsPRSMenuItem"); // NOI18N
+        saveAsPRSMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsPRSMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveAsPRSMenuItem);
 
         menuBar.add(fileMenu);
 
@@ -311,7 +332,7 @@ public class Holder_Ref_Data_View extends FrameView {
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 628, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 630, Short.MAX_VALUE)
                 .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statusAnimationLabel)
@@ -333,6 +354,92 @@ public class Holder_Ref_Data_View extends FrameView {
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
+
+    //testing writing points in windows/text format
+    //where should this eventually go????
+    private void saveAsPRSMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsPRSMenuItemActionPerformed
+        
+        if ( dpfp == null )
+            dpfp = new DataPointFileProcessor(
+                    coeff_file_text.getText(),
+                    coord_file_text.getText(),
+                    ref_file_text.getText()
+                    );
+        else {
+            dpfp.setCoeffFilePath( coeff_file_text.getText() );
+            dpfp.setStagePointFilePath( coord_file_text.getText() );
+            dpfp.setHolderPointFilePath( ref_file_text.getText() );
+        }
+
+        // Create the reference point list
+        dpfp.processTransform(); 
+        RefPointList rpl = dpfp.getRefPointList();
+
+        //These offsets are needed to save the points in the newer Cameca
+        //text format correctly.  Without them the points will -NOT- be valid!
+        double xoffset = 18.5;
+        double yoffset = 0.0;
+
+        String fileName;
+        JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showSaveDialog(getFrame());
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+            fileName = fc.getSelectedFile().getAbsolutePath();
+            File file = new File(fileName);
+            try{
+                FileOutputStream out = new FileOutputStream(file);
+                Writer bw = new BufferedWriter(new OutputStreamWriter(out));
+
+                int numpts = rpl.getNumRefPoints();
+                //number padding should be constant, may need to change
+                //with something like:
+                //pad = java.lang.Math.round(java.lang.Math.log10((double)numpts));
+                long pad = 3;
+
+                //write "header" lines
+                bw.write("Version="+"\t"+"200\r\n");
+                bw.write("Preset="+numpts+"\t"+"1\r\n");
+                
+
+                for(int i = 0; i < numpts; i++) {
+                    RefPoint rp = rpl.getRefPoint(i);
+                    int num = i+1;
+                    String line = "\"pt"+String.format("%0"+pad+"d", num)+"\"\t";
+                    //line += rp.getPointAsCamecaString();
+
+                    double xval = (rp.getXCoord()/1000)+xoffset;
+                    double yval = (rp.getYCoord()/1000)+yoffset;
+                    double zval = rp.getZCoord();
+                    DecimalFormat threeDForm = new DecimalFormat("#.###");
+                    
+                    line += Double.valueOf(threeDForm.format(xval)) + "\t" +
+                            Double.valueOf(threeDForm.format(yval)) + "\t" +
+                            java.lang.Math.round(zval) + "\t";
+                    //no idea what the -1 is
+                    line += "-1\t";
+                    line += "\"" + rp.getDateString() + "\"\t";
+                    line += "\"" + rp.getComment().trim() + "\"";
+                    line += "\r\n";
+                    bw.write(line);
+                }
+
+                bw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }//GEN-LAST:event_saveAsPRSMenuItemActionPerformed
+
+    private void holder_reg_gen_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_holder_reg_gen_buttonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_holder_reg_gen_buttonActionPerformed
+
+    private void coeff_file_browse_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coeff_file_browse_buttonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_coeff_file_browse_buttonActionPerformed
 
     @Action
     public void coeffFileBrowse() {
@@ -462,6 +569,7 @@ public class Holder_Ref_Data_View extends FrameView {
     private javax.swing.JButton ref_file_browse_button;
     private javax.swing.JLabel ref_file_label;
     private javax.swing.JTextField ref_file_text;
+    private javax.swing.JMenuItem saveAsPRSMenuItem;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
