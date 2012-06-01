@@ -80,10 +80,13 @@ public class RDRTableModel extends AbstractTableModel{
     }
 
     /* Public methods */
+    /* Only the coordinate points are editable. (index: 3, 4, 5)
+     *
+     */
     @Override
     public boolean isCellEditable(int row, int column)
     {
-        if ( column == 0 )
+        if ( column < 3 )
             return( false );
 
         return( true );

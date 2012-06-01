@@ -23,6 +23,10 @@ import com.nrims.holder_data_mgmt.*;
  * @author bepstein
  */
 public class Holder_Ref_Data_View extends FrameView {
+    
+    // Create filechooser instance to be used. It will remember its previous
+    // location when reopened each time.
+    private JFileChooser fc = new JFileChooser();
 
     public Holder_Ref_Data_View(SingleFrameApplication app) {
         super(app);
@@ -107,75 +111,39 @@ public class Holder_Ref_Data_View extends FrameView {
     private void initComponents() {
 
         mainPanel = new javax.swing.JPanel();
-        coeff_file_label = new javax.swing.JLabel();
-        coeff_file_text = new javax.swing.JTextField();
-        coeff_file_browse_button = new javax.swing.JButton();
-        points_text_file_label = new javax.swing.JLabel();
-        coord_file_text = new javax.swing.JTextField();
-        coord_file_browse_button = new javax.swing.JButton();
-        ref_file_label = new javax.swing.JLabel();
-        ref_file_text = new javax.swing.JTextField();
-        ref_file_browse_button = new javax.swing.JButton();
         holder_reg_gen_button = new javax.swing.JButton();
-        holder_reg_review_button = new javax.swing.JButton();
-        data_point_comment_text = new javax.swing.JTextField();
-        data_point_comment_label = new javax.swing.JLabel();
-        data_point_num_check = new javax.swing.JCheckBox();
-        data_point_num_check_label = new javax.swing.JLabel();
-        date_text_label = new javax.swing.JLabel();
-        date_text = new javax.swing.JTextField();
+        testing = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        destReviewTable = new javax.swing.JTable()
+        ;
+        destLabel = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        srcReviewTable = new javax.swing.JTable();
+        srcLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
-        javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
+        saveFile = new javax.swing.JMenuItem();
         saveAsPRSMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
+        SetupMenu = new javax.swing.JMenu();
+        coeffFile = new javax.swing.JMenuItem();
+        coordsFile = new javax.swing.JMenuItem();
+        openRefFile = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
-        javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
+        statusPanelSeparator = new javax.swing.JSeparator();
         statusMessageLabel = new javax.swing.JLabel();
         statusAnimationLabel = new javax.swing.JLabel();
         progressBar = new javax.swing.JProgressBar();
+        jFrame1 = new javax.swing.JFrame();
+        refFileContentReviewFrame1 = new com.nrims.holder_ref_data.RefFileContentReviewFrame();
 
         mainPanel.setName("mainPanel"); // NOI18N
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.nrims.holder_ref_data.Holder_Ref_Data_App.class).getContext().getResourceMap(Holder_Ref_Data_View.class);
-        coeff_file_label.setText(resourceMap.getString("coeff_file_label.text")); // NOI18N
-        coeff_file_label.setName("coeff_file_label"); // NOI18N
-
-        coeff_file_text.setText(resourceMap.getString("coeff_file_text.text")); // NOI18N
-        coeff_file_text.setName("coeff_file_text"); // NOI18N
-
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.nrims.holder_ref_data.Holder_Ref_Data_App.class).getContext().getActionMap(Holder_Ref_Data_View.class, this);
-        coeff_file_browse_button.setAction(actionMap.get("coeffFileBrowse")); // NOI18N
-        coeff_file_browse_button.setText(resourceMap.getString("coeff_file_browse_button.text")); // NOI18N
-        coeff_file_browse_button.setName("coeff_file_browse_button"); // NOI18N
-        coeff_file_browse_button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                coeff_file_browse_buttonActionPerformed(evt);
-            }
-        });
-
-        points_text_file_label.setText(resourceMap.getString("points_text_file_label.text")); // NOI18N
-        points_text_file_label.setName("points_text_file_label"); // NOI18N
-
-        coord_file_text.setText(resourceMap.getString("coord_file_text.text")); // NOI18N
-        coord_file_text.setName("coord_file_text"); // NOI18N
-
-        coord_file_browse_button.setAction(actionMap.get("coordFileBrowse")); // NOI18N
-        coord_file_browse_button.setText(resourceMap.getString("coord_file_browse_button.text")); // NOI18N
-        coord_file_browse_button.setName("coord_file_browse_button"); // NOI18N
-
-        ref_file_label.setText(resourceMap.getString("ref_file_label.text")); // NOI18N
-        ref_file_label.setName("ref_file_label"); // NOI18N
-
-        ref_file_text.setText(resourceMap.getString("ref_file_text.text")); // NOI18N
-        ref_file_text.setName("ref_file_text"); // NOI18N
-
-        ref_file_browse_button.setAction(actionMap.get("refFileBrowse")); // NOI18N
-        ref_file_browse_button.setText(resourceMap.getString("ref_file_browse_button.text")); // NOI18N
-        ref_file_browse_button.setName("ref_file_browse_button"); // NOI18N
-
         holder_reg_gen_button.setAction(actionMap.get("holderRefGenerateFile")); // NOI18N
+        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.nrims.holder_ref_data.Holder_Ref_Data_App.class).getContext().getResourceMap(Holder_Ref_Data_View.class);
         holder_reg_gen_button.setText(resourceMap.getString("holder_reg_gen_button.text")); // NOI18N
         holder_reg_gen_button.setName("holder_reg_gen_button"); // NOI18N
         holder_reg_gen_button.addActionListener(new java.awt.event.ActionListener() {
@@ -184,104 +152,67 @@ public class Holder_Ref_Data_View extends FrameView {
             }
         });
 
-        holder_reg_review_button.setAction(actionMap.get("holderRefReviewFile")); // NOI18N
-        holder_reg_review_button.setText(resourceMap.getString("holder_reg_review_button.text")); // NOI18N
-        holder_reg_review_button.setName("holder_reg_review_button"); // NOI18N
+        testing.setText(resourceMap.getString("testing.text")); // NOI18N
+        testing.setName("testing"); // NOI18N
+        testing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                testingActionPerformed(evt);
+            }
+        });
 
-        data_point_comment_text.setText(resourceMap.getString("data_point_comment_text.text")); // NOI18N
-        data_point_comment_text.setAction(actionMap.get("processDataPointComment")); // NOI18N
-        data_point_comment_text.setName("data_point_comment_text"); // NOI18N
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        data_point_comment_label.setText(resourceMap.getString("data_point_comment_label.text")); // NOI18N
-        data_point_comment_label.setName("data_point_comment_label"); // NOI18N
+        destReviewTable.setName("destReviewTable"); // NOI18N
+        jScrollPane1.setViewportView(destReviewTable);
 
-        data_point_num_check.setText(resourceMap.getString("data_point_num_check.text")); // NOI18N
-        data_point_num_check.setName("data_point_num_check"); // NOI18N
+        destLabel.setText(resourceMap.getString("destLabel.text")); // NOI18N
+        destLabel.setName("destLabel"); // NOI18N
 
-        data_point_num_check_label.setText(resourceMap.getString("data_point_num_check_label.text")); // NOI18N
-        data_point_num_check_label.setName("data_point_num_check_label"); // NOI18N
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        date_text_label.setText(resourceMap.getString("date_text_label.text")); // NOI18N
-        date_text_label.setName("date_text_label"); // NOI18N
+        srcReviewTable.setName("srcReviewTable"); // NOI18N
+        jScrollPane2.setViewportView(srcReviewTable);
 
-        date_text.setText(resourceMap.getString("date_text.text")); // NOI18N
-        date_text.setName("date_text"); // NOI18N
+        srcLabel.setText(resourceMap.getString("srcLabel.text")); // NOI18N
+        srcLabel.setName("srcLabel"); // NOI18N
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(coeff_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(points_text_file_label)
-                                    .addComponent(data_point_comment_label))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(coord_file_text)
-                                    .addComponent(data_point_comment_text)
-                                    .addComponent(coeff_file_text, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                                    .addGroup(mainPanelLayout.createSequentialGroup()
-                                        .addComponent(data_point_num_check_label)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(data_point_num_check))
-                                    .addComponent(date_text, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)))
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addComponent(ref_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(ref_file_text)))
-                        .addGap(18, 18, 18)
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(holder_reg_review_button)
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(coeff_file_browse_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(coord_file_browse_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(ref_file_browse_button, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
-                                .addGap(18, 18, 18)
-                                .addComponent(holder_reg_gen_button))))
-                    .addComponent(date_text_label))
-                .addContainerGap(146, Short.MAX_VALUE))
+                        .addComponent(testing)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(holder_reg_gen_button))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(srcLabel))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(destLabel)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(56, 56, 56))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(coeff_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(coeff_file_text, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(coeff_file_browse_button))
-                .addGap(29, 29, 29)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(points_text_file_label, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(coord_file_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(coord_file_browse_button))
-                .addGap(18, 18, 18)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(data_point_comment_label)
-                    .addComponent(data_point_comment_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(data_point_num_check_label)
-                    .addComponent(data_point_num_check))
-                .addGap(17, 17, 17)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(date_text_label)
-                    .addComponent(date_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(77, 77, 77)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ref_file_label)
-                    .addComponent(ref_file_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ref_file_browse_button)
+                    .addComponent(testing)
                     .addComponent(holder_reg_gen_button))
                 .addGap(18, 18, 18)
-                .addComponent(holder_reg_review_button)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(srcLabel)
+                    .addComponent(destLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -289,9 +220,13 @@ public class Holder_Ref_Data_View extends FrameView {
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
 
-        exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
-        exitMenuItem.setName("exitMenuItem"); // NOI18N
-        fileMenu.add(exitMenuItem);
+        saveFile.setText(resourceMap.getString("saveFile.text")); // NOI18N
+        saveFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveFileActionPerformed(evt);
+            }
+        });
+        fileMenu.add(saveFile);
 
         saveAsPRSMenuItem.setText(resourceMap.getString("saveAsPRSMenuItem.text")); // NOI18N
         saveAsPRSMenuItem.setName("saveAsPRSMenuItem"); // NOI18N
@@ -301,6 +236,10 @@ public class Holder_Ref_Data_View extends FrameView {
             }
         });
         fileMenu.add(saveAsPRSMenuItem);
+
+        exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
+        exitMenuItem.setName("exitMenuItem"); // NOI18N
+        fileMenu.add(exitMenuItem);
 
         menuBar.add(fileMenu);
 
@@ -312,6 +251,38 @@ public class Holder_Ref_Data_View extends FrameView {
         helpMenu.add(aboutMenuItem);
 
         menuBar.add(helpMenu);
+
+        SetupMenu.setText(resourceMap.getString("SetupMenu.text")); // NOI18N
+        SetupMenu.setName("SetupMenu"); // NOI18N
+
+        coeffFile.setText(resourceMap.getString("coeffFile.text")); // NOI18N
+        coeffFile.setName("coeffFile"); // NOI18N
+        coeffFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                coeffFileActionPerformed(evt);
+            }
+        });
+        SetupMenu.add(coeffFile);
+
+        coordsFile.setText(resourceMap.getString("coordsFile.text")); // NOI18N
+        coordsFile.setName("coordsFile"); // NOI18N
+        coordsFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                coordsFileActionPerformed(evt);
+            }
+        });
+        SetupMenu.add(coordsFile);
+
+        openRefFile.setText(resourceMap.getString("openRefFile.text")); // NOI18N
+        openRefFile.setName("openRefFile"); // NOI18N
+        openRefFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openRefFileActionPerformed(evt);
+            }
+        });
+        SetupMenu.add(openRefFile);
+
+        menuBar.add(SetupMenu);
 
         statusPanel.setName("statusPanel"); // NOI18N
 
@@ -328,15 +299,17 @@ public class Holder_Ref_Data_View extends FrameView {
         statusPanel.setLayout(statusPanelLayout);
         statusPanelLayout.setHorizontalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 812, Short.MAX_VALUE)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(statusMessageLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 630, Short.MAX_VALUE)
-                .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(statusAnimationLabel)
-                .addContainerGap())
+                .addGap(384, 384, 384)
+                .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(statusPanelSeparator, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
+                        .addComponent(progressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(statusAnimationLabel)
+                        .addContainerGap())))
         );
         statusPanelLayout.setVerticalGroup(
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -350,6 +323,21 @@ public class Holder_Ref_Data_View extends FrameView {
                 .addGap(3, 3, 3))
         );
 
+        jFrame1.setName("jFrame1"); // NOI18N
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        refFileContentReviewFrame1.setName("refFileContentReviewFrame1"); // NOI18N
+
         setComponent(mainPanel);
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
@@ -361,165 +349,103 @@ public class Holder_Ref_Data_View extends FrameView {
         
         if ( dpfp == null )
             dpfp = new DataPointFileProcessor(
-                    coeff_file_text.getText(),
-                    coord_file_text.getText(),
-                    ref_file_text.getText()
+                    coeff_file_text,
+                    coord_file_text,
+                    ref_file_text
                     );
         else {
-            dpfp.setCoeffFilePath( coeff_file_text.getText() );
-            dpfp.setStagePointFilePath( coord_file_text.getText() );
-            dpfp.setHolderPointFilePath( ref_file_text.getText() );
+            dpfp.setCoeffFilePath( coeff_file_text );
+            dpfp.setStagePointFilePath( coord_file_text );
+            dpfp.setHolderPointFilePath( ref_file_text );
         }
 
-        // Create the reference point list
-        dpfp.processTransform(); 
-        RefPointList rpl = dpfp.getRefPointList();
-
-        //These offsets are needed to save the points in the newer Cameca
-        //text format correctly.  Without them the points will -NOT- be valid!
-        double xoffset = 18.5;
-        double yoffset = 0.0;
-
-        String fileName;
-        JFileChooser fc = new JFileChooser();
-        int returnVal = fc.showSaveDialog(getFrame());
-
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-
-            fileName = fc.getSelectedFile().getAbsolutePath();
-            File file = new File(fileName);
-            try{
-                FileOutputStream out = new FileOutputStream(file);
-                Writer bw = new BufferedWriter(new OutputStreamWriter(out));
-
-                int numpts = rpl.getNumRefPoints();
-                //number padding should be constant, may need to change
-                //with something like:
-                //pad = java.lang.Math.round(java.lang.Math.log10((double)numpts));
-                long pad = 3;
-
-                //write "header" lines
-                bw.write("Version="+"\t"+"200\r\n");
-                bw.write("Preset="+numpts+"\t"+"1\r\n");
-                
-
-                for(int i = 0; i < numpts; i++) {
-                    RefPoint rp = rpl.getRefPoint(i);
-                    int num = i+1;
-                    String line = "\"pt"+String.format("%0"+pad+"d", num)+"\"\t";
-                    //line += rp.getPointAsCamecaString();
-
-                    double xval = (rp.getXCoord()/1000)+xoffset;
-                    double yval = (rp.getYCoord()/1000)+yoffset;
-                    double zval = rp.getZCoord();
-                    DecimalFormat threeDForm = new DecimalFormat("#.###");
-                    
-                    line += Double.valueOf(threeDForm.format(xval)) + "\t" +
-                            Double.valueOf(threeDForm.format(yval)) + "\t" +
-                            java.lang.Math.round(zval) + "\t";
-                    //no idea what the -1 is
-                    line += "-1\t";
-                    line += "\"" + rp.getDateString() + "\"\t";
-                    line += "\"" + rp.getComment().trim() + "\"";
-                    line += "\r\n";
-                    bw.write(line);
-                }
-
-                bw.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        int saveApprove = fc.showSaveDialog(getFrame());
+        if (saveApprove == JFileChooser.APPROVE_OPTION) {
+            DataIO.savePRS(fc.getSelectedFile().getAbsolutePath(), dpfp);
         }
-
     }//GEN-LAST:event_saveAsPRSMenuItemActionPerformed
 
     private void holder_reg_gen_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_holder_reg_gen_buttonActionPerformed
-        // TODO add your handling code here:
+        if ( dpfp == null )
+            dpfp = new DataPointFileProcessor(
+                    coeff_file_text,
+                    coord_file_text,
+                    ref_file_text
+                    );
+        else {
+            dpfp.setCoeffFilePath( coeff_file_text );
+            dpfp.setStagePointFilePath( coord_file_text );
+            dpfp.setHolderPointFilePath( ref_file_text );
+        }
+
+        // Create the reference point list
+        dpfp.processTransform();
+        RefPointList rpl = dpfp.getRefPointList();
+        // Set the comment for each point
+        for (int i=0; i<rpl.getNumRefPoints(); i++)
+            rpl.getRefPoint(i).setComment(getCommentFor(i));
+        /*Moving write functionality to the "save" button
+        // Write the file
+        HolderDataFile hdf = new HolderDataFile(dpfp.getHolderPointFilePath(), true, dpfp.getRefPointList());
+        hdf.writeFileOut();
+        hdf.close();
+         *
+         */
+
+        destTableRefresh();
+
     }//GEN-LAST:event_holder_reg_gen_buttonActionPerformed
 
-    private void coeff_file_browse_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coeff_file_browse_buttonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_coeff_file_browse_buttonActionPerformed
+    private void saveFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFileActionPerformed
+        int saveApprove = fc.showSaveDialog( getFrame() );
+        if (saveApprove == JFileChooser.APPROVE_OPTION) {
+            DataIO.saveREF(fc.getSelectedFile().getPath(), dpfp);
+        }
+    }//GEN-LAST:event_saveFileActionPerformed
 
-    @Action
-    public void coeffFileBrowse() {
-        JFileChooser fc = new JFileChooser();
-
+    private void coeffFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coeffFileActionPerformed
         fc.showOpenDialog( getFrame() );
-        coeff_file_text.setText( fc.getSelectedFile().getPath() );
-    }
+        coeff_file_text = fc.getSelectedFile().getPath();
+    }//GEN-LAST:event_coeffFileActionPerformed
 
-    @Action
-    public void coordFileBrowse() {
-        JFileChooser fc = new JFileChooser();
+    private void coordsFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coordsFileActionPerformed
         fc.showOpenDialog( getFrame() );
-        coord_file_text.setText( fc.getSelectedFile().getPath() );
-    }
+        coord_file_text = fc.getSelectedFile().getPath();
+    }//GEN-LAST:event_coordsFileActionPerformed
 
-    @Action
-    public void refFileBrowse() {
+    private void openRefFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openRefFileActionPerformed
         HolderDataFile hdf;
         RefPointList rpl;
-        JFileChooser fc = new JFileChooser();
         fc.showSaveDialog( getFrame() );
-        ref_file_text.setText( fc.getSelectedFile().getPath() );
+        ref_file_text = fc.getSelectedFile().getPath();
 
         /* Allowing ref file review if it exists. */
-        if ( (new File( ref_file_text.getText() )).exists() )
-        {
+        if ( (new File( ref_file_text )).exists() ) {
             if ( dpfp == null )
                 dpfp = new DataPointFileProcessor();
 
-            dpfp.setHolderPointFilePath( ref_file_text.getText() );
+            dpfp.setHolderPointFilePath( ref_file_text );
             rpl = new RefPointList();
 
-            hdf = new HolderDataFile( ref_file_text.getText(),
-                false,
-                rpl);
+            hdf = new HolderDataFile( ref_file_text,
+                    false,
+                    rpl);
 
             hdf.readFileIn();
             hdf.close();
             dpfp.setRefPointList( hdf.getRefPointList() );
 
-            holder_reg_review_button.setEnabled( true );
+            destTableRefresh();
         }
-         
-    }
+    }//GEN-LAST:event_openRefFileActionPerformed
 
-    @Action
-    public void holderRefGenerateFile() {
-        if ( dpfp == null )
-            dpfp = new DataPointFileProcessor(
-                    coeff_file_text.getText(),
-                    coord_file_text.getText(),
-                    ref_file_text.getText()
-                    );
-        else {
-            dpfp.setCoeffFilePath( coeff_file_text.getText() );
-            dpfp.setStagePointFilePath( coord_file_text.getText() );
-            dpfp.setHolderPointFilePath( ref_file_text.getText() );
-        }
+    private void testingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testingActionPerformed
 
-        // Create the reference point list
-        dpfp.processTransform(); 
-        RefPointList rpl = dpfp.getRefPointList();
-        // Set the comment for each point
-        for (int i=0; i<rpl.getNumRefPoints(); i++)
-            rpl.getRefPoint(i).setComment(getCommentFor(i));
-        // Write the file
-        HolderDataFile hdf = new HolderDataFile(dpfp.getHolderPointFilePath(), true, dpfp.getRefPointList());
-        hdf.writeFileOut();
-        hdf.close();
-        
-        /* Enabling review */
-        holder_reg_review_button.setEnabled( true );
-    }
+        coeff_file_text = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/coeff-gwen-exp9.txt";
+        coord_file_text = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/xy.points";
+        holder_reg_gen_buttonActionPerformed(new ActionEvent(new Object(), ActionEvent.ACTION_PERFORMED, ""));
+    }//GEN-LAST:event_testingActionPerformed
 
-    @Action
-    public void holderRefReviewFile() {
-        RefFileContentReviewFrame rfcrf = new RefFileContentReviewFrame( dpfp );
-        rfcrf.setVisible( true );
-    }
 
     /**
      * Get the comment string currently in the text field.
@@ -539,41 +465,59 @@ public class Holder_Ref_Data_View extends FrameView {
      * @return the comment string for the given index
      */
     public String getCommentFor(int i) {
+        //Removing this option for the GUI, setting comment to default
+        /*
         String comment = "";
         int len = data_point_comment_text.getDocument().getLength();
         try { comment = data_point_comment_text.getDocument().getText(0, len); }
         catch (BadLocationException ex) {}
         if (data_point_num_check.isSelected() && i >= 0)
             comment = (i + 1) + " " + comment;
-        return comment;
+         *
+         */
+        return "Holder reference point" +
+            "                                                          ";
     }
 
+    /*
+     * Refreshes destReviewTable with data from dataPointFileProcessor
+     */
+    private void destTableRefresh() {
+        destTableModel = new RDRTableModel(destReviewTable.getModel(), dpfp);
+        destReviewTable.setModel(destTableModel);
+    }
+
+    //Variable declaration, temp for working on GUI
+    private String coeff_file_text;
+    private String coord_file_text;
+    private String ref_file_text;
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton coeff_file_browse_button;
-    private javax.swing.JLabel coeff_file_label;
-    private javax.swing.JTextField coeff_file_text;
-    private javax.swing.JButton coord_file_browse_button;
-    private javax.swing.JTextField coord_file_text;
-    private javax.swing.JLabel data_point_comment_label;
-    private javax.swing.JTextField data_point_comment_text;
-    private javax.swing.JCheckBox data_point_num_check;
-    private javax.swing.JLabel data_point_num_check_label;
-    private javax.swing.JTextField date_text;
-    private javax.swing.JLabel date_text_label;
+    private javax.swing.JMenu SetupMenu;
+    private javax.swing.JMenuItem coeffFile;
+    private javax.swing.JMenuItem coordsFile;
+    private javax.swing.JLabel destLabel;
+    private javax.swing.JTable destReviewTable;
     private javax.swing.JButton holder_reg_gen_button;
-    private javax.swing.JButton holder_reg_review_button;
+    private javax.swing.JFrame jFrame1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JLabel points_text_file_label;
+    private javax.swing.JMenuItem openRefFile;
     private javax.swing.JProgressBar progressBar;
-    private javax.swing.JButton ref_file_browse_button;
-    private javax.swing.JLabel ref_file_label;
-    private javax.swing.JTextField ref_file_text;
+    private com.nrims.holder_ref_data.RefFileContentReviewFrame refFileContentReviewFrame1;
     private javax.swing.JMenuItem saveAsPRSMenuItem;
+    private javax.swing.JMenuItem saveFile;
+    private javax.swing.JLabel srcLabel;
+    private javax.swing.JTable srcReviewTable;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
+    private javax.swing.JSeparator statusPanelSeparator;
+    private javax.swing.JButton testing;
     // End of variables declaration//GEN-END:variables
+
 
     private final Timer messageTimer;
     private final Timer busyIconTimer;
@@ -585,15 +529,17 @@ public class Holder_Ref_Data_View extends FrameView {
 
     /* custom private variables */
     private DataPointFileProcessor dpfp;
+    private RDRTableModel destTableModel;
+    private RDRTableModel srcTableModel;
+    
 
     /* Private methods */
     private void initInternalData()
     {
         dpfp = new DataPointFileProcessor();
-        holder_reg_review_button.setEnabled( false );
-        data_point_comment_text.setText( 
-                dpfp.getRefPointList().getDefaultRefPointComment()
-                );
+       // data_point_comment_text.setText(
+        //        dpfp.getRefPointList().getDefaultRefPointComment()
+         //       );
     }
 
     @Action
