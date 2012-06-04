@@ -7,6 +7,7 @@ package com.nrims.holder_ref_data;
 
 import javax.swing.table.*;
 import com.nrims.holder_data_mgmt.*;
+import java.util.ArrayList;
 
 /**
  * Provides table model for the graphical table in RefFileContentReviewFrame
@@ -118,29 +119,35 @@ public class RDRTableModel extends AbstractTableModel{
     {
         table_content[row][column] = obj;
         fireTableCellUpdated(row, column);
-        RefPointList rpl = dpfp.getRefPointList();
+        ArrayList<RefPoint> destList = dpfp.getDestPoints();
 
         /* Updating the corresponding point in dpfp */
         switch ( column )
         {
             case COMMENT_COL_NUM:
-                rpl.getRefPoint(row).setComment( obj.toString() );
+                destList.get(row).setComment( obj.toString() );
+                //rpl.getRefPoint(row).setComment( obj.toString() );
                 break;
             case DATE_COL_NUM:
-                rpl.getRefPoint(row).setDateString( obj.toString() );
+                destList.get(row).setDateString( obj.toString() );
+                //rpl.getRefPoint(row).setDateString( obj.toString() );
                 break;
             case X_COORD_COL_NUM:
-                rpl.getRefPoint(row).setXCoord(new Double( obj.toString() ));
+                destList.get(row).setXCoord(new Double( obj.toString() ));
+                //rpl.getRefPoint(row).setXCoord(new Double( obj.toString() ));
                 break;
             case Y_COORD_COL_NUM:
-                rpl.getRefPoint(row).setYCoord(new Double( obj.toString() ));
+                destList.get(row).setYCoord(new Double(obj.toString()));
+                //rpl.getRefPoint(row).setYCoord(new Double( obj.toString() ));
                 break;
             case Z_COORD_COL_NUM:
-                rpl.getRefPoint(row).setZCoord(new Double( obj.toString() ));
+                destList.get(row).setZCoord(new Double(obj.toString() ));
+                //rpl.getRefPoint(row).setZCoord(new Double( obj.toString() ));
                 break;
         }
 
-        dpfp.setRefPointList(rpl);
+        //This line looks unnecessary. We edited the objects in the list, not the list.
+        //        dpfp.setDestPoints(destList);
     }
 
     @Override
@@ -153,13 +160,14 @@ public class RDRTableModel extends AbstractTableModel{
     {
         int i;
         dpfp = dp_in;
-        RefPointList rpl = dpfp.getRefPointList();
+        //RefPointList rpl = dpfp.getRefPointList();
+        ArrayList<RefPoint> destList = dpfp.getDestPoints();
         RefPoint rf;
 
-        if (rpl == null)
+        if (destList == null)
             return;
 
-        row_count = rpl.getNumRefPoints();
+        row_count = destList.size();
 
         if ( row_count == 0 )
         {
@@ -172,7 +180,7 @@ public class RDRTableModel extends AbstractTableModel{
         /* Filling up the content */
         for (i = 0; i < row_count; i++)
         {
-            rf = rpl.getRefPoint(i);
+            rf = destList.get(i);
             table_content[i][POINT_NUM_COL_NUM] = new Integer(i + 1);
             table_content[i][COMMENT_COL_NUM] = rf.getComment();
             table_content[i][DATE_COL_NUM] = rf.getDateString();

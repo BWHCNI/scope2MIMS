@@ -6,58 +6,40 @@
 package com.nrims.holder_data_mgmt;
 
 import com.nrims.holder_transform.*;
+import java.util.ArrayList;
 
 /**
- * The class intended to run a transformation of the data points file into the .ref format.
- * @author bepstein
+ * 
  */
 public class DataPointFileProcessor {
-    /* private variables and methods */
-    private String coeff_file_path = null;
-    private String stage_point_file_path = null;
-    private String holder_point_file_path = null;
-    private Transform point_trans = null;
-    private RefPointList rpl = null;
-
-    private void printRefPoint(RefPoint rp)
-    {
-        System.out.println("X: " + rp.getXCoord());
-        System.out.println("Y: " + rp.getYCoord());
-        System.out.println("Z: " + rp.getZCoord());
-        System.out.println("Comment: " + rp.getComment());
-        System.out.println("Date: " + rp.getDateString());
-    }
+    private String coeffFilePath;
+    private String srcFilePath;
+    private Transform point_trans = new Transform();
+    protected ArrayList<RefPoint> destPoints = new ArrayList<RefPoint>();
 
     /* constructors */
 
+    //Farah: I'm not sure why we want a blank constructor, but here it is. 
     /**
      * Basic constructor.
      */
-    public DataPointFileProcessor()
-    {
-        point_trans = new Transform();
-        rpl = new RefPointList();
+    public DataPointFileProcessor() {
     }
-
+    
     /**
-     * 
-     * @param coeff_file
-     * @param stage_point_file
-     * @param holder_output_file
+     * Constructor
+     * @param coeffFile
+     * @param srcPointsfile
      */
     public DataPointFileProcessor(
-            String coeff_file,
-            String stage_point_file,
-            String holder_output_file)
+            String coeffFile,
+            String srcFile)
     {
-        point_trans = new Transform();
-        rpl = new RefPointList();
-        setCoeffFilePath( coeff_file );
-        setStagePointFilePath( stage_point_file );
-        setHolderPointFilePath( holder_output_file );
+        coeffFilePath = coeffFile;
+        srcFilePath = srcFile;
     }
 
-    /* public methods */
+    /* getters and setters */
 
     /**
      * Sets the filesystem path to coefficients file.
@@ -65,7 +47,7 @@ public class DataPointFileProcessor {
      */
     public void setCoeffFilePath(String path)
     {
-        coeff_file_path = path;
+        coeffFilePath = path;
     }
 
     /**
@@ -74,7 +56,7 @@ public class DataPointFileProcessor {
      */
     public String getCoeffFilePath()
     {
-        return( coeff_file_path );
+        return( coeffFilePath );
     }
 
     /**
@@ -82,46 +64,67 @@ public class DataPointFileProcessor {
      *
      * @param path Filesystem path to stage points file
      */
-    public void setStagePointFilePath(String path)
+    public void setSrcFilePath(String path)
     {
-        stage_point_file_path = path;
+        srcFilePath = path;
     }
 
     /**
      * Returns filesystem path to stage points file.
      * @return filesystem path to stage points file
      */
-    public String getPointFilePath()
+    public String getSrcFilePath()
     {
-        return( stage_point_file_path );
+        return( srcFilePath );
     }
 
-    /**
-     * 
-     * @param path
-     */
-    public void setHolderPointFilePath(String path)
-    {
-        holder_point_file_path = path;
+    
+    public ArrayList<RefPoint> getDestPoints() {
+        return (destPoints);
     }
-
-    public String getHolderPointFilePath()
-    {
-        return( holder_point_file_path );
+    
+    public void setDestPoints(ArrayList<RefPoint> newDest) {
+        destPoints = newDest;
     }
-
+    
+    public void printDestPoints() {
+        //TODO
+    }
+    
+    public void printDestPoints(ArrayList<RefPoint> printList) {
+        //TODO
+    }
+    
     public void processTransform()
     {
         point_trans.readCoefficientsFile( getCoeffFilePath() );
-        point_trans.readStagePointsFile( getPointFilePath() );
+        point_trans.readStagePointsFile( getSrcFilePath() );
         point_trans.setTransformedPoints();
 
-        if ( rpl != null)
-            point_trans.setRefPointList(rpl);
+        //This is very weird. Comment out for now. Shallow copies, why?
+        //if ( rpl != null)
+        //point_trans.setRefPointList(rpl);
 
-        rpl = point_trans.transformedPointsToRefPointList();
+        destPoints = point_trans.transformedPointsToRefPoints();
     }
+    
+    /* This should be in the RefPoint.java Copying, leaving a copy here for 
+    
+    private void printRefPoint(RefPoint rp)
+            
+    {
+        System.out.println("X: " + rp.getXCoord());
+        System.out.println("Y: " + rp.getYCoord());
+        System.out.println("Z: " + rp.getZCoord());
+        System.out.println("Comment: " + rp.getComment());
+        System.out.println("Date: " + rp.getDateString());
+    }
+    * 
+    */
+    
+    //Other methods I don't think we need anymore.
 
+    /*
     public RefPointList getRefPointList()
     {
         return( rpl );
@@ -156,11 +159,16 @@ public class DataPointFileProcessor {
     {
         printRefPointList( getRefPointList() );
     }
+    * 
+    */
+    
+    //Get rid of generateRefPointFile method... redundant, not used.
 
     /*
      * This routine generates the holder ref file based upon the 
      * coefficients and point corrdintates file.
      */
+    /*
     public void generateRefPointFile()
     {
         HolderDataFile hdf;
@@ -168,11 +176,11 @@ public class DataPointFileProcessor {
         if ( getCoeffFilePath() == null )
             return;
 
-        if ( getPointFilePath() == null )
+        if ( getSrcFilePath() == null )
             return;
 
-        if ( getHolderPointFilePath() == null )
-            return;
+        //if ( getHolderPointFilePath() == null )
+        //    return;
 
         processTransform();
 
@@ -186,7 +194,10 @@ public class DataPointFileProcessor {
         hdf.close();
     }
 
+    //Farah: ignoring errors in this method for now since it's a test...
+    
     /* test method */
+    /*
     public static void main(String[ ] args)
     {
         final String write_action = "write";
@@ -229,7 +240,7 @@ public class DataPointFileProcessor {
 
             dpfp.processTransform();
 
-            /* Printing the point content (X,Y,Z) out for reference. */
+            // Printing the point content (X,Y,Z) out for reference. 
             dpfp.point_trans.printTransformedPoints();
 
             hdf = new HolderDataFile(
@@ -261,6 +272,8 @@ public class DataPointFileProcessor {
             return;
         }
     }
+    * 
+    */
     
 }
 

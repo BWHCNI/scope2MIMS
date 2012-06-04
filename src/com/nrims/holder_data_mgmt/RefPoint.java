@@ -262,4 +262,18 @@ public class RefPoint {
     {
         return( default_comment );
     }
+    
+    /*
+     * Method moved from DataPointFileProcessor class. Changed to be on this 
+     * ref point rather than having a ref point as a parameter.
+     */
+    private void printRefPoint()
+            
+    {
+        System.out.println("X: " + getXCoord());
+        System.out.println("Y: " + getYCoord());
+        System.out.println("Z: " + getZCoord());
+        System.out.println("Comment: " + getComment());
+        System.out.println("Date: " + getDateString());
     }
+}

@@ -2,6 +2,7 @@ package com.nrims.holder_data_mgmt;
 
 import java.io.*;
 import com.nrims.common.*;
+import java.util.ArrayList;
 /**
  * Specific class to handle the file I/O for the holder coordinates file
  * The formatting assumes big-endian arrangement where applicable.
@@ -75,7 +76,7 @@ public class HolderDataFile {
     private String out_file_path;
     private FileInputStream file_in;
     private FileOutputStream file_out;
-    private RefPointList rpl;
+    private ArrayList<RefPoint> rpl;
 
     private void setStreamsToNull() throws IOException{
         if ( file_in != null ){
@@ -105,8 +106,10 @@ public class HolderDataFile {
         int i;
 
         setStreamsToNull();
-        setFilePathsToNull();
-        setRefPointList( new RefPointList() );
+        rpl = new ArrayList<RefPoint>();
+        
+        //This is unnecessary. Strings are initialized to null by default:
+        //        setFilePathsToNull();
 
         for (i = 0; i < tab_enr.length; i++)
             tab_enr[ i ] = 0;
@@ -380,6 +383,8 @@ public class HolderDataFile {
     }
 
     /* constructors */
+    
+    //Usage search: No patterns found
     public HolderDataFile()
     {
         try {
@@ -389,6 +394,7 @@ public class HolderDataFile {
         }
     }
 
+    //Usage search: No patterns found
     public HolderDataFile(
             String fpath,
             Boolean open_for_write
@@ -408,11 +414,7 @@ public class HolderDataFile {
         }
     }
 
-    public HolderDataFile(
-            String fpath,
-            Boolean open_for_write,
-            RefPointList r_p_l
-        ){
+    public HolderDataFile(String fpath, Boolean open_for_write, ArrayList<RefPoint> rpl){
         try{
             initClassData();
 
@@ -427,13 +429,14 @@ public class HolderDataFile {
 
         }
 
-        setRefPointList( r_p_l );
+        setRefPointList( rpl );
     }
 
+    //Usage search: no patterns found
     public HolderDataFile(
             String in_fpath,
             String out_fpath,
-            RefPointList r_p_l
+            ArrayList<RefPoint> r_p_l
         ){
         try{
             initClassData();
@@ -469,26 +472,28 @@ public class HolderDataFile {
         return( out_file_path );
     }
 
-    public void setRefPointList(RefPointList r_p_l){
-        rpl = r_p_l;
+    public void setRefPointList(ArrayList<RefPoint> rpl_in){
+        rpl = rpl_in;
     }
+    
 
-    public RefPointList getRefPointList(){
+    public ArrayList<RefPoint> getRefPointList(){
         return( rpl );
     }
-
-    public void readFileIn(RefPointList r_p_l,
+    
+    
+    public void readFileIn(ArrayList<RefPoint> rpl_in,
             FileInputStream fis
             )
     {
         int num_points, i;
 
         /* Exiting if r_p_l is null */
-        if ( r_p_l == null )
+        if ( rpl_in == null )
             return;
 
         /* Clearning the list */
-        r_p_l.removeAllRefPoints();
+        rpl_in.clear();
 
         try {
             /* Reading in the file header */
@@ -498,7 +503,7 @@ public class HolderDataFile {
             num_points = readInInt( fis );
 
             for (i = 0; i < num_points; i++)
-                r_p_l.addRefPoint( readInRefPoint( fis ) );
+                rpl_in.add( readInRefPoint( fis ) );
             
         } catch ( IOException ioe ){
 
@@ -519,7 +524,7 @@ public class HolderDataFile {
     }
 
     public void writeFileOut
-        (RefPointList r_p_l,
+        (ArrayList<RefPoint> rpl_out,
         FileOutputStream fos
         ){
         int offset;
@@ -546,14 +551,14 @@ public class HolderDataFile {
 
             /* Writing out the number of points.
              */
-            writeOutInt(fos, r_p_l.getNumRefPoints());
+            writeOutInt(fos, rpl_out.size());
             offset += 4;
             
-            for (i = 0; i < r_p_l.getNumRefPoints(); i++)
-                offset += writeOutRefPoint(fos, r_p_l.getRefPoint(i));
+            for (i = 0; i < rpl_out.size(); i++)
+                offset += writeOutRefPoint(fos, rpl_out.get(i));
 
             /* filling the points arr with blank points up to ibd_max_ref */
-            for (i = r_p_l.getNumRefPoints(); i < ibd_max_ref; i++)
+            for (i = rpl_out.size(); i < ibd_max_ref; i++)
                 offset += writeOutRefPoint(fos, new RefPoint());
 
             /* Writing out an 4-byte blank word at the end.*/

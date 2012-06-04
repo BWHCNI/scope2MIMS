@@ -23,10 +23,10 @@ public class Transform {
     /* private variables */
     private double[][] XCoefficients;
     private double[][] YCoefficients;
-    private ArrayList<double[]> StagePoints;
-    private ArrayList<double[]> TransformedPoints;
+    private ArrayList<double[]> srcPoints;
+    private ArrayList<double[]> transformedPoints;
     private MicroInstrReferencePoints mirp;
-    private RefPointList rpl = null;
+    //private RefPointList rpl = null;
 
     /* private methods */
     private RefPoint coordsToRefPoint(double[] coords)
@@ -64,8 +64,8 @@ public class Transform {
         //initialize coefficient matrix to 0
         XCoefficients = new double[4][4];
         YCoefficients = new double[4][4];
-        StagePoints = new ArrayList<double[]>();
-        TransformedPoints = new ArrayList<double[]>();
+        srcPoints = new ArrayList<double[]>();
+        transformedPoints = new ArrayList<double[]>();
 
         /* Setting stage/instr point storage to nothing */
         mirp = null;
@@ -78,16 +78,6 @@ public class Transform {
      */
     public Transform() {
         init_private_vars();
-    }
-
-    /**
-     * Sets the internal RefPointList to rpl_in
-     * @param rpl_in
-     */
-    public Transform(RefPointList rpl_in)
-    {
-        init_private_vars();
-        setRefPointList( rpl_in );
     }
 
     public Transform(MicroInstrReferencePoints mi)
@@ -411,21 +401,21 @@ public class Transform {
         this.setCoefficientsFromList(coeff);
     }
     
-    public void setStagePoints(double[][] pts) {
+    public void setSrcPoints(double[][] pts) {
         for(int i = 0; i < pts.length; i++) {
-            StagePoints.add(pts[i]);
+            srcPoints.add(pts[i]);
         }
     }
     
-    public void clearStagePoints() {
-        StagePoints.clear();
+    public void clearSrcPoints() {
+        srcPoints.clear();
     }
     
-    public  void printStagePoints() {
-        System.out.println("Stage Points:");
+    public  void printSrcPoints() {
+        System.out.println("Source Points:");
         double[] pt = new double[3];
-        for(int i = 0; i < StagePoints.size(); i++) {
-            pt = TransformedPoints.get(i);
+        for(int i = 0; i < srcPoints.size(); i++) {
+            pt = transformedPoints.get(i);
             System.out.println(pt[0] + ", " + pt[1] + ", " + pt[2]);
         }
         System.out.println("");
@@ -449,7 +439,7 @@ public class Transform {
                 for(int i =0; i< pts.length; i++) {
                     pts[i] = Double.parseDouble(stringpts[i]);
                 }
-                StagePoints.add(pts);
+                srcPoints.add(pts);
             }
         } catch(IOException e) {
             e.printStackTrace();
@@ -488,67 +478,44 @@ rotate_nikon_to_mims(int spts,
 */        
     
     public void clearTransformedPoints() {
-        TransformedPoints.clear();
+        transformedPoints.clear();
     }
 
     public ArrayList getTransformedPoints()
     {
-        return( TransformedPoints );
+        return( transformedPoints );
     }
 
-    public RefPointList transformedPointsToRefPointList()
-    {
-        RefPointList ret_value;
+    public ArrayList<RefPoint> transformedPointsToRefPoints() {
+        ArrayList<RefPoint> refList = new ArrayList<RefPoint>();
         RefPoint rp;
-
-        if ( rpl == null )
-            ret_value = new RefPointList();
-        else
-            ret_value = rpl;
-
         double[] point_coords;
-        int i;
         
-        for (i = 0; i < TransformedPoints.size(); i++)
-        {
-            point_coords = TransformedPoints.get(i);
+        for (int i = 0; i < transformedPoints.size(); i++) {
+            point_coords = transformedPoints.get(i);
             rp = coordsToRefPoint(point_coords);
-            rp.setComment( ret_value.getDefaultRefPointComment() );
-            ret_value.addRefPoint( rp );
+            rp.setComment("TODO");
+            refList.add(rp);
         }
-
-        return ( ret_value );
-    }
-
-    /**
-     * Sets the RefPointList for the object.
-     * @param rpl_in RefPointList to set
-     */
-    public void setRefPointList(RefPointList rpl_in)
-    {
-        rpl = rpl_in;
-    }
-
-    public RefPointList getRefPointList()
-    {
-        return( rpl );
+        
+        return refList;
     }
 
     public void setTransformedPoints() {
         double[] temppoint = new double[3];
         
         clearTransformedPoints();
-        for (int p = 0; p < StagePoints.size(); p++) {
-            temppoint = this.transformPoint(StagePoints.get(p));
-            TransformedPoints.add(temppoint);
+        for (int p = 0; p < srcPoints.size(); p++) {
+            temppoint = this.transformPoint(srcPoints.get(p));
+            transformedPoints.add(temppoint);
         }
     }
     
     public void printTransformedPoints() {
         System.out.println("Transformed Points:");
         double[] pt = new double[3];
-        for (int i = 0; i < TransformedPoints.size(); i++) {
-            pt = TransformedPoints.get(i);
+        for (int i = 0; i < transformedPoints.size(); i++) {
+            pt = transformedPoints.get(i);
             System.out.println(pt[0] + ", " + pt[1] + ", " + pt[2]);
         }
         System.out.println("");
@@ -654,6 +621,58 @@ rotate_nikon_to_mims(int spts,
 
 
     }
+    
 
+    // Stuff I don't think needs to be in this class:
+    
+    /**
+     * Sets the internal RefPointList to rpl_in
+     * @param rpl_in
+     
+    public Transform(RefPointList rpl_in)
+    {
+        init_private_vars();
+        setRefPointList( rpl_in );
+    }
+    * 
+        /**
+     * Sets the RefPointList for the object.
+     * @param rpl_in RefPointList to set
+    
+    public void setRefPointList(RefPointList rpl_in)
+    {
+        rpl = rpl_in;
+    }
 
+    public RefPointList getRefPointList()
+    {
+        return( rpl );
+    }
+    * 
+    * 
+    public RefPointList transformedPointsToRefPointList()
+    {
+        RefPointList ret_value;
+        RefPoint rp;
+
+        if ( rpl == null )
+            ret_value = new RefPointList();
+        else
+            ret_value = rpl;
+
+        double[] point_coords;
+        int i;
+        
+        for (i = 0; i < transformedPoints.size(); i++)
+        {
+            point_coords = transformedPoints.get(i);
+            rp = coordsToRefPoint(point_coords);
+            rp.setComment( ret_value.getDefaultRefPointComment() );
+            ret_value.addRefPoint( rp );
+        }
+
+        return ( ret_value );
+    }
+    * 
+    */
 }

@@ -346,18 +346,7 @@ public class Holder_Ref_Data_View extends FrameView {
     //testing writing points in windows/text format
     //where should this eventually go????
     private void saveAsPRSMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsPRSMenuItemActionPerformed
-        
-        if ( dpfp == null )
-            dpfp = new DataPointFileProcessor(
-                    coeff_file_text,
-                    coord_file_text,
-                    ref_file_text
-                    );
-        else {
-            dpfp.setCoeffFilePath( coeff_file_text );
-            dpfp.setStagePointFilePath( coord_file_text );
-            dpfp.setHolderPointFilePath( ref_file_text );
-        }
+
 
         int saveApprove = fc.showSaveDialog(getFrame());
         if (saveApprove == JFileChooser.APPROVE_OPTION) {
@@ -366,83 +355,67 @@ public class Holder_Ref_Data_View extends FrameView {
     }//GEN-LAST:event_saveAsPRSMenuItemActionPerformed
 
     private void holder_reg_gen_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_holder_reg_gen_buttonActionPerformed
-        if ( dpfp == null )
-            dpfp = new DataPointFileProcessor(
-                    coeff_file_text,
-                    coord_file_text,
-                    ref_file_text
-                    );
-        else {
-            dpfp.setCoeffFilePath( coeff_file_text );
-            dpfp.setStagePointFilePath( coord_file_text );
-            dpfp.setHolderPointFilePath( ref_file_text );
-        }
-
-        // Create the reference point list
         dpfp.processTransform();
-        RefPointList rpl = dpfp.getRefPointList();
-        // Set the comment for each point
+        
+        /* This is to generate with the new comment rather than the default. 
+         * Deal with this later
         for (int i=0; i<rpl.getNumRefPoints(); i++)
             rpl.getRefPoint(i).setComment(getCommentFor(i));
-        /*Moving write functionality to the "save" button
-        // Write the file
-        HolderDataFile hdf = new HolderDataFile(dpfp.getHolderPointFilePath(), true, dpfp.getRefPointList());
-        hdf.writeFileOut();
-        hdf.close();
-         *
-         */
-
+            * 
+            */
+        
         destTableRefresh();
 
     }//GEN-LAST:event_holder_reg_gen_buttonActionPerformed
 
+    /*
+     * Save .REF file button action
+     */
     private void saveFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFileActionPerformed
-        int saveApprove = fc.showSaveDialog( getFrame() );
-        if (saveApprove == JFileChooser.APPROVE_OPTION) {
+        int returnVal = fc.showSaveDialog( getFrame() );
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             DataIO.saveREF(fc.getSelectedFile().getPath(), dpfp);
         }
     }//GEN-LAST:event_saveFileActionPerformed
 
+    /*
+     * Load Coeff File Button: sets path in dpfp for coeff file
+     */
     private void coeffFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coeffFileActionPerformed
-        fc.showOpenDialog( getFrame() );
-        coeff_file_text = fc.getSelectedFile().getPath();
+        int returnVal = fc.showOpenDialog( getFrame() );
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            coeffFileText = fc.getSelectedFile().getPath();
+            dpfp.setCoeffFilePath(coeffFileText);
+        }
     }//GEN-LAST:event_coeffFileActionPerformed
 
+    /*
+     * Load coord file button: sets path in dpfp for the coords file.
+     */
     private void coordsFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_coordsFileActionPerformed
-        fc.showOpenDialog( getFrame() );
-        coord_file_text = fc.getSelectedFile().getPath();
+        int returnVal = fc.showOpenDialog( getFrame() );
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            coordFileText = fc.getSelectedFile().getPath();
+            dpfp.setSrcFilePath(coordFileText);
+        }
     }//GEN-LAST:event_coordsFileActionPerformed
 
+    /*
+     * Opens a .ref File and displays it on the table. 
+     */
     private void openRefFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openRefFileActionPerformed
-        HolderDataFile hdf;
-        RefPointList rpl;
-        fc.showSaveDialog( getFrame() );
-        ref_file_text = fc.getSelectedFile().getPath();
-
-        /* Allowing ref file review if it exists. */
-        if ( (new File( ref_file_text )).exists() ) {
-            if ( dpfp == null )
-                dpfp = new DataPointFileProcessor();
-
-            dpfp.setHolderPointFilePath( ref_file_text );
-            rpl = new RefPointList();
-
-            hdf = new HolderDataFile( ref_file_text,
-                    false,
-                    rpl);
-
-            hdf.readFileIn();
-            hdf.close();
-            dpfp.setRefPointList( hdf.getRefPointList() );
-
-            destTableRefresh();
+        int returnVal = fc.showOpenDialog( getFrame() );
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            refFileText = fc.getSelectedFile().getPath();
+            DataIO.openREF(refFileText, dpfp);
         }
+        destTableRefresh();
     }//GEN-LAST:event_openRefFileActionPerformed
 
     private void testingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testingActionPerformed
 
-        coeff_file_text = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/coeff-gwen-exp9.txt";
-        coord_file_text = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/xy.points";
+        coeffFileText = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/coeff-gwen-exp9.txt";
+        coordFileText = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/xy.points";
         holder_reg_gen_buttonActionPerformed(new ActionEvent(new Object(), ActionEvent.ACTION_PERFORMED, ""));
     }//GEN-LAST:event_testingActionPerformed
 
@@ -486,11 +459,11 @@ public class Holder_Ref_Data_View extends FrameView {
         destTableModel = new RDRTableModel(destReviewTable.getModel(), dpfp);
         destReviewTable.setModel(destTableModel);
     }
-
+   
     //Variable declaration, temp for working on GUI
-    private String coeff_file_text;
-    private String coord_file_text;
-    private String ref_file_text;
+    private String coeffFileText;
+    private String coordFileText;
+    private String refFileText;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu SetupMenu;
@@ -542,6 +515,9 @@ public class Holder_Ref_Data_View extends FrameView {
          //       );
     }
 
+    //Not sure what purpose this is for, commenting out for now because of errors.
+    //No usages found anyway.
+    /*
     @Action
     public void processDataPointComment()
     {
@@ -549,4 +525,6 @@ public class Holder_Ref_Data_View extends FrameView {
         dpfp.getRefPointList().setDefaultRefPointComment(getCurrentComment());
         
     }
+    * 
+    */
 }
