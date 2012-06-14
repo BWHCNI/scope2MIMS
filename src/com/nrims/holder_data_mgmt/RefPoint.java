@@ -15,7 +15,7 @@ public class RefPoint {
     private String ibd_ref_com; /* comment */
     private final int comment_length = 80;
 
-    private final String default_comment = "Holder reference point" +
+    private static final String default_comment = "Holder reference point" +
             "                                                          "; /* total 80 chars */
 
 
@@ -258,7 +258,7 @@ public class RefPoint {
         return( ret_value );
     }
 
-    public String getDefaultComment()
+    public static String getDefaultComment()
     {
         return( default_comment );
     }

@@ -1,10 +1,6 @@
 package com.nrims.holder_data_mgmt;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -16,15 +12,34 @@ import javax.swing.JFileChooser;
 public class DataIO {
 
     /*
-     * Saves as Holder Data File
-     * parameters: location to save to, datapoints
+     * Read a .points file into an arraylist of points
+     * @param path to points file
      */
-    public static void saveREF(String location, DataPointFileProcessor dpfp) {
-        HolderDataFile hdf = new HolderDataFile(location, true, dpfp.getDestPoints());
-        hdf.writeFileOut();
-        hdf.close();
+    public static ArrayList<Point> readPoints(String location) {
+        ArrayList<Point> inPts = new ArrayList<Point>();
+        // This block is modified from Transform.java
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(location));
+            String line;
+            
+            while( ( line = br.readLine() ) != null) {
+                if(line.equals("STAGE_LIST") || line.equals("UNITS_UM") || line.equals("") ) {
+                    continue;
+                }
+                String[] stringpts = line.split(" ");
+                if(stringpts.length != 3) {
+                    continue;
+                }
+                Point nextPoint = new Point(Double.parseDouble(stringpts[0]), Double.parseDouble(stringpts[1]), Double.parseDouble(stringpts[2]));
+                inPts.add(nextPoint);
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        
+        return inPts;
     }
-    
+        
     /*
      * Method needs fixing, copied over from Holder_Ref_Data_View
      * May need to re-add a field for the "Holder Point" filepath in the dpfp class.
@@ -49,18 +64,28 @@ public class DataIO {
 
         }
     }
+    
+    /*
+     * Saves as Holder Data File
+     * parameters: location to save to, datapoints
+     */
+    public static void saveREF(String location, DataPointFileProcessor dpfp) {
+        //TODO: Insert check that transform has occurred
+        
+        HolderDataFile hdf = new HolderDataFile(location, true, dpfp.getDestPoints());
+        hdf.writeFileOut();
+        hdf.close();
+    }
+
 
     /*
      * Saves as PRS file
-     * Farah: I haven't touched this because I need to figure out how to open
-     * these files to test it. Only changed RefPointList --> ArrayList<RefPoint>, etc
-     * parameters: location to save to, datapoints
+     * 
      */
     public static void savePRS(String location, DataPointFileProcessor dpfp) {
-        // Create the reference point list -- This shouldn't be in this method
-        dpfp.processTransform();
+        //TODO: Insert check that transform has occurred.
+        
         ArrayList<RefPoint> rpl = dpfp.getDestPoints();
-
         //These offsets are needed to save the points in the newer Cameca
         //text format correctly.  Without them the points will -NOT- be valid!
         double xoffset = 18.5;

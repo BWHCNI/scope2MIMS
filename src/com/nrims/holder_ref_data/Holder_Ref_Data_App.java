@@ -6,7 +6,10 @@ package com.nrims.holder_ref_data;
 
 import com.nrims.holder_data_mgmt.DataIO;
 import com.nrims.holder_data_mgmt.DataPointFileProcessor;
+import com.nrims.holder_data_mgmt.HolderDataFile;
+import com.nrims.holder_data_mgmt.RefPointList;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 
@@ -47,13 +50,14 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
         savePRSMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         setupMenu = new javax.swing.JMenu();
-        loadCoeff = new javax.swing.JMenuItem();
         loadCoords = new javax.swing.JMenuItem();
+        loadCoeff = new javax.swing.JMenuItem();
         openREF = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Holder Reference Point Utility");
 
         generateButton.setText("Generate");
         generateButton.addActionListener(new java.awt.event.ActionListener() {
@@ -127,14 +131,6 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
 
         setupMenu.setText("Setup");
 
-        loadCoeff.setText("Load Coefficient File");
-        loadCoeff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadCoeffActionPerformed(evt);
-            }
-        });
-        setupMenu.add(loadCoeff);
-
         loadCoords.setText("Load Point Coords File");
         loadCoords.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,7 +139,20 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
         });
         setupMenu.add(loadCoords);
 
+        loadCoeff.setText("Load Coefficient File");
+        loadCoeff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadCoeffActionPerformed(evt);
+            }
+        });
+        setupMenu.add(loadCoeff);
+
         openREF.setText("Open .ref File");
+        openREF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openREFActionPerformed(evt);
+            }
+        });
         setupMenu.add(openREF);
 
         menuBar.add(setupMenu);
@@ -176,16 +185,14 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(srcLabel)
                                 .addGap(211, 211, 211)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(destLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))))
+                            .addComponent(destLabel)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -244,6 +251,8 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
             coordFilePath = fc.getSelectedFile().getPath();
             dpfp.setSrcFilePath(coordFilePath);
         }
+        
+        srcTableRefresh();
     }//GEN-LAST:event_loadCoordsActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
@@ -266,8 +275,20 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
     private void testRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testRunActionPerformed
         coeffFilePath = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/coeff-gwen-exp9.txt";
         coordFilePath = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/xy.points";
-        generateButtonActionPerformed(new ActionEvent(new Object(), ActionEvent.ACTION_PERFORMED, ""));
+        dpfp.setSrcFilePath(coordFilePath);
+        srcTableRefresh();
+        dpfp.setCoeffFilePath(coeffFilePath);
+        dpfp.processTransform();
+        destTableRefresh();
     }//GEN-LAST:event_testRunActionPerformed
+
+    private void openREFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openREFActionPerformed
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            DataIO.openREF(fc.getSelectedFile().getPath(), dpfp);
+        }
+        destTableRefresh();
+    }//GEN-LAST:event_openREFActionPerformed
 
     /**
      * @param args the command line arguments
@@ -335,7 +356,7 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
     /* custom private variables */
     private DataPointFileProcessor dpfp;
     private RDRTableModel destTableModel;
-    private RDRTableModel srcTableModel;
+    private NikonTableModel srcTableModel;
     private JDialog aboutBox;
     private JFileChooser fc = new JFileChooser();
     private String coeffFilePath;
@@ -356,5 +377,10 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
     private void destTableRefresh() {
         destTableModel = new RDRTableModel(destReviewTable.getModel(), dpfp);
         destReviewTable.setModel(destTableModel);
+    }
+    
+    private void srcTableRefresh() {
+        srcTableModel = new NikonTableModel(dpfp);
+        srcReviewTable.setModel(srcTableModel);
     }
 }

@@ -16,6 +16,8 @@ public class DataPointFileProcessor {
     private String srcFilePath;
     private Transform point_trans = new Transform();
     protected ArrayList<RefPoint> destPoints = new ArrayList<RefPoint>();
+    private ArrayList<Point> srcPoints = new ArrayList<Point>();
+    private boolean transformed;
 
     /* constructors */
 
@@ -37,6 +39,8 @@ public class DataPointFileProcessor {
     {
         coeffFilePath = coeffFile;
         srcFilePath = srcFile;
+        srcPoints = DataIO.readPoints(srcFile);
+        transformed = false;
     }
 
     /* getters and setters */
@@ -48,6 +52,7 @@ public class DataPointFileProcessor {
     public void setCoeffFilePath(String path)
     {
         coeffFilePath = path;
+        transformed = false; 
     }
 
     /**
@@ -58,7 +63,7 @@ public class DataPointFileProcessor {
     {
         return( coeffFilePath );
     }
-
+    
     /**
      * Sets the filesystem path to the stage points file.
      *
@@ -67,6 +72,15 @@ public class DataPointFileProcessor {
     public void setSrcFilePath(String path)
     {
         srcFilePath = path;
+        srcPoints = DataIO.readPoints(path);
+        transformed = false;
+    }
+    
+    /**
+     * Returns srcPoints array
+     */
+    public ArrayList<Point> getSrcPoints() {
+        return srcPoints;
     }
 
     /**
@@ -85,6 +99,10 @@ public class DataPointFileProcessor {
     
     public void setDestPoints(ArrayList<RefPoint> newDest) {
         destPoints = newDest;
+    }
+    
+    public boolean getTransformed() {
+        return transformed;
     }
     
     public void printDestPoints() {
@@ -106,6 +124,7 @@ public class DataPointFileProcessor {
         //point_trans.setRefPointList(rpl);
 
         destPoints = point_trans.transformedPointsToRefPoints();
+        transformed = true;
     }
     
     /* This should be in the RefPoint.java Copying, leaving a copy here for 

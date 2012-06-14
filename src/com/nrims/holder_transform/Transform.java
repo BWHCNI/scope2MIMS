@@ -421,6 +421,8 @@ public class Transform {
         System.out.println("");
     }
     
+    
+    // Farah: this should go in DataIO...
     public void readStagePointsFile(String filename) {
         
         try {
@@ -494,7 +496,7 @@ rotate_nikon_to_mims(int spts,
         for (int i = 0; i < transformedPoints.size(); i++) {
             point_coords = transformedPoints.get(i);
             rp = coordsToRefPoint(point_coords);
-            rp.setComment("TODO");
+            rp.setComment(RefPoint.getDefaultComment());
             refList.add(rp);
         }
         
