@@ -1,0 +1,6 @@
+coe120517.txt was the one with ref points spread out
+
+coe120518.txt was the one with ref points in one chip
+Errors using these coeficients are on the ordder of mm!
+
+
