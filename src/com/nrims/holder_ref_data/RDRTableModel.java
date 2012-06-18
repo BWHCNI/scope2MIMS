@@ -79,6 +79,11 @@ public class RDRTableModel extends AbstractTableModel{
     {
         initInternalData(tm_in, dp_in);
     }
+    
+    public RDRTableModel(DataPointFileProcessor dp_in)
+    {
+        setDataPointFileProcessor(dp_in);
+    }
 
     /* Public methods */
     /* Only the coordinate points are editable. (index: 3, 4, 5)
@@ -119,7 +124,7 @@ public class RDRTableModel extends AbstractTableModel{
     {
         table_content[row][column] = obj;
         fireTableCellUpdated(row, column);
-        ArrayList<RefPoint> destList = dpfp.getDestPoints();
+        ArrayList<REFPoint> destList = dpfp.getMachinePoints();
 
         /* Updating the corresponding point in dpfp */
         switch ( column )
@@ -161,8 +166,8 @@ public class RDRTableModel extends AbstractTableModel{
         int i;
         dpfp = dp_in;
         //RefPointList rpl = dpfp.getRefPointList();
-        ArrayList<RefPoint> destList = dpfp.getDestPoints();
-        RefPoint rf;
+        ArrayList<REFPoint> destList = dpfp.getMachinePoints();
+        REFPoint rf;
 
         if (destList == null)
             return;

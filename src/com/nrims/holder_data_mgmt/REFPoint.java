@@ -10,7 +10,7 @@ package com.nrims.holder_data_mgmt;
  * and data associated therewith.
  * @author bepstein
  */
-public class RefPoint {
+public class REFPoint extends DataPoint {
     /* private methods and variables */
     private String ibd_ref_com; /* comment */
     private final int comment_length = 80;
@@ -69,12 +69,12 @@ public class RefPoint {
     }
 
     /* constructor methods */
-    public RefPoint()
+    public REFPoint()
     {
         initData();
     }
     
-    public RefPoint(
+    public REFPoint(
             String comment,
             String date_str,
             double xcoord,

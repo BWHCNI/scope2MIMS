@@ -5,8 +5,10 @@
 package com.nrims.holder_ref_data;
 
 import com.nrims.holder_data_mgmt.DataPointFileProcessor;
-import com.nrims.holder_data_mgmt.Point;
+import com.nrims.holder_data_mgmt.DataPoint;
 import java.util.ArrayList;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
@@ -24,17 +26,19 @@ public class NikonTableModel extends AbstractTableModel {
         "X",
         "Y",
         "Z",
+        "Reference",
     };
     private static final int POINT_NUM_COL_NUM = 0;
     private static final int X_COORD_COL_NUM = 1;
     private static final int Y_COORD_COL_NUM = 2;
     private static final int Z_COORD_COL_NUM = 3;
+    private static final int REFERENCE_COL_NUM = 4;
     private final int column_count = column_names.length;
     private Object[][] table_content;
     
     public NikonTableModel(DataPointFileProcessor dp_in) {
         dpfp = dp_in;
-        setData();
+        setDataPointFileProcessor(dp_in);
     }
 
     public int getRowCount() {
@@ -61,10 +65,11 @@ public class NikonTableModel extends AbstractTableModel {
         return( dpfp );
     }
     
-    public void setData() {
+    public void setDataPointFileProcessor(DataPointFileProcessor dp_in) {
         int i;
-        Point addPoint;
-        ArrayList<Point> ptsList = dpfp.getSrcPoints();
+        dpfp = dp_in;
+        DataPoint addPoint;
+        ArrayList<DataPoint> ptsList = dpfp.getScopePoints();
 
         if (ptsList == null)
             return;
@@ -83,10 +88,11 @@ public class NikonTableModel extends AbstractTableModel {
         for (i = 0; i < row_count; i++)
         {
             addPoint = ptsList.get(i);
-            table_content[i][POINT_NUM_COL_NUM] = i+1;
+            table_content[i][POINT_NUM_COL_NUM] = new Integer ( addPoint.getNum() );
             table_content[i][X_COORD_COL_NUM] = new Double( addPoint.getXCoord() );
             table_content[i][Y_COORD_COL_NUM] = new Double( addPoint.getYCoord() );
             table_content[i][Z_COORD_COL_NUM] = new Double( addPoint.getZCoord() );
+            table_content[i][REFERENCE_COL_NUM] = new Boolean ( addPoint.getIsReference() );
         }
     }
     

@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * The formatting assumes big-endian arrangement where applicable.
  * @author bepstein
  */
-public class HolderDataFile {
+public class REFDataFile {
      /* private constants */
      /* describe file formating, mostly
      */
@@ -76,7 +76,7 @@ public class HolderDataFile {
     private String out_file_path;
     private FileInputStream file_in;
     private FileOutputStream file_out;
-    private ArrayList<RefPoint> rpl;
+    private ArrayList<REFPoint> rpl;
 
     private void setStreamsToNull() throws IOException{
         if ( file_in != null ){
@@ -106,7 +106,7 @@ public class HolderDataFile {
         int i;
 
         setStreamsToNull();
-        rpl = new ArrayList<RefPoint>();
+        rpl = new ArrayList<REFPoint>();
         
         //This is unnecessary. Strings are initialized to null by default:
         //        setFilePathsToNull();
@@ -171,10 +171,10 @@ public class HolderDataFile {
         }
     }
 
-    private RefPoint readInRefPoint(FileInputStream fi)
+    private REFPoint readInRefPoint(FileInputStream fi)
             throws IOException
     {
-        RefPoint ret_value = new RefPoint();
+        REFPoint ret_value = new REFPoint();
         byte[] temp_bytes;
         int[] temp_links;
         int i;
@@ -237,7 +237,7 @@ public class HolderDataFile {
 
     private int writeOutRefPoint(
             FileOutputStream fo,
-            RefPoint rf)
+            REFPoint rf)
     {
         int offset = 0;
         byte[] temp_bytes;
@@ -385,7 +385,7 @@ public class HolderDataFile {
     /* constructors */
     
     //Usage search: No patterns found
-    public HolderDataFile()
+    public REFDataFile()
     {
         try {
             initClassData();
@@ -395,7 +395,7 @@ public class HolderDataFile {
     }
 
     //Usage search: No patterns found
-    public HolderDataFile(
+    public REFDataFile(
             String fpath,
             Boolean open_for_write
         ){
@@ -414,7 +414,7 @@ public class HolderDataFile {
         }
     }
 
-    public HolderDataFile(String fpath, Boolean open_for_write, ArrayList<RefPoint> rpl){
+    public REFDataFile(String fpath, Boolean open_for_write, ArrayList<REFPoint> rpl){
         try{
             initClassData();
 
@@ -433,10 +433,10 @@ public class HolderDataFile {
     }
 
     //Usage search: no patterns found
-    public HolderDataFile(
+    public REFDataFile(
             String in_fpath,
             String out_fpath,
-            ArrayList<RefPoint> r_p_l
+            ArrayList<REFPoint> r_p_l
         ){
         try{
             initClassData();
@@ -472,17 +472,17 @@ public class HolderDataFile {
         return( out_file_path );
     }
 
-    public void setRefPointList(ArrayList<RefPoint> rpl_in){
+    public void setRefPointList(ArrayList<REFPoint> rpl_in){
         rpl = rpl_in;
     }
     
 
-    public ArrayList<RefPoint> getRefPointList(){
+    public ArrayList<REFPoint> getRefPointList(){
         return( rpl );
     }
     
     
-    public void readFileIn(ArrayList<RefPoint> rpl_in,
+    public void readFileIn(ArrayList<REFPoint> rpl_in,
             FileInputStream fis
             )
     {
@@ -524,7 +524,7 @@ public class HolderDataFile {
     }
 
     public void writeFileOut
-        (ArrayList<RefPoint> rpl_out,
+        (ArrayList<REFPoint> rpl_out,
         FileOutputStream fos
         ){
         int offset;
@@ -559,7 +559,7 @@ public class HolderDataFile {
 
             /* filling the points arr with blank points up to ibd_max_ref */
             for (i = rpl_out.size(); i < ibd_max_ref; i++)
-                offset += writeOutRefPoint(fos, new RefPoint());
+                offset += writeOutRefPoint(fos, new REFPoint());
 
             /* Writing out an 4-byte blank word at the end.*/
             i = 0;

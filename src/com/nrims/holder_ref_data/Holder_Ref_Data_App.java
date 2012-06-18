@@ -6,12 +6,16 @@ package com.nrims.holder_ref_data;
 
 import com.nrims.holder_data_mgmt.DataIO;
 import com.nrims.holder_data_mgmt.DataPointFileProcessor;
-import com.nrims.holder_data_mgmt.HolderDataFile;
-import com.nrims.holder_data_mgmt.RefPointList;
+import com.nrims.holder_data_mgmt.REFDataFile;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
+import java.util.HashSet;
+import java.util.Set;
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -36,14 +40,19 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        srcTableRightClick = new javax.swing.JPopupMenu();
+        toggleRefPoint = new javax.swing.JMenuItem();
         generateButton = new javax.swing.JButton();
         testRun = new javax.swing.JButton();
         srcLabel = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        destReviewTable = new javax.swing.JTable();
         destLabel = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        destScrollPane = new javax.swing.JScrollPane();
+        destReviewTable = new javax.swing.JTable();
+        srcScrollPane = new javax.swing.JScrollPane();
         srcReviewTable = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        statusTextArea = new javax.swing.JTextArea();
+        logLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         saveREFMenuItem = new javax.swing.JMenuItem();
@@ -52,9 +61,21 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
         setupMenu = new javax.swing.JMenu();
         loadCoords = new javax.swing.JMenuItem();
         loadCoeff = new javax.swing.JMenuItem();
+        calcCoeffMenuItem = new javax.swing.JMenuItem();
         openREF = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
+
+        srcTableRightClick.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        srcTableRightClick.setInvoker(srcReviewTable);
+
+        toggleRefPoint.setText("Toggle Reference Point");
+        toggleRefPoint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toggleRefPointActionPerformed(evt);
+            }
+        });
+        srcTableRightClick.add(toggleRefPoint);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Holder Reference Point Utility");
@@ -75,6 +96,8 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
 
         srcLabel.setText("Source Points");
 
+        destLabel.setText("Destination Points");
+
         destReviewTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -83,25 +106,27 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane2.setViewportView(destReviewTable);
+        destScrollPane.setViewportView(destReviewTable);
 
-        destLabel.setText("Destination Points");
-
-        srcReviewTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
+        srcReviewTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                srcReviewTableMouseClicked(evt);
             }
-        ));
-        jScrollPane1.setViewportView(srcReviewTable);
+        });
+        srcScrollPane.setViewportView(srcReviewTable);
+
+        statusTextArea.setColumns(20);
+        statusTextArea.setRows(5);
+        jScrollPane1.setViewportView(statusTextArea);
+
+        logLabel.setText("Log: ");
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
         saveREFMenuItem.setMnemonic('s');
         saveREFMenuItem.setText("Save .ref File");
+        saveREFMenuItem.setEnabled(false);
         saveREFMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveREFMenuItemActionPerformed(evt);
@@ -111,6 +136,7 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
 
         savePRSMenuItem.setMnemonic('a');
         savePRSMenuItem.setText("Save .prs FIle");
+        savePRSMenuItem.setEnabled(false);
         savePRSMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 savePRSMenuItemActionPerformed(evt);
@@ -147,6 +173,15 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
         });
         setupMenu.add(loadCoeff);
 
+        calcCoeffMenuItem.setText("Calculate Coefficients");
+        calcCoeffMenuItem.setEnabled(false);
+        calcCoeffMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calcCoeffMenuItemActionPerformed(evt);
+            }
+        });
+        setupMenu.add(calcCoeffMenuItem);
+
         openREF.setText("Open .ref File");
         openREF.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -179,20 +214,25 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(testRun)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(generateButton))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addComponent(srcScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(srcLabel)
                                 .addGap(211, 211, 211)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(destLabel)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE))))
+                            .addComponent(destScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(testRun)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(generateButton))
+                            .addComponent(logLabel))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -207,10 +247,14 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
                     .addComponent(srcLabel)
                     .addComponent(destLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(22, 22, 22))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(srcScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                    .addComponent(destScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(logLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -226,14 +270,14 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
     private void saveREFMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveREFMenuItemActionPerformed
         int returnVal = fc.showSaveDialog( this );
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            DataIO.saveREF(fc.getSelectedFile().getPath(), dpfp);
+            updateStatus(DataIO.saveREF(fc.getSelectedFile().getPath(), dpfp));
         }
     }//GEN-LAST:event_saveREFMenuItemActionPerformed
 
     private void savePRSMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savePRSMenuItemActionPerformed
         int saveApprove = fc.showSaveDialog( this );
         if (saveApprove == JFileChooser.APPROVE_OPTION) {
-            DataIO.savePRS(fc.getSelectedFile().getAbsolutePath(), dpfp);
+            updateStatus(DataIO.savePRS(fc.getSelectedFile().getAbsolutePath(), dpfp));
         }
     }//GEN-LAST:event_savePRSMenuItemActionPerformed
 
@@ -242,6 +286,7 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             coeffFilePath = fc.getSelectedFile().getPath();
             dpfp.setCoeffFilePath(coeffFilePath);
+            updateStatus("Coefficient file chosen.");
         }
     }//GEN-LAST:event_loadCoeffActionPerformed
 
@@ -249,10 +294,14 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
         int returnVal = fc.showOpenDialog( this );
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             coordFilePath = fc.getSelectedFile().getPath();
-            dpfp.setSrcFilePath(coordFilePath);
+            dpfp.setScopeFilePath(coordFilePath);
+            dpfp.clearMachinePoints();
+            srcTableRefresh(TableCode.NIKON);
+            destTableRefresh(TableCode.CLEAR);
+            calcCoeffMenuItem.setEnabled(true);
+            updateStatus("Coordinate file chosen.");
         }
         
-        srcTableRefresh();
     }//GEN-LAST:event_loadCoordsActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
@@ -269,26 +318,67 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
             * 
             */
         
-        destTableRefresh();
+        destTableRefresh(TableCode.REF);
+        enableSaves(true);
+        updateStatus("Points transformed.");
     }//GEN-LAST:event_generateButtonActionPerformed
 
     private void testRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testRunActionPerformed
         coeffFilePath = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/coeff-gwen-exp9.txt";
         coordFilePath = "/nrims/home3/fkashem/NetBeansProjects/nikon2mims/trunk/holder_ref_data/test/gwen-exp9/xy.points";
-        dpfp.setSrcFilePath(coordFilePath);
-        srcTableRefresh();
+        dpfp.setScopeFilePath(coordFilePath);
+        calcCoeffMenuItem.setEnabled(true);
+        srcTableRefresh(TableCode.NIKON);
         dpfp.setCoeffFilePath(coeffFilePath);
         dpfp.processTransform();
-        destTableRefresh();
+        destTableRefresh(TableCode.REF);
+        updateStatus("Test script ran.");
     }//GEN-LAST:event_testRunActionPerformed
 
+    /*
+     * Open .ref file and display in source table
+     */
     private void openREFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openREFActionPerformed
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             DataIO.openREF(fc.getSelectedFile().getPath(), dpfp);
+            srcTableRefresh(TableCode.REF);
+            updateStatus("Opened .ref File");
         }
-        destTableRefresh();
     }//GEN-LAST:event_openREFActionPerformed
+
+    /*
+     * Right click on rows in source table
+     */
+    private void srcReviewTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srcReviewTableMouseClicked
+        if(SwingUtilities.isRightMouseButton(evt)) {
+            srcTableRightClick.show(srcReviewTable, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_srcReviewTableMouseClicked
+
+    private void toggleRefPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleRefPointActionPerformed
+        // TODO add your handling code here:
+        // Get list of points selected -->  iterate through list, toggle isReference
+        for (int i : srcReviewTable.getSelectedRows()) {
+            boolean addRemove = dpfp.toggleReferenceFlag(i); 
+            if(addRemove) {
+                updateStatus("Point " + dpfp.getScopePoints().get(i).getNum() + ": reference point added.");
+            } else {
+                updateStatus("Point " + dpfp.getScopePoints().get(i).getNum() + ": reference point removed.");
+            }
+        }
+        updateStatus(dpfp.getReferencePoints().size() + " reference points total.");
+        srcTableRefresh(TableCode.NIKON);
+    }//GEN-LAST:event_toggleRefPointActionPerformed
+
+    private void calcCoeffMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calcCoeffMenuItemActionPerformed
+        if(calculateWindow != null) {
+            calculateWindow.setData(dpfp);
+        } else {
+            calculateWindow = new CoeffCalcWindow(dpfp);
+        }
+        calculateWindow.setVisible(true);
+    }//GEN-LAST:event_calcCoeffMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -333,16 +423,18 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem calcCoeffMenuItem;
     private javax.swing.JLabel destLabel;
     private javax.swing.JTable destReviewTable;
+    private javax.swing.JScrollPane destScrollPane;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JButton generateButton;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuItem loadCoeff;
     private javax.swing.JMenuItem loadCoords;
+    private javax.swing.JLabel logLabel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openREF;
     private javax.swing.JMenuItem savePRSMenuItem;
@@ -350,37 +442,104 @@ public class Holder_Ref_Data_App extends javax.swing.JFrame {
     private javax.swing.JMenu setupMenu;
     private javax.swing.JLabel srcLabel;
     private javax.swing.JTable srcReviewTable;
+    private javax.swing.JScrollPane srcScrollPane;
+    private javax.swing.JPopupMenu srcTableRightClick;
+    private javax.swing.JTextArea statusTextArea;
     private javax.swing.JButton testRun;
+    private javax.swing.JMenuItem toggleRefPoint;
     // End of variables declaration//GEN-END:variables
 
     /* custom private variables */
-    private DataPointFileProcessor dpfp;
-    private RDRTableModel destTableModel;
-    private NikonTableModel srcTableModel;
+    private DataPointFileProcessor dpfp = new DataPointFileProcessor();
+    private RDRTableModel refTableModel = new RDRTableModel(dpfp);
+    private NikonTableModel nikonTableModel = new NikonTableModel(dpfp); 
     private JDialog aboutBox;
     private JFileChooser fc = new JFileChooser();
     private String coeffFilePath;
     private String coordFilePath;
     private String refFilePath;
+    private CoeffCalcWindow calculateWindow;
+    
+    /* Codes for using the source tables. This is not the best way to do this. */
+    private enum TableCode { REFRESH, NIKON, CLEAR, REF };
+    
+    public DataPointFileProcessor getData() {
+        return dpfp;
+    }
     
     private void initInternalData()
     {
-        dpfp = new DataPointFileProcessor();
        // data_point_comment_text.setText(
         //        dpfp.getRefPointList().getDefaultRefPointComment()
          //       );
+        
+       srcReviewTable.setDefaultRenderer(Object.class, new ReferenceTableRender());
+       
     }
     
     /*
-     * Refreshes destReviewTable with data from dataPointFileProcessor
+     * Refreshes destReviewTable with .ref points from dataPointFileProcessor
      */
-    private void destTableRefresh() {
-        destTableModel = new RDRTableModel(destReviewTable.getModel(), dpfp);
-        destReviewTable.setModel(destTableModel);
+    private void destTableRefresh(TableCode model) {
+        switch(model) {
+            case REF: 
+                refTableModel.setDataPointFileProcessor(dpfp);
+                destReviewTable.setModel(refTableModel);
+                enableSaves(true);
+            break;
+            case CLEAR:
+                destReviewTable.setModel(new RDRTableModel(new DataPointFileProcessor()));
+                
+                //This should go in a different method.
+                enableSaves(false);
+            break;
+        }
     }
     
-    private void srcTableRefresh() {
-        srcTableModel = new NikonTableModel(dpfp);
-        srcReviewTable.setModel(srcTableModel);
+    /*
+     * Refreshes source table with either nikon points or .ref points
+     * Clear destination table every time the source table is reloaded
+     * @param String modelType "nikon" or "ref" 
+     */
+    private void srcTableRefresh(TableCode model) {
+        switch(model) {
+            case REFRESH: 
+                srcReviewTable.setModel(srcReviewTable.getModel());
+            break;
+            case NIKON: 
+               nikonTableModel.setDataPointFileProcessor(dpfp);
+               srcReviewTable.setModel(nikonTableModel);
+               
+               //Hide reference column in view if not hidden.
+               if(srcReviewTable.getColumnModel().getColumnCount() > 4) {
+                   srcReviewTable.removeColumn(srcReviewTable.getColumnModel().getColumn(4));
+               }
+            break;
+            case REF:
+                refTableModel.setDataPointFileProcessor(dpfp);
+                srcReviewTable.setModel(refTableModel);
+                
+                //This should go in a different method.
+                enableSaves(true);
+            break;
+        }
+       
+    }
+    
+    /*
+     * Prints a string to the status log text area.
+     * @param String to be printed
+     */
+    private void updateStatus(String line) {
+        statusTextArea.append(line + "\n");
+    }
+    
+    /* 
+     * Enable/disable saving. Saving is enabled when there is a .ref or .prs file opened
+     * and displayed in either the source or destination table.
+     */
+    private void enableSaves(boolean set) {
+        savePRSMenuItem.setEnabled(set);
+        saveREFMenuItem.setEnabled(set);
     }
 }

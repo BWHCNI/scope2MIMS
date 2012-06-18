@@ -29,9 +29,9 @@ public class Transform {
     //private RefPointList rpl = null;
 
     /* private methods */
-    private RefPoint coordsToRefPoint(double[] coords)
+    private REFPoint coordsToRefPoint(double[] coords)
     {
-        RefPoint ret_value= new RefPoint();
+        REFPoint ret_value= new REFPoint();
 
         if (coords.length == 3)
         {
@@ -44,7 +44,7 @@ public class Transform {
     }
 
     private void setCoordsInRefPoint(
-        RefPoint rf,
+        REFPoint rf,
         double[] coords
         )
     {
@@ -424,7 +424,7 @@ public class Transform {
     
     // Farah: this should go in DataIO...
     public void readStagePointsFile(String filename) {
-        
+        this.clearSrcPoints();
         try {
             BufferedReader br = new BufferedReader(new FileReader(filename));
             String line;
@@ -488,15 +488,15 @@ rotate_nikon_to_mims(int spts,
         return( transformedPoints );
     }
 
-    public ArrayList<RefPoint> transformedPointsToRefPoints() {
-        ArrayList<RefPoint> refList = new ArrayList<RefPoint>();
-        RefPoint rp;
+    public ArrayList<REFPoint> transformedPointsToRefPoints() {
+        ArrayList<REFPoint> refList = new ArrayList<REFPoint>();
+        REFPoint rp;
         double[] point_coords;
         
         for (int i = 0; i < transformedPoints.size(); i++) {
             point_coords = transformedPoints.get(i);
             rp = coordsToRefPoint(point_coords);
-            rp.setComment(RefPoint.getDefaultComment());
+            rp.setComment(REFPoint.getDefaultComment());
             refList.add(rp);
         }
         
