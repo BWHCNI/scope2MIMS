@@ -4,13 +4,14 @@
  */
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_mgmt.DataPointFileProcessor;
+import com.nrims.holder_data_structures.DataIO;
+import com.nrims.holder_data_structures.DataPointFileProcessor;
+import com.nrims.holder_data_structures.DataPoint;
 import java.awt.GridLayout;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import java.util.Collections;
+import javax.swing.*;
 import javax.swing.text.DefaultFormatterFactory;
 
 /**
@@ -27,9 +28,11 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         
     }
     
-    public CoeffCalcWindow(DataPointFileProcessor dpfp) {
-        data = dpfp;
-        numPoints = data.getReferencePoints().size();
+    public CoeffCalcWindow(ArrayList<DataPoint> referencePoints, UI calledFrom, CoeffCalculator calc) {
+        refPoints = referencePoints;
+        numPoints = refPoints.size();
+        parentFrame = calledFrom;
+        calculator = calc;
         initComponents();
         initComponentsCustom();
     }
@@ -50,13 +53,23 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         foundPointsPanel = new javax.swing.JPanel();
         foundPointsLabel = new javax.swing.JLabel();
         refPointsLabel = new javax.swing.JLabel();
-        saveButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         statusBox = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Calculate Coefficients");
         setName("mainFrame");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         calcButton.setText("Calculate");
         calcButton.setEnabled(false);
@@ -69,6 +82,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         jScrollPane1.setBorder(null);
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setMaximumSize(new java.awt.Dimension(52767, 52767));
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(0, 0));
 
         pointContainer.setBorder(null);
 
@@ -100,7 +114,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
 
         foundPointsLabel.setText("Found Points");
 
-        refPointsLabel.setText("Scope Reference Points");
+        refPointsLabel.setText("Source Reference Points");
 
         javax.swing.GroupLayout pointContainerLayout = new javax.swing.GroupLayout(pointContainer);
         pointContainer.setLayout(pointContainerLayout);
@@ -137,14 +151,6 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(pointContainer);
 
-        saveButton.setText("Save");
-        saveButton.setEnabled(false);
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
-            }
-        });
-
         statusBox.setColumns(20);
         statusBox.setEditable(false);
         statusBox.setLineWrap(true);
@@ -160,26 +166,22 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
                     .addComponent(jScrollPane2)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(calcButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saveButton)))
+                        .addComponent(calcButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(saveButton)
-                    .addComponent(calcButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(calcButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -189,68 +191,44 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     private void calcButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calcButtonActionPerformed
         
         //Collect and pass to calculate object as long as some found points are selected.
-        if(collectInput()) {
-            updateStatus("Calculating with " + aggregatedInput.size() + " reference points.");
-            calculator.calculateCoeffs(aggregatedInput);
+        if(collectInput(false)) {
+            updateStatus("Calculating with " + mimsPts.length + " reference points.");
+            calculator.calculateCoeffs();
         
             //Grab accuracy and display
-            updateStatus("Accuracy of calculated coefficients: " + calculator.getAccuracy());
-        
-            //Enable saving
-            saveButton.setEnabled(true);
+            calculator.calculateError();
+            updateStatus(calculator.printError());
+            calculator.exportData();
         } else {
             updateStatus("Enter the x and y coordinate of found machine points to calculate.");
         }
     }//GEN-LAST:event_calcButtonActionPerformed
 
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO add your handling code here:
-        updateStatus("Save button doesn't do anything yet.");
-    }//GEN-LAST:event_saveButtonActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /*
-         * Set the Nimbus look and feel
-         */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the
-         * default look and feel. For details see
-         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CoeffCalcWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CoeffCalcWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CoeffCalcWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CoeffCalcWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /*
-         * Create and display the form
-         */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                new CoeffCalcWindow().setVisible(true);
-                
-            }
-        });
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         
-    }
+        parentFrame.computeDialogOpen(false);
+    }//GEN-LAST:event_formWindowClosed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        parentFrame.computeDialogOpen(true);
+    }//GEN-LAST:event_formWindowOpened
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        /*if(!collectInput(true)) {
+            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            String error = "Warning: Invalid input detected in coordinate fields. Found coordinates may not be saved properly. Are you sure you want to exit?";
+            int reply = JOptionPane.showConfirmDialog(this, error, "Invalid Input Error", JOptionPane.YES_NO_OPTION);
+            if(reply == JOptionPane.YES_OPTION) {
+                setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            }
+        }
+        * 
+        */
+        collectInput(true);
+
+    }//GEN-LAST:event_formWindowClosing
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calcButton;
     private javax.swing.JLabel foundPointsLabel;
@@ -260,25 +238,27 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     private javax.swing.JPanel pointContainer;
     private javax.swing.JLabel refPointsLabel;
     private javax.swing.JPanel refPointsPanel;
-    private javax.swing.JButton saveButton;
     private javax.swing.JTextArea statusBox;
     // End of variables declaration//GEN-END:variables
 
     
     private int numPoints;
-    private DataPointFileProcessor data; 
-    private CoeffCalculator calculator = new CoeffCalculator();
+    private ArrayList<DataPoint> refPoints;
+    private ArrayList<DataPoint> usedRefPoints;
+    private CoeffCalculator calculator;
+    private UI parentFrame;
     
     //Array holding references to the textfields added for input
-    private JFormattedTextField[][] inputFound;
+    private JTextField[][] inputFound;
     
-    //ArrayList to pass to calculateMethod
-    private ArrayList<double[]> aggregatedInput = new ArrayList<double[]>();
+    //Compute coefficients method takes two doubles //
+    private double[][] nikonPts;
+    private double[][] mimsPts;
     
     /* Getters */
     
-    public DataPointFileProcessor getData() {
-        return data;
+    public ArrayList<DataPoint> getData() {
+        return refPoints;
     }
     
     public int getNumPoints() {
@@ -286,9 +266,9 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     }
     
     /* Changing dpfp changes the number of reference points. */
-    public void setData(DataPointFileProcessor dpfp) {
-        data = dpfp;
-        numPoints = dpfp.getReferencePoints().size();
+    public void setData(ArrayList<DataPoint> referencePoints) {
+        refPoints = referencePoints;
+        numPoints = refPoints.size();
         foundPointsPanel.removeAll();
         refPointsPanel.removeAll();
         initComponentsCustom();
@@ -299,7 +279,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         
         //Whenever we initialize, clear our status box
         statusBox.setText("");
-
+        
         //If no reference points selected, don't try to draw/enable anything.
         if (numPoints == 0) {
             updateStatus("No reference points selected.");
@@ -315,7 +295,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         foundPointsPanel.setLayout(new GridLayout((numPoints+1),2, 3, 1));
         
         //Set the dimensions for the array of textfields
-        inputFound = new JFormattedTextField[numPoints][2];
+        inputFound = new JTextField[numPoints][2];
         
         //Add headings for columns
         refPointsPanel.add(new JLabel("Point"));
@@ -324,21 +304,32 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         foundPointsPanel.add(new JLabel("X Coord"));
         foundPointsPanel.add(new JLabel("Y Coord"));
         
+        //Sort reference list of points
+        Collections.sort(refPoints);
+        
         //Loop over refPoints and populate window
         for (int i = 0; i < numPoints; i++) {
            //Left side.
-           Double x = data.getReferencePoints().get(i).getXCoord();
-           Double y = data.getReferencePoints().get(i).getYCoord();
-           int index = data.getReferencePoints().get(i).getNum();
+           Double x = refPoints.get(i).getXCoord();
+           Double y = refPoints.get(i).getYCoord();
+           int index = refPoints.get(i).getNum();
            refPointsPanel.add(new JLabel("Point " + index));
            refPointsPanel.add(new JLabel(x.toString()));
            refPointsPanel.add(new JLabel(y.toString()));
            
+           //Check if ref points have associated found coordinates already.
+           String xFound = new String();
+           String yFound = new String();
+           if(refPoints.get(i).getIsFound()) {
+               xFound = Double.toString(refPoints.get(i).getXFound());
+               yFound = Double.toString(refPoints.get(i).getYFound());
+           }
+           
            //Right Side
            
            //Create textfield objects for x and y per row         
-           JFormattedTextField xInput = new JFormattedTextField(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###0.###"))));
-           JFormattedTextField yInput = new JFormattedTextField(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("###0.###"))));
+           JTextField xInput = new JTextField(xFound);
+           JTextField yInput = new JTextField(yFound);
 
            //Add to array
            inputFound[i][0] = xInput;
@@ -353,29 +344,69 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     }
     
     /*
-     * Collect coords for all points with found coords inputted.
+     * Collect coords for all points with found coords input. 
      */
-    private boolean collectInput() {
+    private boolean collectInput(boolean closing) {
         boolean collected = false;
-        //Clear any previous values
-        aggregatedInput.clear();
-        double[] newRow = new double[4];
+        
+        //Arraylist to hold the rows referring to reference points with mims points filled in
+        ArrayList<Integer> pointsInput = new ArrayList<Integer>();
         
         //Go through inputFound array
         for(int i = 0; i < inputFound.length; i++) {
             //If found coords are set for x and y, add to ArrayList
-            if(!inputFound[i][0].getText().isEmpty() && !inputFound[i][1].getText().isEmpty()) {
-                newRow[0] = data.getReferencePoints().get(i).getXCoord();
-                newRow[1] = data.getReferencePoints().get(i).getYCoord();
-                newRow[2] = Double.parseDouble(inputFound[i][0].getText());
-                newRow[3] = Double.parseDouble(inputFound[i][1].getText());
-                aggregatedInput.add(newRow);
-                collected = true;
+            if(!inputFound[i][0].getText().isEmpty()) {
+                pointsInput.add(i);
+            } else {
+                //Check if the point has isFound set to true, if so, change.
+                if(refPoints.get(i).getIsFound()) {
+                    refPoints.get(i).setIsFound(false);
+                }
             }
         }
         
+        //Initialize the two arraylists to the proper size
+        int numPoints = pointsInput.size();
+        nikonPts = new double[numPoints][2];
+        mimsPts = new double[numPoints][2];
+        
+ 
+        double xInputFound, yInputFound;
+        for(int i = 0; i < pointsInput.size(); i++) {
+               try {
+                    xInputFound = Double.parseDouble(inputFound[pointsInput.get(i)][0].getText());
+                    yInputFound = Double.parseDouble(inputFound[pointsInput.get(i)][1].getText());
+                    
+                    //Populate these arrays to send to the calculator
+                    nikonPts[i][0] = refPoints.get(pointsInput.get(i)).getXCoord();
+                    nikonPts[i][1] = refPoints.get(pointsInput.get(i)).getYCoord();
+                    mimsPts[i][0] = xInputFound;
+                    mimsPts[i][1] = yInputFound;
+
+                    //Also add the found coords to the point object
+                    refPoints.get(pointsInput.get(i)).setXFound(mimsPts[i][0]);
+                    refPoints.get(pointsInput.get(i)).setYFound(mimsPts[i][1]);
+                    refPoints.get(pointsInput.get(i)).setIsFound(true);
+
+                    collected = true;
+                } catch (NumberFormatException exc) {
+                    collected = false;
+                    if(!closing) {
+                        String error = "Only numbers are accepted in coordinate fields. Invalid input detected for point " + refPoints.get(pointsInput.get(i)).getNum();
+                        JOptionPane.showMessageDialog(this, error, "Invalid Input Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                     break;
+                }           
+        }
+        
+        //Send these to calculator
+        calculator.setMimsPts(mimsPts);
+        calculator.setNikonPts(nikonPts);
+        
+        
         return collected;
     }
+  
     
     private void updateStatus(String text) {
         statusBox.append(text + "\n");

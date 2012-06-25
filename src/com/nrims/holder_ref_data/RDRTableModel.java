@@ -5,8 +5,9 @@
 
 package com.nrims.holder_ref_data;
 
+import com.nrims.holder_data_structures.DataPointFileProcessor;
+import com.nrims.holder_data_structures.REFPoint;
 import javax.swing.table.*;
-import com.nrims.holder_data_mgmt.*;
 import java.util.ArrayList;
 
 /**
@@ -166,11 +167,13 @@ public class RDRTableModel extends AbstractTableModel{
         int i;
         dpfp = dp_in;
         //RefPointList rpl = dpfp.getRefPointList();
-        ArrayList<REFPoint> destList = dpfp.getMachinePoints();
-        REFPoint rf;
-
-        if (destList == null)
+        ArrayList<REFPoint> destList;
+        if (dpfp.getMachinePoints() != null) {
+            destList = dpfp.getMachinePoints();
+        } else {
             return;
+        }
+        REFPoint rf;
 
         row_count = destList.size();
 

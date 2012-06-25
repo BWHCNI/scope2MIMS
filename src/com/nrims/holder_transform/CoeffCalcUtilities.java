@@ -5,8 +5,6 @@
 
 package com.nrims.holder_transform;
 
-import com.nrims.holder_data_mgmt.*;
-
 /**
  * This is a utility class for calculation logic
  * used in calculating coefficients for coordinate translation.

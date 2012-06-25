@@ -35,11 +35,12 @@ public class ReferenceTableRender extends DefaultTableCellRenderer {
     
     String s =  aTable.getModel().getValueAt(aRow, 4).toString();
     
+    Color turquoise = new Color(175, 238, 238);
     if(isSelected) {
         renderer.setBackground(Color.blue.darker().darker());
         renderer.setForeground(Color.white);
     } else if (s.equalsIgnoreCase("true")) {
-      renderer.setBackground(Color.green.brighter());
+      renderer.setBackground(turquoise);
       renderer.setForeground(Color.black);
     } else {
         renderer.setBackground(null);
