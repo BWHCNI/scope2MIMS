@@ -1,23 +1,71 @@
 package com.nrims.holder_data_mgmt;
 
+import com.nrims.holder_ref_data.CoeffData;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import org.apache.commons.io.FilenameUtils;
+import au.com.bytecode.opencsv.*;
 
 /**
  * Class used to deal with input/output of data from/to files.
  * @author fkashem
  */
 public class DataIO {
+    private String coeffFilePath;
+    private String srcFilePath;
+    private String destFilePath;
+    private DataPointFileProcessor data;
 
+    public DataIO(DataPointFileProcessor dp) {
+        data = dp;
+    }
+    
+    public String getCoeffFilePath() {
+        return coeffFilePath;
+    }
+    
+    public String getSrcFilePath() {
+        return srcFilePath;
+    }
+    
+    public String setDestFilePath() {
+        return destFilePath;
+    }
+    
+    
+    public String open(String location) {
+        String output = new String();
+        
+        //Check that file exists.
+        if(!(new File(location)).exists()) {
+            return "File does not exist. Try again";
+        }
+        
+        //check if .points or .ref, call appropriate method
+        if(FilenameUtils.isExtension(location,"points")) {
+            output = readPoints(location);
+        } else if(FilenameUtils.isExtension(location,"ref")) {
+            output = openREF(location);
+        } else {
+            return "Point coord files need to have a .points or .ref extension to be opened.";
+        }
+        
+        return output;
+    }
+    
+    
     /*
      * Read a .points file into an arraylist of points
      * @param path to points file
      */
-    public static ArrayList<DataPoint> readPoints(String location) {
+    public String readPoints(String location) {
         ArrayList<DataPoint> inPts = new ArrayList<DataPoint>();
+        String output = new String();
+
+        
+        //TODO Add check if file exists or not, have proper exception handling.
         // This block is modified from Transform.java
         try {
             BufferedReader br = new BufferedReader(new FileReader(location));
@@ -37,36 +85,43 @@ public class DataIO {
                 inPts.add(nextPoint);
                 i++;
             }
+            
+            //Set srcFilePath field
+            srcFilePath = location;
+            data.setSrcPoints(inPts);
+            output = "Source points read from " + FilenameUtils.getName(location);
+        
+        } catch (FileNotFoundException e){
+            output = "File not found.";
         } catch(IOException e) {
             e.printStackTrace();
-        }
+        } 
         
-        return inPts;
+        return output;
     }
         
     /*
-     * Method needs fixing, copied over from Holder_Ref_Data_View
-     * May need to re-add a field for the "Holder Point" filepath in the dpfp class.
+     * Method loads points from an REF file into the source points of the application.
+     * @param location - path to a .ref File which exists (check done in open method)
      */
-    public static void openREF(String location, DataPointFileProcessor dpfp) {
+    public String openREF(String location) {
         REFDataFile hdf;
+        String output = new String();
 
-        /* Allowing ref file review if it exists. */
-        if ( (new File( location )).exists() ) {
-            if ( dpfp == null )
-                dpfp = new DataPointFileProcessor();
-
-            // dpfp.setHolderPointFilePath( location );
-            ArrayList<REFPoint> rpl = new ArrayList<REFPoint>();
-
-            hdf = new REFDataFile(location, false, rpl);
-
-            hdf.readFileIn();
-            hdf.close();
             
-            dpfp.setMachinePoints( hdf.getRefPointList() );
+        ArrayList<REFPoint> rpl = new ArrayList<REFPoint>();
 
-        }
+        hdf = new REFDataFile(location, false, rpl);
+
+        output = hdf.readFileIn();
+        hdf.close();
+
+        data.setMachinePoints( hdf.getRefPointList() );
+        srcFilePath = location;
+        output = output.concat("Source points read from " + FilenameUtils.getName(location));
+        
+        
+        return output;
     }
     
     /*
@@ -74,8 +129,8 @@ public class DataIO {
      * Add return that gives the state of the save. 
      * parameters: location to save to, datapoints
      */
-    public static String saveREF(String location, DataPointFileProcessor dpfp) {
-        int points = dpfp.getMachinePoints().size();
+    public String saveREF(String location, ArrayList<REFPoint> rpl) {
+        int points = rpl.size();
         String output = new String();
         
         if(points <= 200) {
@@ -84,7 +139,7 @@ public class DataIO {
                 location = location.concat(".ref");
             }
             
-            REFDataFile hdf = new REFDataFile(location, true, dpfp.getMachinePoints());
+            REFDataFile hdf = new REFDataFile(location, true, rpl);
             hdf.writeFileOut();
             hdf.close();
             output = FilenameUtils.getName(location) + " saved.";
@@ -112,7 +167,7 @@ public class DataIO {
                     end = start+199;
                 }
                 
-                ArrayList<REFPoint> splitList = new ArrayList<REFPoint>(dpfp.getMachinePoints().subList(start, end));
+                ArrayList<REFPoint> splitList = new ArrayList<REFPoint>(data.getMachinePoints().subList(start, end));
                 
                 REFDataFile hdf = new REFDataFile(newLocation, true, splitList);
                 hdf.writeFileOut();
@@ -131,9 +186,8 @@ public class DataIO {
      * Saves as PRS file
      * 
      */
-    public static String savePRS(String location, DataPointFileProcessor dpfp) {  
+    public String savePRS(String location, ArrayList<REFPoint> rpl) {  
         String output = new String();
-        ArrayList<REFPoint> rpl = dpfp.getMachinePoints();
         
         //Check if location passed has the .prs extension, if not add it
         if(!FilenameUtils.getExtension(location).equals("prs")) {
@@ -186,10 +240,116 @@ public class DataIO {
                 bw.close();
                 output = FilenameUtils.getName(location) + " saved.";
             } catch (Exception e) {
+                output = "Save unsuccessful.";
                 e.printStackTrace();
             }
             
             return output;
+    }
+    
+    /*
+     * Save coefficient .txt file. Input: 4x4 array for x and y coeffs
+     * Format of file: 32 lines. Xcol1, xcol2, xcol3, xcol4, ycol1, ycol2, ycol3, ycol4
+     */
+    public String saveCoeff(String location, CoeffData data) {
+        String output = new String();
+        double[][] xCoeff = data.getXCoefficients();
+        double[][] yCoeff = data.getYCoefficients();
+        
+        //Make sure coeffs passed are the right dimensions. 
+        if( xCoeff.length != 4 || yCoeff[0].length != 4) {
+            output = "Incorrect coefficients passed. Coefficients should be in a 4x4 matrix.";
+            return output;
+        } else {
+            for(int i = 0; i < 4; i++) {
+                if(xCoeff[i].length != 4 || yCoeff[i].length != 4) {
+                    output = "Incorrect coefficients passed. Coefficients should be in a 4x4 matrix.";
+                    return output;
+                }
+            }
+        }
+        
+        // Remove file extension if present, then add _coefficients.txt
+        FilenameUtils.removeExtension(location);
+        location = location.concat("_coefficients.txt");
+        
+        File file = new File(location);
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            Writer bw = new BufferedWriter(new OutputStreamWriter(out));
+            
+            String line = new String();
+            
+            //Write all the x coeffs.
+            for(int i = 0; i < 4; i++) {
+                for(int j = 0; j < 4; j++) {
+                    line = Double.toString(xCoeff[j][i]);
+                    line = line.concat("\n");
+                    bw.write(line);
+                }
+            }
+            
+            //Write all the y coeffs
+            for(int i = 0; i < 4; i++) {
+                for(int j = 0; j < 4; j++) {
+                    line = Double.toString(yCoeff[j][i]);
+                    line = line.concat("\n");
+                    bw.write(line);
+                }
+            }
+            
+            bw.close();
+            output = FilenameUtils.getName(location) + " saved.";
+            
+        } catch (Exception e) {
+                output = "Save unsuccessful.";
+                e.printStackTrace();
+        }
+        
+        return output;
+    }
+    
+    
+    //TODO: Unfinished methods:
+    
+    
+    /*
+     * Saves the information used to compute the coefficients
+     */
+    public String saveCoeffComputation(String location, CoeffData data) {
+        String output = new String();
+        CSVWriter csvWrite;
+        
+        return output;
+    }
+    
+
+    
+    /*
+     * Open a coefficients file and place into two double[][].
+     */
+    public double[] openCoeff(String location) {
+        double[] coeff = new double[32];
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(location));
+            String line;
+            for(int i =0; i<32; i++) {
+                if ((line = br.readLine()) != null) {
+                    coeff[i] = Double.parseDouble(line);
+                    
+                    //do a check that all 32 lines read are numbers
+                    if (Double.isNaN(coeff[i])) {
+                        
+                    }
+                }
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        
+        
+        return coeff;
+        
     }
 
 }

@@ -4,9 +4,9 @@
  */
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_structures.DataIO;
-import com.nrims.holder_data_structures.DataPointFileProcessor;
-import com.nrims.holder_data_structures.DataPoint;
+import com.nrims.holder_data_mgmt.DataIO;
+import com.nrims.holder_data_mgmt.DataPointFileProcessor;
+import com.nrims.holder_data_mgmt.DataPoint;
 import java.awt.GridLayout;
 import java.text.DecimalFormat;
 import java.util.ArrayList;

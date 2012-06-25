@@ -4,8 +4,8 @@
  */
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_structures.DataPoint;
-import com.nrims.holder_data_structures.DataPointFileProcessor;
+import com.nrims.holder_data_mgmt.DataPoint;
+import com.nrims.holder_data_mgmt.DataPointFileProcessor;
 import com.nrims.holder_transform.ComputeCoefficients_n2mc;
 import com.nrims.holder_transform.Transform;
 import java.util.ArrayList;

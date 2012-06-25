@@ -9,12 +9,19 @@ package com.nrims.holder_data_mgmt;
  * Is this useful or should we just use a double[3] ?
  * @author fkashem
  */
-public class DataPoint {
+public class DataPoint implements Comparable<DataPoint> {
     private double x;
     private double y;
     private double z;
+    
+    //Coords found in the machine
+    private double xFound;
+    private double yFound;
+    private boolean isFound;
+    
     private int num;
-    boolean isReference; 
+    private boolean isReference; 
+    
     
     /* Constructors */
     
@@ -32,6 +39,14 @@ public class DataPoint {
         y = ycoord;
         z = zcoord;
         num = pointNum;
+    }
+    
+    /*
+     * In order to keep the reference point ArrayList sorted, we have a compareTo.
+     */
+    @Override
+    public int compareTo(DataPoint anotherPoint) {
+        return this.getNum() - anotherPoint.getNum();
     }
     
     /* Getters and Setters */
@@ -56,6 +71,23 @@ public class DataPoint {
         return isReference;
     }
     
+    public double getXFound() {
+        return xFound;
+    }
+    
+    public double getYFound() {
+        return yFound;
+    }
+    
+    /*
+     * If this is false but there are values for xFound and yFound, xFound and yFound
+     * hold the last loaded found coordinates. 
+     */
+    public boolean getIsFound() {
+        return isFound;
+    }
+    
+    
     public void setXCoord(double xcoord) {
         x = xcoord;
     }
@@ -68,8 +100,20 @@ public class DataPoint {
         z = zcoord;
     }
     
+    public void setXFound(double xcoord) {
+        xFound = xcoord;
+    }
+    
+    public void setYFound(double ycoord) {
+        yFound = ycoord;
+    }
+    
     public void setIsReference(boolean ref) {
         isReference = ref;
+    }
+    
+    public void setIsFound(boolean found) {
+        isFound = found;
     }
     
     /*

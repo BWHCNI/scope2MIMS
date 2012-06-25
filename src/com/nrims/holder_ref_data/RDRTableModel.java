@@ -5,8 +5,8 @@
 
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_structures.DataPointFileProcessor;
-import com.nrims.holder_data_structures.REFPoint;
+import com.nrims.holder_data_mgmt.DataPointFileProcessor;
+import com.nrims.holder_data_mgmt.REFPoint;
 import javax.swing.table.*;
 import java.util.ArrayList;
 

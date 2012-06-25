@@ -482,15 +482,16 @@ public class REFDataFile {
     }
     
     
-    public void readFileIn(ArrayList<REFPoint> rpl_in,
+    public String readFileIn(ArrayList<REFPoint> rpl_in,
             FileInputStream fis
             )
     {
+        String output = new String();
         int num_points, i;
 
         /* Exiting if r_p_l is null */
         if ( rpl_in == null )
-            return;
+            return "Read file failed, reference point list is null.";
 
         /* Clearning the list */
         rpl_in.clear();
@@ -506,13 +507,15 @@ public class REFDataFile {
                 rpl_in.add( readInRefPoint( fis ) );
             
         } catch ( IOException ioe ){
-
+           output = ".ref File could not be read. IOException.";
         }
+        
+        return output;
     }
 
-    public void readFileIn()
+    public String readFileIn()
     {
-        readFileIn( getRefPointList(), file_in );
+        return readFileIn( getRefPointList(), file_in );
     }
 
     /**

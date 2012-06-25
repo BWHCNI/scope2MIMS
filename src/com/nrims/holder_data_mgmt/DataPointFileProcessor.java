@@ -5,6 +5,8 @@
 
 package com.nrims.holder_data_mgmt;
 
+import com.nrims.holder_ref_data.CoeffData;
+import com.nrims.holder_ref_data.UI;
 import com.nrims.holder_transform.*;
 import java.util.ArrayList;
 
@@ -13,15 +15,26 @@ import java.util.ArrayList;
  */
 public class DataPointFileProcessor {
     private String coeffFilePath;
-    private String scopeFilePath;
     private String machineFilePath;
     private Transform point_trans = new Transform();
+    private UI appWindow;
+    private DataIO io;
     
     //Maintain three lists of points: machine, scope, and reference points from scope
     
-    protected ArrayList<REFPoint> machinePoints = new ArrayList<REFPoint>();
+    private ArrayList<REFPoint> machinePoints = new ArrayList<REFPoint>();
     private ArrayList<DataPoint> scopePoints = new ArrayList<DataPoint>();
     private ArrayList<DataPoint> referencePoints = new ArrayList<DataPoint>();
+    
+    // Data for coefficient computation
+    private CoeffData coeffData = new CoeffData();
+    
+    private ArrayList<DataPoint> foundPoints;
+    
+    //this will be replaced later: boolean to say if coeffs is from file or computed
+    //false = file, true = computed
+    private boolean coeffComputed = false;
+   
 
     /* constructors */
 
@@ -32,21 +45,23 @@ public class DataPointFileProcessor {
     public DataPointFileProcessor() {
     }
     
-    /**
-     * Constructor
-     * @param coeffFile
-     * @param srcPointsfile
-     */
-    public DataPointFileProcessor(
-            String coeffFile,
-            String srcFile)
-    {
-        coeffFilePath = coeffFile;
-        scopeFilePath = srcFile;
-        scopePoints = DataIO.readPoints(srcFile);
+    public DataPointFileProcessor(UI window) {
+        appWindow = window;
+        io = new DataIO(this);
     }
+    
 
     /* getters and setters */
+
+    public void setCoeffData(CoeffData coeffs) {
+        coeffComputed = true;
+        coeffData = coeffs;
+        
+        //Whenever this is set, generate transformed points
+        this.processTransform();
+        
+    }
+    
 
     /**
      * Sets the filesystem path to coefficients file.
@@ -55,6 +70,10 @@ public class DataPointFileProcessor {
     public void setCoeffFilePath(String path)
     {
         coeffFilePath = path;
+        coeffComputed = false;
+        
+        this.processTransform();
+        
     }
 
     /**
@@ -67,14 +86,14 @@ public class DataPointFileProcessor {
     }
     
     /**
-     * Sets the filesystem path to the stage points file.
+     * Set the source points read from a .points file.
      *
-     * @param path Filesystem path to stage points file
+     * @param pointsSrc ArrayList of all points to add
      */
-    public void setScopeFilePath(String path)
+    public void setSrcPoints(ArrayList<DataPoint> pointsSrc)
     {
-        scopeFilePath = path;
-        scopePoints = DataIO.readPoints(path);
+        scopePoints = pointsSrc;
+        
     }
     
     /**
@@ -84,13 +103,6 @@ public class DataPointFileProcessor {
         return scopePoints;
     }
 
-    /**
-     * Returns filesystem path to stage points file.
-     */
-    public String getScopeFilePath()
-    {
-        return( scopeFilePath );
-    }
     
     /* Get list of reference points */
     public ArrayList<DataPoint> getReferencePoints() {
@@ -109,6 +121,13 @@ public class DataPointFileProcessor {
         referencePoints.clear();
     }
     
+    public void clearNewCoords() {
+        clearMachinePoints();
+        clearReferencePoints();
+        coeffFilePath = "";
+        coeffData = new CoeffData();
+    }
+    
     public void setMachinePoints(ArrayList<REFPoint> newDest) {
         machinePoints = newDest;
     }
@@ -121,10 +140,17 @@ public class DataPointFileProcessor {
         //TODO
     }
     
-    public void processTransform()
-    {
-        point_trans.readCoefficientsFile( getCoeffFilePath() );
-        point_trans.readStagePointsFile( getScopeFilePath() );
+    public void processTransform()   {
+        //Do some safety checks in here to make sure these things are set.
+        
+        if(!coeffComputed) {
+            point_trans.readCoefficientsFile( getCoeffFilePath() );
+        } else {
+            point_trans.setTransformCoeffs(coeffData.getXCoefficients(), coeffData.getYCoefficients());
+        }
+        
+        //This should be changed so that IO is done in io class, pass values to transform class.
+        point_trans.readStagePointsFile( io.getSrcFilePath() );
         point_trans.setTransformedPoints();
 
         //This is very weird. Comment out for now. Shallow copies, why?
@@ -132,6 +158,37 @@ public class DataPointFileProcessor {
         //point_trans.setRefPointList(rpl);
 
         machinePoints = point_trans.transformedPointsToRefPoints();
+        
+        //Send some messages to the GUI.
+        appWindow.destTableRefresh(UI.TableCode.REF);
+        appWindow.updateStatus("Points transformed.");
+    }
+    
+    public String save(String location, String extension) {
+        String output = new String();
+        //TODO: Do some checks for saving.
+        
+        //Save destination files according to selected file filter.
+        if(extension.equals("*.ref")) {
+            output = output.concat(io.saveREF(location, machinePoints));
+        } else if(extension.equals("*.prs")) {
+            output = output.concat(io.savePRS(location, machinePoints));
+        } else {
+            return "Please select a file extension.";
+        }
+        
+        //Save coefficient file if computed.
+        if(coeffComputed) {
+            output = output.concat("\n" + io.saveCoeff(location, coeffData));
+            output = output.concat("\n" + io.saveCoeffComputation(location, coeffData));
+        }
+        
+        return output;
+        
+    }
+    
+    public DataIO getIO() {
+        return io;
     }
     
     /*
@@ -149,7 +206,12 @@ public class DataPointFileProcessor {
             referencePoints.remove(selectedPt);
             return false;
         }
+        
+        
+    }
+    
+    public void updateLog(String line) {
+        appWindow.updateStatus(line);
     }
 }
-
 

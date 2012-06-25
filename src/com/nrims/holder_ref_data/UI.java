@@ -4,9 +4,9 @@
  */
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_structures.DataIO;
-import com.nrims.holder_data_structures.DataPointFileProcessor;
-import com.nrims.holder_data_structures.REFDataFile;
+import com.nrims.holder_data_mgmt.DataIO;
+import com.nrims.holder_data_mgmt.DataPointFileProcessor;
+import com.nrims.holder_data_mgmt.REFDataFile;
 import com.nrims.holder_transform.ComputeCoefficients_n2mc;
 import java.awt.Color;
 import java.awt.Component;
