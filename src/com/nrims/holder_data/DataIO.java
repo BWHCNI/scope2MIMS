@@ -1,12 +1,12 @@
 package com.nrims.holder_data;
 
-import com.nrims.holder_ref_data.CoeffData;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import org.apache.commons.io.FilenameUtils;
 import au.com.bytecode.opencsv.*;
+import javax.swing.JOptionPane;
 
 /**
  * Class used to deal with input/output of data from/to files.
@@ -129,7 +129,7 @@ public class DataIO {
      * Add return that gives the state of the save. 
      * parameters: location to save to, datapoints
      */
-    public String saveREF(String location, ArrayList<REFPoint> rpl) {
+    public String saveREF(String location, ArrayList<REFPoint> rpl, boolean computed) {
         int points = rpl.size();
         String output = new String();
         
@@ -139,6 +139,10 @@ public class DataIO {
                 location = location.concat(".ref");
             }
             
+            if(!fileOverwrite(new File(location))) {
+                return ".ref File not written.";
+            }
+                
             REFDataFile hdf = new REFDataFile(location, true, rpl);
             hdf.writeFileOut();
             hdf.close();
@@ -177,6 +181,10 @@ public class DataIO {
             
         }
         
+        if(computed) {
+            output = output.concat("\n" + saveComputedCoeffs(location));
+        }
+        
         return output;
         
     }
@@ -186,7 +194,7 @@ public class DataIO {
      * Saves as PRS file
      * 
      */
-    public String savePRS(String location, ArrayList<REFPoint> rpl) {  
+    public String savePRS(String location, ArrayList<REFPoint> rpl, boolean computed) {  
         String output = new String();
         
         //Check if location passed has the .prs extension, if not add it
@@ -200,6 +208,9 @@ public class DataIO {
         double xoffset = 18.5;
         double yoffset = 0.0;
             File file = new File(location);
+            if(!fileOverwrite(file)) {
+                return ".prs File not written.";
+            }
             try{
                 FileOutputStream out = new FileOutputStream(file);
                 Writer bw = new BufferedWriter(new OutputStreamWriter(out));
@@ -242,6 +253,10 @@ public class DataIO {
             } catch (Exception e) {
                 output = "Save unsuccessful.";
                 e.printStackTrace();
+            }
+            
+            if(computed) {
+                output = output.concat("\n" + saveComputedCoeffs(location));
             }
             
             return output;
@@ -387,4 +402,28 @@ public class DataIO {
         
     }
     
+    /*
+     * method to handle prompting user if they want to rewrite a file that exists
+     * 
+     */
+    public boolean fileOverwrite(File file) {
+        
+        if(file.exists()) {
+            int response = JOptionPane.showConfirmDialog(null, "The file " + file.getName() + " already exists. Do you want to replace the existing file?", "Overwrite file", JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+            if (response != JOptionPane.YES_OPTION) {
+                return false;
+            }
+        }
+        
+        return true;
+        
+    }
+    
+    public String saveComputedCoeffs(String location) { 
+        String output = new String();
+        output = output.concat(saveCoeff(location, data.getCoeffData()));
+        output = output.concat("\n" + saveCoeffComputation(location, data.getCoeffData()));
+        return output;
+    }
 }

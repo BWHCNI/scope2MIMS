@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.nrims.holder_ref_data;
+package com.nrims.holder_data;
 
 import com.nrims.holder_data.DataPoint;
 import java.util.ArrayList;

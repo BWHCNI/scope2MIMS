@@ -5,7 +5,6 @@
 
 package com.nrims.holder_data;
 
-import com.nrims.holder_ref_data.CoeffData;
 import com.nrims.holder_ref_data.UI;
 import com.nrims.holder_transform.*;
 import java.util.ArrayList;
@@ -180,17 +179,11 @@ public class DataPointFileProcessor {
         
         //Save destination files according to selected file filter.
         if(extension.equals("*.ref")) {
-            output = output.concat(io.saveREF(location, machinePoints));
+            output = output.concat(io.saveREF(location, machinePoints, coeffComputed));
         } else if(extension.equals("*.prs")) {
-            output = output.concat(io.savePRS(location, machinePoints));
+            output = output.concat(io.savePRS(location, machinePoints, coeffComputed));
         } else {
             return "Please select a file extension.";
-        }
-        
-        //Save coefficient file if computed.
-        if(coeffComputed) {
-            output = output.concat("\n" + io.saveCoeff(location, coeffData));
-            output = output.concat("\n" + io.saveCoeffComputation(location, coeffData));
         }
         
         return output;
@@ -199,6 +192,10 @@ public class DataPointFileProcessor {
     
     public DataIO getIO() {
         return io;
+    }
+    
+    public CoeffData getCoeffData() {
+        return coeffData;
     }
     
     /*

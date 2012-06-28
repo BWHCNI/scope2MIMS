@@ -2,10 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.nrims.holder_ref_data;
+package com.nrims.holder_transform;
 
+import com.nrims.holder_data.CoeffData;
 import com.nrims.holder_data.DataPoint;
 import com.nrims.holder_data.DataPointFileProcessor;
+import com.nrims.holder_ref_data.CoeffCalcWindow;
+import com.nrims.holder_ref_data.UI;
 import com.nrims.holder_transform.ComputeCoefficients_n2mc;
 import com.nrims.holder_transform.Transform;
 import java.util.ArrayList;

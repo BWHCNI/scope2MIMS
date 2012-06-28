@@ -4,6 +4,7 @@
  */
 package com.nrims.holder_ref_data;
 
+import com.nrims.holder_transform.CoeffCalculator;
 import com.nrims.holder_data.DataIO;
 import com.nrims.holder_data.DataPointFileProcessor;
 import com.nrims.holder_data.REFDataFile;
@@ -194,7 +195,6 @@ public class UI extends javax.swing.JFrame {
         helpMenu.setText("Help");
 
         aboutMenuItem.setText("About");
-        aboutMenuItem.setEnabled(false);
         aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 aboutMenuItemActionPerformed(evt);
@@ -272,8 +272,8 @@ public class UI extends javax.swing.JFrame {
                 return;
             } else if(whichFile.contains(".ref")) {
                 srcTableRefresh(TableCode.REF);
-                saveMenuItem.setEnabled(true);
                 enableCoordinateActions(false);
+                saveMenuItem.setEnabled(true);
             } else if(whichFile.contains(".points")) {
                 srcTableRefresh(TableCode.NIKON);
                 saveMenuItem.setEnabled(false);
@@ -286,7 +286,7 @@ public class UI extends javax.swing.JFrame {
     }//GEN-LAST:event_loadSrcPtsActionPerformed
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null,"Scope to MIMS tool, version 1.0. \n http://www.nrims.harvard.edu/", "About", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     /*
@@ -449,6 +449,7 @@ public class UI extends javax.swing.JFrame {
     private RDRTableModel refTableModel;
     private NikonTableModel nikonTableModel;
     private JDialog aboutBox;
+    //JFilechooser to ask for confirmation before rewrite.
     private JFileChooser fc = new JFileChooser();
     private String coeffFilePath;
     private String coordFilePath;
@@ -492,9 +493,6 @@ public class UI extends javax.swing.JFrame {
             case CLEAR:
                 destReviewTable.setModel(new DefaultTableModel());
                 destReviewTable.repaint();
-                
-                //This should go in a different method, not tied to table view.
-                saveMenuItem.setEnabled(false);
             break;
         }
     }
