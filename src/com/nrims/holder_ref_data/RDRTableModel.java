@@ -5,8 +5,8 @@
 
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_mgmt.DataPointFileProcessor;
-import com.nrims.holder_data_mgmt.REFPoint;
+import com.nrims.holder_data.DataPointFileProcessor;
+import com.nrims.holder_data.REFPoint;
 import javax.swing.table.*;
 import java.util.ArrayList;
 
@@ -93,10 +93,7 @@ public class RDRTableModel extends AbstractTableModel{
     @Override
     public boolean isCellEditable(int row, int column)
     {
-        if ( column < 3 )
-            return( false );
-
-        return( true );
+        return false;
     }
 
     @Override
@@ -201,5 +198,9 @@ public class RDRTableModel extends AbstractTableModel{
     public DataPointFileProcessor getDataPointFileProcessor()
     {
         return( dpfp );
+    }
+    
+    public int getZColNum () {
+        return Z_COORD_COL_NUM;
     }
 }

@@ -4,9 +4,9 @@
  */
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_mgmt.DataIO;
-import com.nrims.holder_data_mgmt.DataPointFileProcessor;
-import com.nrims.holder_data_mgmt.DataPoint;
+import com.nrims.holder_data.DataIO;
+import com.nrims.holder_data.DataPointFileProcessor;
+import com.nrims.holder_data.DataPoint;
 import java.awt.GridLayout;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -198,14 +198,13 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
             //Grab accuracy and display
             calculator.calculateError();
             updateStatus(calculator.printError());
-            calculator.exportData();
+            calculator.exportData(usedRefPoints);
         } else {
             updateStatus("Enter the x and y coordinate of found machine points to calculate.");
         }
     }//GEN-LAST:event_calcButtonActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        
         parentFrame.computeDialogOpen(false);
     }//GEN-LAST:event_formWindowClosed
 
@@ -214,7 +213,10 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        /*if(!collectInput(true)) {
+      //check if there are any inputs, then check if inputs are valid
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        if(inputFound != null) {
+        if(!collectInput(true)) {
             setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             String error = "Warning: Invalid input detected in coordinate fields. Found coordinates may not be saved properly. Are you sure you want to exit?";
             int reply = JOptionPane.showConfirmDialog(this, error, "Invalid Input Error", JOptionPane.YES_NO_OPTION);
@@ -222,9 +224,8 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
                 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
         }
-        * 
-        */
         collectInput(true);
+        }
 
     }//GEN-LAST:event_formWindowClosing
 
@@ -244,7 +245,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     
     private int numPoints;
     private ArrayList<DataPoint> refPoints;
-    private ArrayList<DataPoint> usedRefPoints;
+    private ArrayList<DataPoint> usedRefPoints = new ArrayList<DataPoint>();
     private CoeffCalculator calculator;
     private UI parentFrame;
     
@@ -348,6 +349,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
      */
     private boolean collectInput(boolean closing) {
         boolean collected = false;
+        usedRefPoints.clear();
         
         //Arraylist to hold the rows referring to reference points with mims points filled in
         ArrayList<Integer> pointsInput = new ArrayList<Integer>();
@@ -363,6 +365,11 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
                     refPoints.get(i).setIsFound(false);
                 }
             }
+        }
+        
+        //If no coords are set, return true. Nothing to collect.
+        if(pointsInput.isEmpty()) {
+            return true;
         }
         
         //Initialize the two arraylists to the proper size
@@ -387,6 +394,9 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
                     refPoints.get(pointsInput.get(i)).setXFound(mimsPts[i][0]);
                     refPoints.get(pointsInput.get(i)).setYFound(mimsPts[i][1]);
                     refPoints.get(pointsInput.get(i)).setIsFound(true);
+                    
+                    //Add this point to the usedRefPoints list.
+                    usedRefPoints.add(refPoints.get(pointsInput.get(i)));
 
                     collected = true;
                 } catch (NumberFormatException exc) {

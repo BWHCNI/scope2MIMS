@@ -5,7 +5,7 @@
 
 package com.nrims.holder_transform;
 
-import com.nrims.holder_data_mgmt.REFPoint;
+import com.nrims.holder_data.REFPoint;
 import java.util.*;
 import java.io.*;
 
@@ -161,6 +161,9 @@ public class Transform {
         System.out.println("");
     }
     
+    
+    //Move this to DataIO. Shouldn't read files with tranform class. 
+    
     public void readCoefficientsFile(String filename) {
         double[] coeff = new double[32];
         try {
@@ -177,6 +180,7 @@ public class Transform {
         
         this.setCoefficientsFromList(coeff);
     }
+    
     
     public void setSrcPoints(double[][] pts) {
         for(int i = 0; i < pts.length; i++) {

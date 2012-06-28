@@ -4,8 +4,8 @@
  */
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_mgmt.DataPoint;
-import com.nrims.holder_data_mgmt.DataPointFileProcessor;
+import com.nrims.holder_data.DataPoint;
+import com.nrims.holder_data.DataPointFileProcessor;
 import com.nrims.holder_transform.ComputeCoefficients_n2mc;
 import com.nrims.holder_transform.Transform;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class CoeffCalculator {
     private double[][] yCoefficients;
     private double[][] nikonPts;
     private double[][] mimsPts;
-    private ArrayList<DataPoint> transformedPts;
+    private ArrayList<double[]> calculatedPoints;
     private CoeffData coeffData;
     
     
@@ -36,14 +36,17 @@ public class CoeffCalculator {
     
     public CoeffCalculator(DataPointFileProcessor dpfp, UI calledFrom) {
         data = dpfp;
+        parent = calledFrom;
         window = new CoeffCalcWindow(data.getReferencePoints(), calledFrom, this);
     }
     
     /*
      * Sends coeffData structure to the dpfp. 
+     * @param usedRefPoints is the list of points used for calcuating these coefficients
+     * points object contains nikon coords and mims coords.
      */
-    public void exportData() {
-        coeffData = new CoeffData(xCoefficients, yCoefficients, nikonPts, mimsPts, transformedPts, error, averageError);
+    public void exportData(ArrayList<DataPoint> usedRefPoints) {
+        coeffData = new CoeffData(xCoefficients, yCoefficients, usedRefPoints, calculatedPoints, error, averageError);
         data.setCoeffData(coeffData);
     }
     
@@ -89,7 +92,7 @@ public class CoeffCalculator {
             transformer.setCoefficients(xCoefficients, yCoefficients);
             transformer.setTransformedPoints();
             
-            ArrayList<double[]> calculatedPoints = transformer.getTransformedPoints();
+            calculatedPoints = transformer.getTransformedPoints();
             double[][] foundPoints = n2mc.getMimsPts();
             
             //Testing. Print out the coords of the transformed points

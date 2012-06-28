@@ -4,8 +4,8 @@
  */
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_mgmt.DataPointFileProcessor;
-import com.nrims.holder_data_mgmt.DataPoint;
+import com.nrims.holder_data.DataPointFileProcessor;
+import com.nrims.holder_data.DataPoint;
 import java.util.ArrayList;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;

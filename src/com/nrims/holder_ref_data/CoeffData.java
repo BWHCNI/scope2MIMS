@@ -4,7 +4,7 @@
  */
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_mgmt.DataPoint;
+import com.nrims.holder_data.DataPoint;
 import java.util.ArrayList;
 
 /**
@@ -14,9 +14,8 @@ import java.util.ArrayList;
 public class CoeffData {
     //We want to save the data that's used for the coefficients
     //Reference points, found points, coefficients, transformation method.
-    private double[][] nikonRefPoints;
     private double[][] foundPoints;
-    private ArrayList<DataPoint> calculatedPoints;
+    private ArrayList<double[]> calculatedPoints;
     private double[][] xCoefficients;
     private double[][] yCoefficients;
     private double[] error;
@@ -24,13 +23,17 @@ public class CoeffData {
     private String transformationMethod = new String();
     private String DEFAULTCOEFF = "";
     
+    //We're repeating some data here -- has to do with how the coefficient transforms are set up,
+    //they only need the coords of the ref points, but we want all of the point data for saving later.
+    private ArrayList<DataPoint> refPoints;
+    private double[][] nikonRefPointCoords;
+    
     public CoeffData() {
         
     }
     
-    public CoeffData(double[][] xcoeff, double[][] ycoeff, double[][] nikonPts, double[][] foundPts, ArrayList<DataPoint> calcPts, double[] err, double avgErr) {
-        nikonRefPoints = nikonPts;
-        foundPoints = foundPts;
+    public CoeffData(double[][] xcoeff, double[][] ycoeff, ArrayList<DataPoint> pointList, ArrayList<double[]> calcPts, double[] err, double avgErr) {
+        refPoints = pointList;
         calculatedPoints = calcPts;
         xCoefficients = xcoeff;
         yCoefficients = ycoeff;
@@ -39,21 +42,23 @@ public class CoeffData {
         transformationMethod = DEFAULTCOEFF;
     }
     
+    
+    // TO DO: If we want to load coeff data into this struct when we are 
     public CoeffData(String filepath) {
         
     }
     
     /* Getters and setters */
     
-    protected void setNikonRefPoints(double[][] setPoints) {
-        nikonRefPoints = setPoints;
+    protected void setNikonRefPointCoords(double[][] setPoints) {
+        nikonRefPointCoords = setPoints;
     }
     
     protected void setFoundPoints(double[][] setPoints) {
         foundPoints = setPoints;
     }
     
-    protected void setCalculatedPoints(ArrayList<DataPoint> setPoints) {
+    protected void setCalculatedPoints(ArrayList<double[]> setPoints) {
         calculatedPoints = setPoints;
     }
     
@@ -73,15 +78,19 @@ public class CoeffData {
         avgError = avg;
     }
     
+    protected void setRefPoints(ArrayList<DataPoint> list) {
+        refPoints = list;
+    }
+    
     public double[][] getNikonRefPoints() {
-        return nikonRefPoints;
+        return nikonRefPointCoords;
     }
     
     public double[][] getFoundPoints() {
         return foundPoints;
     }
     
-    public ArrayList<DataPoint> getCalculatedPoints() {
+    public ArrayList<double[]> getCalculatedPoints() {
         return calculatedPoints;
     }
     
@@ -99,6 +108,10 @@ public class CoeffData {
     
     public double[][] getYCoefficients() {
         return yCoefficients;
+    }
+    
+    public ArrayList<DataPoint> getRefPoints() {
+        return refPoints;
     }
     
     

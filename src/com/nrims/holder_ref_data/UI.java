@@ -4,9 +4,9 @@
  */
 package com.nrims.holder_ref_data;
 
-import com.nrims.holder_data_mgmt.DataIO;
-import com.nrims.holder_data_mgmt.DataPointFileProcessor;
-import com.nrims.holder_data_mgmt.REFDataFile;
+import com.nrims.holder_data.DataIO;
+import com.nrims.holder_data.DataPointFileProcessor;
+import com.nrims.holder_data.REFDataFile;
 import com.nrims.holder_transform.ComputeCoefficients_n2mc;
 import java.awt.Color;
 import java.awt.Component;
@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 
@@ -48,6 +49,8 @@ public class UI extends javax.swing.JFrame {
 
         srcTableRightClick = new javax.swing.JPopupMenu();
         toggleRefPoint = new javax.swing.JMenuItem();
+        refTableRightClick = new javax.swing.JPopupMenu();
+        changeZ = new javax.swing.JMenuItem();
         srcLabel = new javax.swing.JLabel();
         destLabel = new javax.swing.JLabel();
         destScrollPane = new javax.swing.JScrollPane();
@@ -65,6 +68,7 @@ public class UI extends javax.swing.JFrame {
         loadSrcPts = new javax.swing.JMenuItem();
         loadCoeff = new javax.swing.JMenuItem();
         calcCoeffMenuItem = new javax.swing.JMenuItem();
+        clearAllMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -79,8 +83,19 @@ public class UI extends javax.swing.JFrame {
         });
         srcTableRightClick.add(toggleRefPoint);
 
+        refTableRightClick.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        refTableRightClick.setInvoker(destReviewTable);
+
+        changeZ.setText("Change Z Coordinate");
+        changeZ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeZActionPerformed(evt);
+            }
+        });
+        refTableRightClick.add(changeZ);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Holder Reference Point Utility");
+        setTitle("scope2MIMS");
 
         srcLabel.setText("Source Points");
 
@@ -94,6 +109,11 @@ public class UI extends javax.swing.JFrame {
 
             }
         ));
+        destReviewTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                destReviewTableMouseClicked(evt);
+            }
+        });
         destScrollPane.setViewportView(destReviewTable);
 
         srcReviewTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -160,6 +180,14 @@ public class UI extends javax.swing.JFrame {
             }
         });
         setupMenu.add(calcCoeffMenuItem);
+
+        clearAllMenuItem.setText("Clear all");
+        clearAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearAllMenuItemActionPerformed(evt);
+            }
+        });
+        setupMenu.add(clearAllMenuItem);
 
         menuBar.add(setupMenu);
 
@@ -238,17 +266,21 @@ public class UI extends javax.swing.JFrame {
     private void loadSrcPtsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSrcPtsActionPerformed
         int returnVal = fc.showOpenDialog( this );
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            String whichFile = dpfp.getIO().open(fc.getSelectedFile().getPath());
-            if(whichFile.contains(".ref")) {
+            String whichFile = dpfp.openSrc(fc.getSelectedFile().getPath());
+            if(whichFile.contains("Cannot open file")) {
+                updateStatus(whichFile);
+                return;
+            } else if(whichFile.contains(".ref")) {
                 srcTableRefresh(TableCode.REF);
                 saveMenuItem.setEnabled(true);
+                enableCoordinateActions(false);
             } else if(whichFile.contains(".points")) {
                 srcTableRefresh(TableCode.NIKON);
                 saveMenuItem.setEnabled(false);
+                enableCoordinateActions(true);
             }
             updateStatus(whichFile);
             destTableRefresh(TableCode.CLEAR);
-            enableCoordinateActions(true);
         }
         
     }//GEN-LAST:event_loadSrcPtsActionPerformed
@@ -262,12 +294,15 @@ public class UI extends javax.swing.JFrame {
      */
     private void srcReviewTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_srcReviewTableMouseClicked
         if(SwingUtilities.isRightMouseButton(evt)) {
-            srcTableRightClick.show(srcReviewTable, evt.getX(), evt.getY());
+            if(srcReviewTable.getModel() == nikonTableModel) {
+                srcTableRightClick.show(srcReviewTable, evt.getX(), evt.getY());
+            } else if(srcReviewTable.getModel() == refTableModel) {
+                refTableRightClick.show(srcReviewTable, evt.getX(), evt.getY());
+            }
         }
     }//GEN-LAST:event_srcReviewTableMouseClicked
 
     private void toggleRefPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleRefPointActionPerformed
-        // TODO add your handling code here:
         // Get list of points selected -->  iterate through list, toggle isReference
         for (int i : srcReviewTable.getSelectedRows()) {
             boolean addRemove = dpfp.toggleReferenceFlag(i); 
@@ -304,6 +339,42 @@ public class UI extends javax.swing.JFrame {
         fc.resetChoosableFileFilters();
         
     }//GEN-LAST:event_saveMenuItemActionPerformed
+
+    private void changeZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeZActionPerformed
+        
+        double newZ = Double.parseDouble(JOptionPane.showInputDialog("Enter new Z Coordinate"));
+        //Check which table invoked the dialog
+        JTable invoked = (JTable) refTableRightClick.getInvoker();
+        // Get list of points selected -->  iterate through list, change z to set.
+        for (int i : invoked.getSelectedRows()) {
+            dpfp.getMachinePoints().get(i).setZCoord(newZ);
+        }
+        
+        updateStatus("Z coordinate changed to "+ newZ);
+        invoked.clearSelection();
+        if(invoked == destReviewTable) {
+            destTableRefresh(TableCode.REF);
+        } else if (invoked == srcReviewTable) {
+            srcTableRefresh(TableCode.REF);
+        }
+    }//GEN-LAST:event_changeZActionPerformed
+
+    private void destReviewTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_destReviewTableMouseClicked
+       if(SwingUtilities.isRightMouseButton(evt)) {
+            refTableRightClick.show(destReviewTable, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_destReviewTableMouseClicked
+
+    private void clearAllMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllMenuItemActionPerformed
+        dpfp.clearData();
+        calculator = new CoeffCalculator();
+        destTableRefresh(TableCode.CLEAR);
+        srcTableRefresh(TableCode.CLEAR);
+        enableCoordinateActions(false);
+        saveMenuItem.setEnabled(false);
+        
+        
+    }//GEN-LAST:event_clearAllMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -349,6 +420,8 @@ public class UI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenuItem calcCoeffMenuItem;
+    private javax.swing.JMenuItem changeZ;
+    private javax.swing.JMenuItem clearAllMenuItem;
     private javax.swing.JLabel destLabel;
     private javax.swing.JTable destReviewTable;
     private javax.swing.JScrollPane destScrollPane;
@@ -360,6 +433,7 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JMenuItem loadSrcPts;
     private javax.swing.JLabel logLabel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JPopupMenu refTableRightClick;
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JMenu setupMenu;
     private javax.swing.JLabel srcLabel;
@@ -416,7 +490,7 @@ public class UI extends javax.swing.JFrame {
                 saveMenuItem.setEnabled(true);
             break;
             case CLEAR:
-                destReviewTable.setModel(new RDRTableModel(new DataPointFileProcessor()));
+                destReviewTable.setModel(new DefaultTableModel());
                 destReviewTable.repaint();
                 
                 //This should go in a different method, not tied to table view.
@@ -451,6 +525,10 @@ public class UI extends javax.swing.JFrame {
                 srcReviewTable.repaint();
                 //This should go in a different method.
                 saveMenuItem.setEnabled(true);
+            break;
+            case CLEAR:
+                srcReviewTable.setModel(new DefaultTableModel());
+                srcReviewTable.repaint();
             break;
         }
        
