@@ -98,7 +98,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         refPointsPanel.setLayout(refPointsPanelLayout);
         refPointsPanelLayout.setHorizontalGroup(
             refPointsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 215, Short.MAX_VALUE)
+            .addGap(0, 252, Short.MAX_VALUE)
         );
         refPointsPanelLayout.setVerticalGroup(
             refPointsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -111,7 +111,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         foundPointsPanel.setLayout(foundPointsPanelLayout);
         foundPointsPanelLayout.setHorizontalGroup(
             foundPointsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 183, Short.MAX_VALUE)
+            .addGap(0, 137, Short.MAX_VALUE)
         );
         foundPointsPanelLayout.setVerticalGroup(
             foundPointsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,16 +129,13 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
             .addGroup(pointContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pointContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pointContainerLayout.createSequentialGroup()
-                        .addComponent(refPointsLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 149, Short.MAX_VALUE)
-                        .addComponent(foundPointsLabel)
-                        .addGap(101, 101, 101))
-                    .addGroup(pointContainerLayout.createSequentialGroup()
-                        .addComponent(refPointsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43)
-                        .addComponent(foundPointsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                    .addComponent(refPointsLabel)
+                    .addComponent(refPointsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(47, 47, 47)
+                .addGroup(pointContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(foundPointsLabel)
+                    .addComponent(foundPointsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(79, 79, 79))
         );
         pointContainerLayout.setVerticalGroup(
             pointContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,10 +144,10 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
                     .addComponent(foundPointsLabel)
                     .addComponent(refPointsLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pointContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pointContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(foundPointsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(refPointsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(153, Short.MAX_VALUE))
+                .addGap(153, 153, 153))
         );
 
         jScrollPane1.setViewportView(pointContainer);
@@ -165,11 +162,13 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
                     .addComponent(jScrollPane2)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(calcButton)))
+                        .addComponent(calcButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -196,7 +195,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         
             //Grab accuracy and display
             calculator.calculateError();
-            updateStatus(calculator.printError(), true);
+            updateStatus(calculator.printError(), false);
             calculator.exportData(usedRefPoints);
         } else {
             updateStatus("Enter the x and y coordinate of found machine points (>=3) to calculate.", true);
@@ -380,9 +379,9 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
             }
         }
         
-        //If no coords are set, return true. Nothing to collect.
+        //If no coords are set, return false. Nothing to collect.
         if(pointsInput.isEmpty()) {
-            return true;
+            return false;
         }
         
         //Initialize the two arraylists to the proper size
