@@ -393,8 +393,12 @@ public class DataIO {
                     }
                 }
             }
+        } catch(NumberFormatException e) {
+            data.updateLog("File selected was not a coefficient file.", true);
+            coeff = new double[0];
+            e.printStackTrace();
         } catch(IOException e) {
-            data.updateLog("File selected was not a coefficient file.");
+            coeff = new double[0];
             e.printStackTrace();
         }
         

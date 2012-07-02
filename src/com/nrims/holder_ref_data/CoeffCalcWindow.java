@@ -8,12 +8,16 @@ import com.nrims.holder_transform.CoeffCalculator;
 import com.nrims.holder_data.DataIO;
 import com.nrims.holder_data.DataPointFileProcessor;
 import com.nrims.holder_data.DataPoint;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.*;
 import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  *
@@ -55,7 +59,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         foundPointsLabel = new javax.swing.JLabel();
         refPointsLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        statusBox = new javax.swing.JTextArea();
+        statusPane = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Calculate Coefficients");
@@ -86,6 +90,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         jScrollPane1.setMinimumSize(new java.awt.Dimension(0, 0));
 
         pointContainer.setBorder(null);
+        pointContainer.setPreferredSize(new java.awt.Dimension(527, 290));
 
         refPointsPanel.setBorder(null);
 
@@ -93,7 +98,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         refPointsPanel.setLayout(refPointsPanelLayout);
         refPointsPanelLayout.setHorizontalGroup(
             refPointsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 215, Short.MAX_VALUE)
         );
         refPointsPanelLayout.setVerticalGroup(
             refPointsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,7 +111,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         foundPointsPanel.setLayout(foundPointsPanelLayout);
         foundPointsPanelLayout.setHorizontalGroup(
             foundPointsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 197, Short.MAX_VALUE)
+            .addGap(0, 183, Short.MAX_VALUE)
         );
         foundPointsPanelLayout.setVerticalGroup(
             foundPointsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,15 +131,13 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
                 .addGroup(pointContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pointContainerLayout.createSequentialGroup()
                         .addComponent(refPointsLabel)
-                        .addGap(0, 70, Short.MAX_VALUE))
-                    .addComponent(refPointsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(8, 8, 8)
-                .addGroup(pointContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(pointContainerLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 149, Short.MAX_VALUE)
                         .addComponent(foundPointsLabel)
                         .addGap(101, 101, 101))
                     .addGroup(pointContainerLayout.createSequentialGroup()
-                        .addComponent(foundPointsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(refPointsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(foundPointsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
         pointContainerLayout.setVerticalGroup(
@@ -147,18 +150,13 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
                 .addGroup(pointContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(foundPointsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(refPointsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(pointContainer);
 
-        statusBox.setColumns(20);
-        statusBox.setEditable(false);
-        statusBox.setLineWrap(true);
-        statusBox.setRows(2);
-        statusBox.setText(" ");
-        statusBox.setWrapStyleWord(true);
-        jScrollPane2.setViewportView(statusBox);
+        statusPane.setEditable(false);
+        jScrollPane2.setViewportView(statusPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -193,15 +191,15 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
         
         //Collect and pass to calculate object as long as some found points are selected.
         if(collectInput(false)) {
-            updateStatus("Calculating with " + mimsPts.length + " reference points.");
+            updateStatus("Calculating with " + mimsPts.length + " reference points.", false);
             calculator.calculateCoeffs();
         
             //Grab accuracy and display
             calculator.calculateError();
-            updateStatus(calculator.printError());
+            updateStatus(calculator.printError(), true);
             calculator.exportData(usedRefPoints);
         } else {
-            updateStatus("Enter the x and y coordinate of found machine points to calculate.");
+            updateStatus("Enter the x and y coordinate of found machine points (>=3) to calculate.", true);
         }
     }//GEN-LAST:event_calcButtonActionPerformed
 
@@ -240,7 +238,7 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     private javax.swing.JPanel pointContainer;
     private javax.swing.JLabel refPointsLabel;
     private javax.swing.JPanel refPointsPanel;
-    private javax.swing.JTextArea statusBox;
+    private javax.swing.JTextPane statusPane;
     // End of variables declaration//GEN-END:variables
 
     
@@ -256,6 +254,11 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     //Compute coefficients method takes two doubles //
     private double[][] nikonPts;
     private double[][] mimsPts;
+    
+    //for the status pane
+    private StyledDocument status;
+    private SimpleAttributeSet attr;
+    private SimpleAttributeSet attrError;
     
     /* Getters */
     
@@ -279,16 +282,25 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     
     private void initComponentsCustom() {
         
+       //Set the formatting of the window.
+       status = statusPane.getStyledDocument();
+       
+       attrError = new SimpleAttributeSet();
+       StyleConstants.setForeground(attrError, Color.RED);
+       StyleConstants.setFontSize(attrError, 13);
+       
+       attr = new SimpleAttributeSet();
+       StyleConstants.setFontSize(attr, 13);
         //Whenever we initialize, clear our status box
-        statusBox.setText("");
+        statusPane.setText("");
         
         //If no reference points selected, don't try to draw/enable anything.
         if (numPoints == 0) {
-            updateStatus("No reference points selected.");
+            updateStatus("No reference points selected.", true);
             return;
         }
             
-        updateStatus(numPoints + " reference points selected.");
+        updateStatus(numPoints + " reference points selected.", false);
         calcButton.setEnabled(true);
      
         //Set grid for panels
@@ -419,8 +431,17 @@ public class CoeffCalcWindow extends javax.swing.JFrame {
     }
   
     
-    private void updateStatus(String text) {
-        statusBox.append(text + "\n");
+    private void updateStatus(String text, boolean error) {
+        try {
+            if(error) {
+                status.insertString(status.getLength(), text + "\n", attrError );
+            } else {
+                status.insertString(status.getLength(), text + "\n", attr );
+            }
+        } catch(Exception e) { 
+            System.out.println(e); 
+        }
     }
+
     
 }

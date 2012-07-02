@@ -20,6 +20,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 
 
@@ -58,9 +61,9 @@ public class UI extends javax.swing.JFrame {
         destReviewTable = new javax.swing.JTable();
         srcScrollPane = new javax.swing.JScrollPane();
         srcReviewTable = new javax.swing.JTable();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        statusTextArea = new javax.swing.JTextArea();
         logLabel = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        statusTextPane = new javax.swing.JTextPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         saveMenuItem = new javax.swing.JMenuItem();
@@ -124,11 +127,11 @@ public class UI extends javax.swing.JFrame {
         });
         srcScrollPane.setViewportView(srcReviewTable);
 
-        statusTextArea.setColumns(20);
-        statusTextArea.setRows(5);
-        jScrollPane1.setViewportView(statusTextArea);
-
         logLabel.setText("Log: ");
+
+        statusTextPane.setEditable(false);
+        statusTextPane.setPreferredSize(new java.awt.Dimension(6, 300));
+        jScrollPane3.setViewportView(statusTextPane);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -210,40 +213,39 @@ public class UI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(logLabel)
-                        .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(srcScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                            .addComponent(srcLabel))
+                        .addGap(52, 52, 52)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(destScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
+                            .addComponent(destLabel))
+                        .addGap(34, 34, 34))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(srcScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                                    .addComponent(srcLabel))
-                                .addGap(52, 52, 52)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(destScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
-                                    .addComponent(destLabel))))
-                        .addGap(34, 34, 34))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(logLabel)
+                            .addComponent(jScrollPane3))
+                        .addGap(24, 24, 24))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(srcLabel)
                     .addComponent(destLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(destScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
+                    .addComponent(destScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
                     .addComponent(srcScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(logLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -259,7 +261,6 @@ public class UI extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             coeffFilePath = fc.getSelectedFile().getPath();
             dpfp.setCoeffFilePath(coeffFilePath);
-            updateStatus("Coefficient file chosen.");
         }
     }//GEN-LAST:event_loadCoeffActionPerformed
 
@@ -268,7 +269,7 @@ public class UI extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String whichFile = dpfp.openSrc(fc.getSelectedFile().getPath());
             if(whichFile.contains("Cannot open file")) {
-                updateStatus(whichFile);
+                updateStatus(whichFile, true);
                 return;
             } else if(whichFile.contains(".ref")) {
                 srcTableRefresh(TableCode.REF);
@@ -428,7 +429,7 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JMenuItem loadCoeff;
     private javax.swing.JMenuItem loadSrcPts;
     private javax.swing.JLabel logLabel;
@@ -440,7 +441,7 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JTable srcReviewTable;
     private javax.swing.JScrollPane srcScrollPane;
     private javax.swing.JPopupMenu srcTableRightClick;
-    private javax.swing.JTextArea statusTextArea;
+    private javax.swing.JTextPane statusTextPane;
     private javax.swing.JMenuItem toggleRefPoint;
     // End of variables declaration//GEN-END:variables
 
@@ -449,7 +450,6 @@ public class UI extends javax.swing.JFrame {
     private RDRTableModel refTableModel;
     private NikonTableModel nikonTableModel;
     private JDialog aboutBox;
-    //JFilechooser to ask for confirmation before rewrite.
     private JFileChooser fc = new JFileChooser();
     private String coeffFilePath;
     private String coordFilePath;
@@ -457,6 +457,11 @@ public class UI extends javax.swing.JFrame {
     private CoeffCalculator calculator;
     private RefFileFilter refFilter = new RefFileFilter();
     private PrsFileFilter prsFilter = new PrsFileFilter();
+    
+    /* Stuff for the log textPane */
+    private StyledDocument status;
+    private SimpleAttributeSet attr;
+    private SimpleAttributeSet attrError;
     
     /* Codes for using the source tables. This is not the best way to do this. */
     public enum TableCode { REFRESH, NIKON, CLEAR, REF };
@@ -475,7 +480,15 @@ public class UI extends javax.swing.JFrame {
        nikonTableModel = new NikonTableModel(dpfp);
        srcReviewTable.setDefaultRenderer(Object.class, new ReferenceTableRender());
        
+       //Set the formatting of the window.
+       status = statusTextPane.getStyledDocument();
        
+       attrError = new SimpleAttributeSet();
+       StyleConstants.setForeground(attrError, Color.RED);
+       StyleConstants.setFontSize(attrError, 13);
+       
+       attr = new SimpleAttributeSet();
+       StyleConstants.setFontSize(attr, 13);
        
     }
     
@@ -537,7 +550,22 @@ public class UI extends javax.swing.JFrame {
      * @param String to be printed
      */
     public void updateStatus(String line) {
-        statusTextArea.append(line + "\n");
+        try {
+            status.insertString(status.getLength(), line + "\n", attr );
+        } catch(Exception e) { 
+            System.out.println(e); 
+        }
+    }
+    
+    /*
+     * Overloaded method, might combine into one at some point
+     */
+    public void updateStatus(String line, boolean error) {
+        try { 
+            status.insertString(status.getLength(), line + "\n", attrError);
+        } catch(Exception e) {
+            System.out.println(e);
+        }
     }
     
     protected void enableCoordinateActions(boolean set) {

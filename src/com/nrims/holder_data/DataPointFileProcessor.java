@@ -144,19 +144,23 @@ public class DataPointFileProcessor {
         //TODO
     }
     
+    // Should make this pass messages to the gui for gui to print, maybe.
     public void processTransform()   {
         //Do some safety checks in here to make sure these things are set.
         
         if(!coeffComputed) {
             double [] coeffIn = io.readCoeff(getCoeffFilePath());
             if(coeffIn.length == 0) {
-                appWindow.updateStatus("Coefficients file could not be read. Is it in the proper format?");
+                appWindow.updateStatus("Coefficients file could not be read. Is it in the proper format?", true);
+                return;
             } else { 
                 point_trans.setCoefficientsFromList(coeffIn);
             }
         } else {
             point_trans.setTransformCoeffs(coeffData.getXCoefficients(), coeffData.getYCoefficients());
         }
+        
+        appWindow.updateStatus("Coefficient file chosen.");
         
         //This should be changed so that IO is done in io class, pass values to transform class.
         point_trans.readStagePointsFile( io.getSrcFilePath() );
@@ -224,8 +228,12 @@ public class DataPointFileProcessor {
         
     }
     
-    public void updateLog(String line) {
-        appWindow.updateStatus(line);
+    public void updateLog(String line, boolean error) {
+        if(error) {
+            appWindow.updateStatus(line, true);
+        } else {
+            appWindow.updateStatus(line);
+        }
     }
 }
 
