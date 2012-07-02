@@ -394,6 +394,7 @@ public class DataIO {
                 }
             }
         } catch(IOException e) {
+            data.updateLog("File selected was not a coefficient file.");
             e.printStackTrace();
         }
         
