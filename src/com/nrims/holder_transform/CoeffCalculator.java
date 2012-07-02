@@ -144,12 +144,12 @@ public class CoeffCalculator {
      * Gives a list (string) of the point errors then average error.
      */
     public String printError() {
-        String output = "Error by point: \n";
+        String output = "Error by point (um): \n";
         for(int i = 0; i < error.length; i++) {
             output = output.concat(error[i] + "\n");
         }
         
-        output = output.concat("Average error: " + averageError);
+        output = output.concat("Average error (um): " + averageError);
         
         return output;
     }
