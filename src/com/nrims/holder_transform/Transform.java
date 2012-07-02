@@ -25,7 +25,6 @@ public class Transform {
     private double[][] YCoefficients;
     private ArrayList<double[]> srcPoints;
     private ArrayList<double[]> transformedPoints;
-    private MicroInstrReferencePoints mirp;
     //private RefPointList rpl = null;
 
     /* private methods */
@@ -67,8 +66,6 @@ public class Transform {
         srcPoints = new ArrayList<double[]>();
         transformedPoints = new ArrayList<double[]>();
 
-        /* Setting stage/instr point storage to nothing */
-        mirp = null;
     }
 
     /* constructors */
@@ -80,11 +77,6 @@ public class Transform {
         init_private_vars();
     }
 
-    public Transform(MicroInstrReferencePoints mi)
-    {
-        init_private_vars();
-        mirp = mi;
-    }
 
     /* public methods */
 
@@ -302,26 +294,6 @@ rotate_nikon_to_mims(int spts,
             System.out.println(pt[0] + ", " + pt[1] + ", " + pt[2]);
         }
         System.out.println("");
-    }
-
-    public void setMicroInstrPoints(MicroInstrReferencePoints mp)
-    {
-        mirp = mp;
-    }
-
-    public MicroInstrReferencePoints getMicroInstrPoints()
-    {
-        return( mirp );
-    }
-
-    public void setTransformCoefficients()
-    {
-        setTransformCoefficients( getMicroInstrPoints() );
-    }
-
-    public void setTransformCoefficients(MicroInstrReferencePoints mp)
-    {
-
     }
     
     //Pass the coefficient arrays directly.
