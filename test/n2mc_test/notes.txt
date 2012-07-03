@@ -1,0 +1,9 @@
+commandline hack --IF-- we ever need to compare the output of n2mc and the java code...
+
+echo -e "a\n0,0\n100,100\n\
+a\n10,10\n110,110\n\
+a\n20,20\n120,120\n\
+c\nw\ncoeff.txt\nq\n" | n2mc
+
+
+echo -e "a\n0,0\n100,100\na\n10,10\n110,110\na\n20,20\n120,120\nc\nw\ncoeff.txt\nq\n" | n2mc
