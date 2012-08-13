@@ -265,11 +265,12 @@ rotate_nikon_to_mims(int spts,
         ArrayList<REFPoint> refList = new ArrayList<REFPoint>();
         REFPoint rp;
         double[] point_coords;
-        
+        int pointnum = 0;
         for (int i = 0; i < transformedPoints.size(); i++) {
             point_coords = transformedPoints.get(i);
             rp = coordsToRefPoint(point_coords);
-            rp.setComment(i + " " + REFPoint.getDefaultComment());
+            pointnum = i+1;
+            rp.setComment(pointnum + " " + REFPoint.getDefaultComment());
             refList.add(rp);
         }
         
