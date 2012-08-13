@@ -98,10 +98,12 @@ public class CoeffCalculator {
             calculatedPoints = transformer.getTransformedPoints();
             double[][] foundPoints = n2mc.getMimsPts();
             
-            //Testing. Print out the coords of the transformed points
+            /*Testing. Print out the coords of the transformed points
             for(int i = 0; i < calculatedPoints.size(); i++) {
                 System.out.println("X: " + calculatedPoints.get(i)[0] + " Y: " + calculatedPoints.get(i)[1]);
             }
+            * 
+            */
             
             //Make sure the world didn't explode.
             if(calculatedPoints.size() != foundPoints.length) {
@@ -194,6 +196,7 @@ public class CoeffCalculator {
         nikonPts = nikonPoints;
     }
     
+    //Note: for subset generation, make sure that error calculated uses all found points.
     /*
      * Global variable declarations for subset Selection
      */

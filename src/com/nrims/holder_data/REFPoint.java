@@ -16,7 +16,7 @@ public class REFPoint extends DataPoint {
     private final int comment_length = 80;
 
     private static final String default_comment = "Holder reference point" +
-            "                                                          "; /* total 80 chars */
+            "                                                        "; /* total 78 chars, two added at write "i " */
 
 
     private String ibd_ref_dat; /* date */
