@@ -269,7 +269,7 @@ rotate_nikon_to_mims(int spts,
         for (int i = 0; i < transformedPoints.size(); i++) {
             point_coords = transformedPoints.get(i);
             rp = coordsToRefPoint(point_coords);
-            rp.setComment("i " + REFPoint.getDefaultComment());
+            rp.setComment(i + " " + REFPoint.getDefaultComment());
             refList.add(rp);
         }
         
